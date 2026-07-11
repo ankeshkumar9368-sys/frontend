@@ -6,6 +6,7 @@ import CapacitorHandler from '../components/CapacitorHandler'
 import PushNotificationManager from '../components/PushNotificationManager'
 import GlobalAntiCheat from '../components/GlobalAntiCheat'
 import Script from 'next/script'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const viewport: Viewport = {
   themeColor: '#6366f1',
@@ -54,6 +55,7 @@ export default function RootLayout({
             {children}
           </AuthProvider>
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   )
