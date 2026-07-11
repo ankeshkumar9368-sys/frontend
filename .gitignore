@@ -13,3 +13,6 @@ node_modules/
 # Secrets
 serviceAccountKey.json
 set_api_key.js
+scratch/
+scripts/test-*.js
+scripts/test-*.ts
