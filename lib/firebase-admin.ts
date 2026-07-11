@@ -18,9 +18,16 @@ if (!admin.apps.length) {
     });
   }
 
-  admin.initializeApp({
-    credential: credential,
-  });
+  try {
+    admin.initializeApp({
+      ...(credential ? { credential } : {}),
+    });
+  } catch (error: any) {
+    console.warn("Firebase Admin initialization warning:", error?.message);
+    try {
+      admin.initializeApp();
+    } catch (e) {}
+  }
 }
 
 const db = admin.firestore();
