@@ -1,0 +1,39 @@
+Created At: 2026-06-19T07:56:56Z
+Completed At: 2026-06-19T07:56:57Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 220 to 250
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+220:     }
+221:   };
+222: 
+223:   // SECURE AUTH: Listen for state changes
+224:   useEffect(() => {
+225:     let userUnsub: any = null;
+226:     let statsUnsub: any = null; // 🔴 Real-time listener for user_stats XP
+227:     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+228:       if (user) {
+229:         setIsAuth(true);
+230:         setShowSplash(true);
+231:         try {
+232:           // 📈 UPDATE STREAK ON LOGIN
+233:           await updateStreak();
+234:           
+235:           const userRef = doc(db, "users", user.uid);
+236:           
+237:           if (userUnsub) userUnsub(); // Clear previous listener if any
+238:           userUnsub = onSnapshot(userRef, async (userSnap) => {
+239:             if (userSnap.exists()) {
+240:               const data = userSnap.data();
+241:               
+242:               // Premium Expiry Check
+243:               if (data?.isSubscribed && data?.premiumEndDate) {
+244:                 if (new Date() > new Date(data.premiumEndDate)) {
+245:                   // Revoke premium
+246:                   await updateDoc(userRef, {
+247:                     isSubscribed: deleteField(),
+248:                     planType: deleteField(),
+249:                     premiumEndDate: deleteField()
+250:                   });
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

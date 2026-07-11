@@ -1,0 +1,144 @@
+Created At: 2026-06-19T07:55:15Z
+Completed At: 2026-06-19T07:55:16Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 965 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+965:       {activeTab === "Home" && (
+966:         <div className="px-4 pt-3 pb-2 shrink-0 z-40">
+967:           <div className="relative flex gap-1 p-1.5 rounded-2xl" style={{background:'rgba(99,102,241,0.06)', border:'1px solid rgba(99,102,241,0.1)'}}>
+968:             <motion.div 
+969:               className="absolute inset-1.5 rounded-xl"
+970:               style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
+971:               animate={{ left: mode === 'govt' ? '6px' : '50%', width: mode === 'govt' ? 'calc(50% - 6px)' : 'calc(50% - 6px)' }}
+972:               transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+973:             />
+974:             <button 
+975:               onClick={() => setMode("govt")}
+976:               className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "govt" ? "text-white" : "text-slate-500 dark:text-slate-400"}`}
+977:             >
+978:               <Building2 className="w-4 h-4" /> Gov Prep <Lock className="w-3 h-3 opacity-60" />
+979:             </button>
+980:             <button 
+981:               onClick={() => setMode("school")}
+982:               className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "school" ? "text-white" : "text-slate-500 dark:text-slate-400"}`}
+983:             >
+984:               <GraduationCap className="w-4 h-4" /> School Prep
+985:             </button>
+986:           </div>
+987:         </div>
+988:       )}
+989: 
+990:       <main className="flex-1 overflow-y-auto">
+991:         <div className="px-4 py-3 space-y-4 pb-28">
+992:           {activeTab === "Home" && (
+993:             <AnimatePresence mode="wait">
+994:               {mode === "govt" ? (
+995:                 <motion.div 
+996:                   key="govt-locked"
+997:                   initial={{ opacity: 0, y: 20 }}
+998:                   animate={{ opacity: 1, y: 0 }}
+999:                   exit={{ opacity: 0, y: -20 }}
+1000:                   className="flex flex-col items-center justify-center py-20 text-center space-y-6"
+1001:                 >
+1002:                   <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl shadow-primary/10">
+1003:                     <Lock className="w-5 h-5 text-primary" />
+1004:                   </div>
+1005:                   <div className="space-y-2">
+1006:                     <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tighter uppercase italic">Gov Prep Vault</h2>
+1007:                     <p className="text-primary font-black text-xs uppercase tracking-[0.3em]">Launching Very Soon</p>
+1008:                   </div>
+1009:                   <p className="text-slate-500 dark:text-slate-400 text-sm font-medium max-w-[280px] leading-relaxed">
+1010:                     We are currently indexing 50,000+ government exam questions.
+1011:                   </p>
+1012:                   <motion.div 
+1013:                     animate={{ scale: [1, 1.1, 1] }}
+1014:                     transition={{ duration: 2, repeat: Infinity }}
+1015:                     className="bg-emerald-500/10 text-emerald-500 px-4 py-2.5 rounded-2xl border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest"
+1016:                   >
+1017:                     94% Completed
+1018:                   </motion.div>
+1019:                 </motion.div>
+1020:               ) : (
+1021:                 <motion.div 
+1022:                   key="home-content"
+1023:                   initial={{ opacity: 0 }} 
+1024:                   animate={{ opacity: 1 }}
+1025:                   exit={{ opacity: 0 }}
+1026:                   className="space-y-4 overflow-x-hidden"
+1027:                 >
+1028:                   {/* ===== PREMIUM HERO GREETING ===== */}
+1029:                   <motion.div 
+1030:                     className="relative overflow-hidden rounded-[28px] p-5 mb-2"
+1031:                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
+1032:                     animate={{ opacity: 1, y: 0, scale: 1 }}
+1033:                     transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.1 }}
+1034:                     style={{
+1035:                       background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+1036:                       boxShadow: '0 8px 40px rgba(99,102,241,0.4), 0 2px 8px rgba(0,0,0,0.1)'
+1037:                     }}
+1038:                   >
+1039:                     {/* Background particles */}
+1040:                     <div className="absolute inset-0 overflow-hidden">
+1041:                       {[...Array(6)].map((_, i) => (
+1042:                         <motion.div
+1043:                           key={i}
+1044:                           className="absolute rounded-full"
+1045:                           style={{
+1046:                             width: Math.random() * 60 + 20,
+1047:                             height: Math.random() * 60 + 20,
+1048:                             top: `${Math.random() * 100}%`,
+1049:                             left: `${Math.random() * 100}%`,
+1050:                             background: 'rgba(255,255,255,0.06)',
+1051:                           }}
+1052:                           animate={{ 
+1053:                             y: [0, -15, 0],
+1054:                             scale: [1, 1.1, 1],
+1055:                             opacity: [0.4, 0.8, 0.4]
+1056:                           }}
+1057:                           transition={{ 
+1058:                             duration: 3 + i * 0.5, 
+1059:                             repeat: Infinity, 
+1060:                             delay: i * 0.4,
+1061:                             ease: 'easeInOut'
+1062:                           }}
+1063:                         />
+1064:                       ))}
+1065:                     </div>
+1066:                     
+1067:                     <div className="relative z-10 flex justify-between items-center">
+1068:                       <div>
+1069:                         <motion.p 
+1070:                           className="text-white/70 text-[11px] font-black uppercase tracking-widest mb-1"
+1071:                           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+1072:                         >
+1073:                           Daily Mastery Session ✨
+1074:                         </motion.p>
+1075:                         <motion.h2 
+1076:                           className="text-2xl font-black text-white leading-tight tracking-tight"
+1077:                           initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+1078:                         >
+1079:                           Hi, {auth.currentUser?.displayName?.split(" ")[0] || "Aspirant"}! 👋
+1080:                         </motion.h2>
+1081:                         
+1082:                         <div className="flex items-center gap-2 mt-3">
+1083:                           <motion.div 
+1084:                             onClick={() => setShowRewardShop(true)} 
+1085:                             className="flex items-center gap-2 px-3 py-1.5 rounded-2xl cursor-pointer"
+1086:                             style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)' }}
+1087:                             whileTap={{ scale: 0.95 }}
+1088:                             whileHover={{ scale: 1.03 }}
+1089:                           >
+1090:                             <Zap className="w-4 h-4 text-yellow-300 fill-yellow-300" style={{ filter: 'drop-shadow(0 0 6px rgba(253,224,71,0.8))' }} />
+1091:                             <span className="text-sm font-black text-white">{(userData?.points || 0).toLocaleString()} XP</span>
+1092:                             <ChevronRight className="w-3 h-3 text-white/60" />
+1093:                           </motion.div>
+1094:                         </div>
+1095:                       </div>
+1096:                       <StudyBuddy points={userData?.points || 0} streak={userData?.streak || 0} />
+1097:                     </div>
+1098:                   </motion.div>
+1099: 
+1100:                   {/* ===== PREMIUM GOAL + MASTERY CARDS ===== */}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

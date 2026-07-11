@@ -1,0 +1,15 @@
+# Environment files with secrets
+.env
+.env.local
+.env*.local
+
+# Build
+.next/
+out/
+
+# Node
+node_modules/
+
+# Secrets
+serviceAccountKey.json
+set_api_key.js

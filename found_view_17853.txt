@@ -1,0 +1,69 @@
+Created At: 2026-06-19T18:42:03Z
+Completed At: 2026-06-19T18:42:04Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2451
+Total Bytes: 126782
+Showing lines 1360 to 1420
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1360:           {activeTab === "Rank" && (
+1361:             <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
+1362:               <Leaderboard userData={userData} />
+1363:             </motion.div>
+1364:           )}
+1365: 
+1366:           {activeTab === "Tools" && (
+1367:             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+1368:               <div className="space-y-1">
+1369:                 <h2 className="text-2xl font-black tracking-tight leading-none">AI Tools</h2>
+1370:                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Power features for smarter study</p>
+1371:               </div>
+1372: 
+1373:               {/* System Flow Banner */}
+1374:               <motion.button
+1375:                 whileTap={{ scale: 0.97 }}
+1376:                 onClick={() => setShowSystemFlow(true)}
+1377:                 className="w-full bg-gradient-to-r from-primary via-violet-600 to-indigo-700 text-white p-5 rounded-[28px] flex items-center justify-between shadow-xl shadow-primary/20"
+1378:               >
+1379:                 <div className="flex items-center gap-3">
+1380:                   <div className="w-5 h-5 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">🔄</div>
+1381:                   <div className="text-left">
+1382:                     <p className="font-black text-sm">How ExamHero AI Works</p>
+1383:                     <p className="text-white/70 text-xs font-semibold">See the 8-step learning loop</p>
+1384:                   </div>
+1385:                 </div>
+1386:                 <Info className="w-5 h-5 text-white/70" />
+1387:               </motion.button>
+1388: 
+1389:               {/* 3D ICON GRID OF COMPACTED FEATURES */}
+1390:               {(() => {
+1391:                 const recs = getGlowRecommendations();
+1392:                 
+1393:                 const toolsList = [
+1394:                   {
+1395:                     id: "formula",
+1396:                     title: "Smart Formulas",
+1397:                     subtitle: "Formula Vault",
+1398:                     emoji: "📚",
+1399:                     bgClass: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-950/20",
+1400:                     isGlowing: false,
+1401:                     glowClass: "",
+1402:                     onClick: () => setShowFormulaVault(true)
+1403:                   },
+1404:                   {
+1405:                     id: "revisionVault",
+1406:                     title: "Mistake Bank",
+1407:                     subtitle: "Revision Vault",
+1408:                     emoji: "🧠",
+1409:                     bgClass: "bg-amber-100 text-amber-500 dark:bg-amber-950/20",
+1410:                     isGlowing: recs.revisionVault,
+1411:                     glowClass: "glow-amber",
+1412:                     onClick: () => {
+1413:                       if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+1414:                       setShowRevisionVault(true);
+1415:                     }
+1416:                   },
+1417:                   {
+1418:                     id: "flashcards",
+1419:                     title: "AI Flashcards",
+1420:                     subtitle: "Flashcard Forge",
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

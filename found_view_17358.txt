@@ -1,0 +1,59 @@
+Created At: 2026-06-19T07:13:20Z
+Completed At: 2026-06-19T07:13:21Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 1230 to 1280
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1230:                     );
+1231:                   })()}
+1232: 
+1233:                   {/* 🛣️ MASTERY ROADMAP CARD */}
+1234:                   <motion.button 
+1235:                     whileTap={{ scale: 0.97 }}
+1236:                     onClick={() => setShowRoadmap(true)}
+1237:                     className="w-full bg-slate-900 dark:bg-slate-800 p-4 rounded-[32px] border border-white/5 shadow-xl flex items-center justify-between group hover:border-primary/50 transition-all text-white relative overflow-hidden glow-primary"
+1238:                   >
+1239:                     <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+1240:                     <div className="flex items-center gap-4 relative z-10">
+1241:                       <div className="w-5 h-5 bg-indigo-500/30 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform icon-3d">🛤️</div>
+1242:                       <div className="text-left">
+1243:                         <div className="flex items-center gap-2 mb-1">
+1244:                           <h3 className="font-black text-sm uppercase tracking-tight">Mastery Roadmap</h3>
+1245:                           {!isSubscribed && <div className="bg-amber-400 text-slate-900 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">Trial</div>}
+1246:                         </div>
+1247:                         <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest leading-none">Mixed Subjects • Level {masteryLevel + 1}</p>
+1248:                       </div>
+1249:                     </div>
+1250:                     <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+1251:                       <ChevronRight className="w-5 h-5" />
+1252:                     </div>
+1253:                   </motion.button>
+1254: 
+1255:                   <ExploreEngine 
+1256:                     mode={mode} 
+1257:                     isSubscribed={isSubscribed}
+1258:                     userData={userData}
+1259:                     onUpgrade={() => setShowSubscriptionModal(true)}
+1260:                     onFinalSelect={async (item) => {
+1261:                       const isPYQ = item.name.toLowerCase().includes("pyq") || item.name.toLowerCase().includes("previous year");
+1262:                       if (isPYQ) {
+1263:                         if (userData?.planType === "standard") {
+1264:                           alert("👑 TOPPER PYQ Tests are exclusively available in the Achivox Pro Plan. Upgrade now to unlock!");
+1265:                           setShowSubscriptionModal(true);
+1266:                           return;
+1267:                         }
+1268:                         try {
+1269:                           setLoadingQuestions(true);
+1270:                           // Clean parent ID (e.g., topics_laws_of_motion -> Laws Of Motion)
+1271:                           const topicName = item.parentId?.split('_').pop()?.replace(/-/g, ' ') || "this topic";
+1272:                           const formattedTopic = topicName.charAt(0).toUpperCase() + topicName.slice(1);
+1273:                           
+1274:                           const pyqs = await generateAIPYQs(formattedTopic, userData);
+1275:                           if (pyqs && pyqs.length > 0) {
+1276:                             setActiveTest({ title: `PYQs: ${formattedTopic}`, questions: pyqs, mode: "pyq" });
+1277:                           } else {
+1278:                             alert("AI failed to generate PYQs. Please try again.");
+1279:                           }
+1280:                         } catch (e) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

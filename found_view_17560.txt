@@ -1,0 +1,59 @@
+Created At: 2026-06-19T07:57:32Z
+Completed At: 2026-06-19T07:57:33Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 640 to 690
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+640:       setActiveTest(null);
+641:       return;
+642:     }
+643: 
+644:     setTestResult({ score, total, percentage: Math.round((score / total) * 100), results });
+645:     
+646:     // 2. Update Firestore
+647:     if (auth.currentUser) {
+648:       const userRef = doc(db, "users", auth.currentUser.uid);
+649:       // Right answers yield +5 XP, wrong answers deduct -2 XP
+650:       const pointsEarned = (score * 5) - ((total - score) * 2);
+651:       
+652:       const updatePayload: any = {
+653:         totalSolved: increment(total),
+654:         correctAnswers: increment(score),
+655:         testsCompleted: increment(1),
+656:         attempts: arrayUnion({
+657:           title: activeTest.title,
+658:           score: Math.round((score / total) * 100),
+659:           date: new Date().toISOString()
+660:         }),
+661:         overallAccuracy: calculateWeightedAccuracy(userData?.overallAccuracy || 70, score, total)
+662:       };
+663: 
+664:       // 🚀 Advance Mastery Level if this was a mastery test and user passed (e.g. > 60%)
+665:       if (activeTest.isMastery && (score / total) >= 0.6) {
+666:         updatePayload.masteryLevel = increment(1);
+667:         setMasteryLevel(prev => prev + 1);
+668:       }
+669: 
+670:       await updateDoc(userRef, updatePayload);
+671:       
+672:       // Award/Deduct XP securely using addXP (clamped at 0 in user_stats, synced to users points)
+673:       await addXP(auth.currentUser.uid, pointsEarned, `Mock Test: ${activeTest.title}`);
+674:       
+675:       setAnalyticsUpdateTrigger(prev => prev + 1);
+676:       
+677:       // Update local state to reflect changes immediately.
+678:       setUserData((prev: any) => ({
+679:         ...prev,
+680:         totalSolved: (prev?.totalSolved || 0) + total,
+681:         correctAnswers: (prev?.correctAnswers || 0) + score,
+682:         testsCompleted: (prev?.testsCompleted || 0) + 1,
+683:         points: (prev?.points || 0) + pointsEarned,
+684:       }));
+685: 
+686:       // 3. Check for Badge Unlocks
+687:       const userStatsSnap = await getDoc(doc(db, "user_stats", auth.currentUser.uid));
+688:       const stats = userStatsSnap.exists() ? userStatsSnap.data() : { badges: [] };
+689:       const newlyUnlocked = await checkAndUnlockBadges(auth.currentUser.uid, userData, stats);
+690:       
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,45 @@
+Created At: 2026-06-19T18:58:06Z
+Completed At: 2026-06-19T18:58:07Z
+File Path: `file:///C:/Users/Admin/.gemini/antigravity/brain/166c9201-d61f-4f97-920c-36b495150ab2/scratch/extract_all_views.js`
+Total Lines: 37
+Total Bytes: 1202
+Showing lines 1 to 37
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: const fs = require('fs');
+2: const path = require('path');
+3: 
+4: const logPath = 'C:/Users/Admin/.gemini/antigravity/brain/166c9201-d61f-4f97-920c-36b495150ab2/.system_generated/logs/transcript_full.jsonl';
+5: const fileStream = fs.createReadStream(logPath, { encoding: 'utf8' });
+6: 
+7: let buffer = '';
+8: let foundCount = 0;
+9: 
+10: fileStream.on('data', (chunk) => {
+11:   buffer += chunk;
+12:   let lineEndIdx = buffer.indexOf('\n');
+13:   while (lineEndIdx !== -1) {
+14:     const line = buffer.slice(0, lineEndIdx);
+15:     buffer = buffer.slice(lineEndIdx + 1);
+16:     
+17:     if (line.includes('"type":"VIEW_FILE"') && line.includes('app/page.tsx')) {
+18:       try {
+19:         const step = JSON.parse(line);
+20:         const contentLen = step.content ? step.content.length : 0;
+21:         console.log(`Found VIEW_FILE at step ${step.step_index}, content length: ${contentLen}`);
+22:         if (contentLen > 1000) {
+23:           fs.writeFileSync(`C:/Users/Admin/S2Dent/ExamHero-Next/found_view_${step.step_index}.txt`, step.content);
+24:           foundCount++;
+25:         }
+26:       } catch (e) {
+27:         // ignore
+28:       }
+29:     }
+30:     lineEndIdx = buffer.indexOf('\n');
+31:   }
+32: });
+33: 
+34: fileStream.on('end', () => {
+35:   console.log(`Scan completed. Found ${foundCount} matches.`);
+36: });
+37: 
+The above content shows the entire, complete file contents of the requested file.

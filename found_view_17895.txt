@@ -1,0 +1,34 @@
+Created At: 2026-06-19T18:44:51Z
+Completed At: 2026-06-19T18:44:51Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2451
+Total Bytes: 126782
+Showing lines 125 to 150
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+125:   const [showSplash, setShowSplash] = useState(false);
+126:   // New feature states
+127:   const [showQuickRevision, setShowQuickRevision] = useState(false);
+128:   const [showFlashcards, setShowFlashcards] = useState(false);
+129:   const [quickRevisionTopic, setQuickRevisionTopic] = useState("");
+130:   const [showGamification, setShowGamification] = useState(false);
+131:   const [showFormulaVault, setShowFormulaVault] = useState(false);
+132:   const [showSubjective, setShowSubjective] = useState(false);
+133:   const [showQuestLog, setShowQuestLog] = useState(false);
+134:   const [showTimetable, setShowTimetable] = useState(false);
+135:   const [showStudyPods, setShowStudyPods] = useState(false);
+136:   const [showWhyWrong, setShowWhyWrong] = useState(false);
+137:   const [wrongQuestions, setWrongQuestions] = useState<any[]>([]);
+138:   const [showSystemFlow, setShowSystemFlow] = useState(false);
+139:   const [xpPoints, setXpPoints] = useState(0);
+140:   const [masterySequence, setMasterySequence] = useState<any[]>([]);
+141:   const [masteryLevel, setMasteryLevel] = useState(0);
+142:   const [isAuth, setIsAuth] = useState<boolean | null>(null);
+143:   const [showOnboarding, setShowOnboarding] = useState(false);
+144:   const [showGiftModal, setShowGiftModal] = useState(false);
+145:   const [showGoalSelector, setShowGoalSelector] = useState(false);
+146:   const [showRevisionVault, setShowRevisionVault] = useState(false);
+147:   const [showQuickStudy, setShowQuickStudy] = useState(false);
+148:   const [showARViewer, setShowARViewer] = useState<string | null>(null);
+149:   const [showProjectAssistant, setShowProjectAssistant] = useState(false);
+150:   const [analyticsUpdateTrigger, setAnalyticsUpdateTrigger] = useState(0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

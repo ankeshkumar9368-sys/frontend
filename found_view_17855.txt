@@ -1,0 +1,88 @@
+Created At: 2026-06-19T18:42:06Z
+Completed At: 2026-06-19T18:42:07Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2451
+Total Bytes: 126782
+Showing lines 1421 to 1500
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1421:                     emoji: "⚡",
+1422:                     bgClass: "bg-orange-100 text-orange-500 dark:bg-orange-950/20",
+1423:                     isGlowing: recs.flashcards,
+1424:                     glowClass: "glow-amber",
+1425:                     onClick: () => setShowFlashcards(true)
+1426:                   },
+1427:                   {
+1428:                     id: "roadmap",
+1429:                     title: "Skill Journey",
+1430:                     subtitle: "Mastery Roadmap",
+1431:                     emoji: "🗺️",
+1432:                     bgClass: "bg-indigo-100 text-indigo-500 dark:bg-indigo-950/20",
+1433:                     isGlowing: recs.roadmap,
+1434:                     glowClass: "glow-primary",
+1435:                     onClick: () => setShowRoadmap(true)
+1436:                   },
+1437:                   {
+1438:                     id: "timetable",
+1439:                     title: "AI Planner",
+1440:                     subtitle: "Smart Timetable",
+1441:                     emoji: "🗓️",
+1442:                     bgClass: "bg-emerald-100 text-emerald-500 dark:bg-emerald-950/20",
+1443:                     isGlowing: recs.timetable,
+1444:                     glowClass: "glow-emerald",
+1445:                     onClick: () => setShowTimetable(true)
+1446:                   },
+1447:                   {
+1448:                     id: "scanSolve",
+1449:                     title: "AI Vision Solver",
+1450:                     subtitle: "Scan & Solve",
+1451:                     emoji: "📸",
+1452:                     bgClass: "bg-sky-100 text-sky-500 dark:bg-sky-950/20",
+1453:                     isGlowing: recs.scanSolve,
+1454:                     glowClass: "glow-primary",
+1455:                     onClick: () => setShowScanSolve(true)
+1456:                   },
+1457:                   {
+1458:                     id: "analysis",
+1459:                     title: "Deep Analysis",
+1460:                     subtitle: "Skill Metrics",
+1461:                     emoji: "📊",
+1462:                     bgClass: "bg-violet-100 text-violet-500 dark:bg-violet-950/20",
+1463:                     isGlowing: false,
+1464:                     glowClass: "",
+1465:                     onClick: () => setShowAnalysis(true)
+1466:                   },
+1467:                   {
+1468:                     id: "quickStudy",
+1469:                     title: "Quick Study",
+1470:                     subtitle: "Flashcard Swipe",
+1471:                     emoji: "🎴",
+1472:                     bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
+1473:                     isGlowing: recs.quickStudy,
+1474:                     glowClass: "glow-amber",
+1475:                     onClick: () => setShowQuickStudy(true)
+1476:                   },
+1477:                   {
+1478:                     id: "quests",
+1479:                     title: "Daily Quests",
+1480:                     subtitle: "XP Loot Box",
+1481:                     emoji: "⚔️",
+1482:                     bgClass: "bg-rose-100 text-rose-500 dark:bg-rose-950/20",
+1483:                     isGlowing: false,
+1484:                     glowClass: "",
+1485:                     onClick: () => setShowQuestLog(true)
+1486:                   },
+1487:                   {
+1488:                     id: "studyPods",
+1489:                     title: "Grind Pods",
+1490:                     subtitle: "Live Study Pods",
+1491:                     emoji: "🧘‍♂️",
+1492:                     bgClass: "bg-teal-100 text-teal-600 dark:bg-teal-950/20",
+1493:                     isGlowing: false,
+1494:                     glowClass: "",
+1495:                     onClick: () => setShowStudyPods(true)
+1496:                   },
+1497:                   {
+1498:                     id: "battle",
+1499:                     title: "Battle Arena",
+1500:                     subtitle: "Multiplayer Quiz",
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

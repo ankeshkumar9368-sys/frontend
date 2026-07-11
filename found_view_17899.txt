@@ -1,0 +1,29 @@
+Created At: 2026-06-19T18:45:09Z
+Completed At: 2026-06-19T18:45:10Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2451
+Total Bytes: 126782
+Showing lines 1390 to 1410
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1390:               {(() => {
+1391:                 const recs = getGlowRecommendations();
+1392:                 
+1393:                 const toolsList = [
+1394:                   {
+1395:                     id: "formula",
+1396:                     title: "Smart Formulas",
+1397:                     subtitle: "Formula Vault",
+1398:                     emoji: "📚",
+1399:                     bgClass: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-950/20",
+1400:                     isGlowing: false,
+1401:                     glowClass: "",
+1402:                     onClick: () => setShowFormulaVault(true)
+1403:                   },
+1404:                   {
+1405:                     id: "revisionVault",
+1406:                     title: "Mistake Bank",
+1407:                     subtitle: "Revision Vault",
+1408:                     emoji: "🧠",
+1409:                     bgClass: "bg-amber-100 text-amber-500 dark:bg-amber-950/20",
+1410:                     isGlowing: recs.revisionVault,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

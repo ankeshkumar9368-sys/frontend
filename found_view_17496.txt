@@ -1,0 +1,203 @@
+Created At: 2026-06-19T07:55:18Z
+Completed At: 2026-06-19T07:55:18Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 1101 to 1295
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1101:                   <div className="grid grid-cols-2 gap-3">
+1102:                     {/* Goal Card */}
+1103:                     <motion.div 
+1104:                       className="feature-card p-4 cursor-pointer"
+1105:                       style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(99,102,241,0.15)' }}
+1106:                       initial={{ opacity: 0, y: 15, scale: 0.95 }}
+1107:                       animate={{ opacity: 1, y: 0, scale: 1 }}
+1108:                       transition={{ delay: 0.2 }}
+1109:                       whileTap={{ scale: 0.96 }}
+1110:                       onClick={() => setShowGoalSelector(true)}
+1111:                     >
+1112:                       <motion.div 
+1113:                         className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3 icon-3d"
+1114:                         style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
+1115:                         whileHover={{ rotate: 5 }}
+1116:                       >
+1117:                         <Target className="w-5 h-5 text-white" />
+1118:                       </motion.div>
+1119:                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Your Goal</p>
+1120:                       <h2 className="text-xs font-black text-foreground leading-tight">
+1121:                         {userData?.board && userData?.cls ? `${userData.board}` : "Set Goal"}
+1122:                       </h2>
+1123:                       {userData?.cls && <p className="text-[10px] text-indigo-500 font-bold mt-0.5">{userData.cls}</p>}
+1124:                     </motion.div>
+1125: 
+1126:                     {/* Mastery Progress Card */}
+1127:                     <motion.div 
+1128:                       className="feature-card p-4"
+1129:                       style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.05))', border: '1px solid rgba(16,185,129,0.15)' }}
+1130:                       initial={{ opacity: 0, y: 15, scale: 0.95 }}
+1131:                       animate={{ opacity: 1, y: 0, scale: 1 }}
+1132:                       transition={{ delay: 0.3 }}
+1133:                     >
+1134:                       <div className="flex items-center gap-2 mb-3">
+1135:                         <motion.div 
+1136:                           className="w-10 h-10 rounded-2xl flex items-center justify-center icon-3d"
+1137:                           style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}
+1138:                         >
+1139:                           <Trophy className="w-5 h-5 text-white" />
+1140:                         </motion.div>
+1141:                         <div className="relative w-10 h-10 shrink-0">
+1142:                           <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+1143:                             <circle className="text-slate-100 dark:text-slate-800" strokeWidth="10" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+1144:                             <motion.circle
+1145:                               className="text-emerald-500"
+1146:                               strokeWidth="10"
+1147:                               strokeDasharray={2 * Math.PI * 40}
+1148:                               initial={{ strokeDashoffset: 2 * Math.PI * 40 }}
+1149:                               animate={{ strokeDashoffset: 2 * Math.PI * 40 * (1 - (userData?.totalSolved > 0 ? 0.65 : 0)) }}
+1150:                               transition={{ duration: 1.5, delay: 0.8, ease: 'easeOut' }}
+1151:                               strokeLinecap="round"
+1152:                               stroke="currentColor"
+1153:                               fill="transparent"
+1154:                               r="40" cx="50" cy="50"
+1155:                             />
+1156:                           </svg>
+1157:                           <div className="absolute inset-0 flex items-center justify-center">
+1158:                             <span className="text-[9px] font-black text-emerald-600">{userData?.totalSolved > 0 ? "65%" : "0%"}</span>
+1159:                           </div>
+1160:                         </div>
+1161:                       </div>
+1162:                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Weekly</p>
+1163:                       <h3 className="text-xs font-black text-foreground">Mastery 💪</h3>
+1164:                     </motion.div>
+1165:                   </div>
+1166: 
+1167:                   {/* HOME QUICK ACCESS 3D BAR */}
+1168:                   {(() => {
+1169:                     const recs = getGlowRecommendations();
+1170:                     return (
+1171:                       <div className="flex gap-3 overflow-x-auto py-2 px-1 hide-scrollbar shrink-0">
+1172:                         <motion.button
+1173:                           whileTap={{ scale: 0.95 }}
+1174:                           onClick={handleDoubtSolverClick}
+1175:                           className="flex flex-col items-center gap-1.5 min-w-[72px]"
+1176:                         >
+1177:                           <div className="w-5 h-5 bg-indigo-50 dark:bg-indigo-950/20 rounded-[22px] flex items-center justify-center text-2xl border border-indigo-100 dark:border-indigo-900/40 shadow-sm icon-3d">
+1178:                             🤖
+1179:                           </div>
+1180:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">AI Doubt</span>
+1181:                         </motion.button>
+1182: 
+1183:                         <motion.button
+1184:                           whileTap={{ scale: 0.95 }}
+1185:                           onClick={() => setShowQuickStudy(true)}
+1186:                           className="flex flex-col items-center gap-1.5 min-w-[72px]"
+1187:                         >
+1188:                           <div className={`w-5 h-5 bg-amber-50 dark:bg-amber-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.quickStudy ? 'glow-amber animate-pulse border-amber-300' : 'border-amber-100 dark:border-amber-900/40'}`}>
+1189:                             🎴
+1190:                           </div>
+1191:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">Quick Study</span>
+1192:                         </motion.button>
+1193: 
+1194:                         <motion.button
+1195:                           whileTap={{ scale: 0.95 }}
+1196:                           onClick={() => setShowTimetable(true)}
+1197:                           className="flex flex-col items-center gap-1.5 min-w-[72px]"
+1198:                         >
+1199:                           <div className={`w-5 h-5 bg-emerald-50 dark:bg-emerald-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.timetable ? 'glow-emerald animate-pulse border-emerald-300' : 'border-emerald-100 dark:border-emerald-900/40'}`}>
+1200:                             🗓️
+1201:                           </div>
+1202:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">AI Planner</span>
+1203:                         </motion.button>
+1204: 
+1205:                         <motion.button
+1206:                           whileTap={{ scale: 0.95 }}
+1207:                           onClick={() => setShowScanSolve(true)}
+1208:                           className="flex flex-col items-center gap-1.5 min-w-[72px]"
+1209:                         >
+1210:                           <div className={`w-5 h-5 bg-sky-50 dark:bg-sky-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.scanSolve ? 'glow-primary animate-pulse border-sky-300' : 'border-sky-100 dark:border-sky-900/40'}`}>
+1211:                             📸
+1212:                           </div>
+1213:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">AI Vision</span>
+1214:                         </motion.button>
+1215:                         
+1216:                         <motion.button
+1217:                           whileTap={{ scale: 0.95 }}
+1218:                           onClick={() => {
+1219:                             if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+1220:                             setShowRevisionVault(true);
+1221:                           }}
+1222:                           className="flex flex-col items-center gap-1.5 min-w-[72px]"
+1223:                         >
+1224:                           <div className={`w-5 h-5 bg-rose-50 dark:bg-rose-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.revisionVault ? 'glow-rose animate-pulse border-rose-300' : 'border-rose-100 dark:border-rose-900/40'}`}>
+1225:                             🧠
+1226:                           </div>
+1227:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">Mistakes</span>
+1228:                         </motion.button>
+1229:                       </div>
+1230:                     );
+1231:                   })()}
+1232: 
+1233:                   {/* 🛣️ MASTERY ROADMAP CARD */}
+1234:                   <motion.button 
+1235:                     whileTap={{ scale: 0.97 }}
+1236:                     onClick={() => setShowRoadmap(true)}
+1237:                     className="w-full bg-slate-900 dark:bg-slate-800 p-4 rounded-[32px] border border-white/5 shadow-xl flex items-center justify-between group hover:border-primary/50 transition-all text-white relative overflow-hidden glow-primary"
+1238:                   >
+1239:                     <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+1240:                     <div className="flex items-center gap-4 relative z-10">
+1241:                       <div className="w-5 h-5 bg-indigo-500/30 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform icon-3d">🛤️</div>
+1242:                       <div className="text-left">
+1243:                         <div className="flex items-center gap-2 mb-1">
+1244:                           <h3 className="font-black text-sm uppercase tracking-tight">Mastery Roadmap</h3>
+1245:                           {!isSubscribed && <div className="bg-amber-400 text-slate-900 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">Trial</div>}
+1246:                         </div>
+1247:                         <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest leading-none">Mixed Subjects • Level {masteryLevel + 1}</p>
+1248:                       </div>
+1249:                     </div>
+1250:                     <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+1251:                       <ChevronRight className="w-5 h-5" />
+1252:                     </div>
+1253:                   </motion.button>
+1254: 
+1255:                   <ExploreEngine 
+1256:                     mode={mode} 
+1257:                     isSubscribed={isSubscribed}
+1258:                     userData={userData}
+1259:                     onUpgrade={() => setShowSubscriptionModal(true)}
+1260:                     onFinalSelect={async (item) => {
+1261:                       const isPYQ = item.name.toLowerCase().includes("pyq") || item.name.toLowerCase().includes("previous year");
+1262:                       if (isPYQ) {
+1263:                         if (userData?.planType === "standard") {
+1264:                           alert("👑 TOPPER PYQ Tests are exclusively available in the Achivox Pro Plan. Upgrade now to unlock!");
+1265:                           setShowSubscriptionModal(true);
+1266:                           return;
+1267:                         }
+1268:                         try {
+1269:                           setLoadingQuestions(true);
+1270:                           // Clean parent ID (e.g., topics_laws_of_motion -> Laws Of Motion)
+1271:                           const topicName = item.parentId?.split('_').pop()?.replace(/-/g, ' ') || "this topic";
+1272:                           const formattedTopic = topicName.charAt(0).toUpperCase() + topicName.slice(1);
+1273:                           
+1274:                           const pyqs = await generateAIPYQs(formattedTopic, userData);
+1275:                           if (pyqs && pyqs.length > 0) {
+1276:                             setActiveTest({ title: `PYQs: ${formattedTopic}`, questions: pyqs, mode: "pyq" });
+1277:                           } else {
+1278:                             alert("AI failed to generate PYQs. Please try again.");
+1279:                           }
+1280:                         } catch (e) {
+1281:                           console.error("PYQ Error:", e);
+1282:                           alert("Failed to connect to AI server. Please try again.");
+1283:                         } finally {
+1284:                           setLoadingQuestions(false);
+1285:                         }
+1286:                       } else {
+1287:                         setSelectionModal(item);
+1288:                       }
+1289:                     }}
+1290:                   />
+1291:                 </motion.div>
+1292:               )}
+1293:             </AnimatePresence>
+1294:           )}
+1295: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

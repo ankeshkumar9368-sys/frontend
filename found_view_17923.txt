@@ -1,0 +1,45 @@
+Created At: 2026-06-19T18:48:32Z
+Completed At: 2026-06-19T18:48:33Z
+File Path: `file:///C:/Users/Admin/.gemini/antigravity/brain/166c9201-d61f-4f97-920c-36b495150ab2/scratch/update_page.js`
+Total Lines: 37
+Total Bytes: 2576
+Showing lines 1 to 37
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: const fs = require('fs');
+2: 
+3: const pagePath = 'C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx';
+4: let pageContent = fs.readFileSync(pagePath, 'utf-8');
+5: 
+6: // 1. Add DailyTasksTracker import
+7: if (!pageContent.includes('import DailyTasksTracker')) {
+8:   pageContent = pageContent.replace(
+9:     /import ProgressDashboard from "\.\.\/components\/ProgressDashboard";/,
+10:     `import ProgressDashboard from "../components/ProgressDashboard";\nimport DailyTasksTracker from "../components/DailyTasksTracker";`
+11:   );
+12: }
+13: 
+14: // 2. Remove SmartTimetable import
+15: pageContent = pageContent.replace(/import SmartTimetable from "\.\.\/components\/SmartTimetable";\n/, '');
+16: 
+17: // 3. Remove showTimetable state
+18: pageContent = pageContent.replace(/const \[showTimetable, setShowTimetable\] = useState\(false\);\n/, '');
+19: 
+20: // 4. Remove SmartTimetable reset in handleTabChange
+21: pageContent = pageContent.replace(/if \(showTimetable\) \{ e.preventDefault\(\); setShowTimetable\(false\); return; \}\n/, '');
+22: 
+23: // 5. Replace "AI Study Plan" button block with DailyTasksTracker
+24: pageContent = pageContent.replace(
+25:   /<button\s+onClick=\{\(\) => setShowTimetable\(true\)\}\s+className="relative group bg-indigo-50 dark:bg-indigo-900\/20 p-4 rounded-3xl border border-indigo-100 dark:border-indigo-900\/40 flex flex-col items-center gap-3 active:scale-95 transition-all overflow-hidden"\s+>\s+<div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-500\/5 to-purple-500\/5 group-hover:opacity-100 opacity-0 transition-opacity" \/>\s+<div className="w-14 h-14 bg-indigo-100 dark:bg-indigo-900\/50 rounded-[24px] flex items-center justify-center text-indigo-500 shadow-sm shadow-indigo-200\/50 dark:shadow-none icon-3d group-hover:scale-110 transition-transform">\s+<Calendar className="w-6 h-6" \/>\s+<\/div>\s+<div className="text-center">\s+<span className="font-black text-slate-700 dark:text-slate-200 block text-xs">AI Study Plan<\/span>\s+<span className="text-\[10px\] font-bold text-slate-400 mt-0\.5">Daily timetable<\/span>\s+<\/div>\s+<\/button>/,
+26:   `{/* Daily AI Goal replaced AI Study Plan */}\n<div className="col-span-2 sm:col-span-1">\n  <DailyTasksTracker />\n</div>`
+27: );
+28: 
+29: // 6. Remove <SmartTimetable /> rendering
+30: pageContent = pageContent.replace(
+31:   /<AnimatePresence>\s*\{showTimetable && \(\s*<SmartTimetable\s+userData=\{userData\}\s+weaknesses=\{getWeakAreas\(\)\.map\(\(w: any\) => w\.topic\)\}\s+onClose=\{\(\) => setShowTimetable\(false\)\}\s*\/>\s*\)\}\s*<\/AnimatePresence>/,
+32:   ''
+33: );
+34: 
+35: fs.writeFileSync(pagePath, pageContent, 'utf-8');
+36: console.log("Updated app/page.tsx");
+37: 
+The above content shows the entire, complete file contents of the requested file.

@@ -1,0 +1,30 @@
+Created At: 2026-06-19T07:12:21Z
+Completed At: 2026-06-19T07:12:22Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 524 to 545
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+524:         // Instant local storage cache check
+525:         if (typeof window !== "undefined") {
+526:           const cacheKey = `achivox_notes_full_${subName || 'gen'}_${chapName || 'none'}_${target || 'none'}_${userData?.id || 'guest'}`.replace(/[^a-zA-Z0-9_]/g, '_');
+527:           try {
+528:             const cached = localStorage.getItem(cacheKey);
+529:             if (cached) {
+530:               const parsed = JSON.parse(cached);
+531:               if (parsed && parsed.topics) {
+532:                 setShowAILoading(false);
+533:                 setActiveNotes({
+534:                   title: target,
+535:                   chapter: chapName,
+536:                   subjectContext: subName,
+537:                   classContext: clsName,
+538:                   mode: "full",
+539:                   data: parsed
+540:                 });
+541:                 return;
+542:               }
+543:             }
+544:           } catch (e) {
+545:             console.warn("Local cache check failed:", e);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

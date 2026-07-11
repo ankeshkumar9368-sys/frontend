@@ -1,0 +1,97 @@
+Created At: 2026-06-19T07:52:35Z
+Completed At: 2026-06-19T07:52:35Z
+File Path: `file:///C:/Users/Admin/.gemini/antigravity/brain/166c9201-d61f-4f97-920c-36b495150ab2/implementation_plan.md`
+Total Lines: 89
+Total Bytes: 4704
+Showing lines 1 to 89
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Premium UI Overhaul & AI Weakness Alert Removal
+2: 
+3: We will completely redesign all application pages (Home/Dashboard, Login, Profiles, Subscription, Subscription Success, and Parent Insights) with a unified, premium, ultra-modern glassmorphic theme. We will also introduce 3D isometric interactions for bottom navigation, redesign all small icons/indicators, and completely remove the AI Weakness Alert component.
+4: 
+5: ## User Review Required
+6: 
+7: > [!IMPORTANT]
+8: > The bottom menu and internal icon changes will introduce subtle 3D tilt effects (`rotateX`, `rotateY`, `translateZ`) on active/hover states to create a premium depth sensation. This relies on modern CSS perspective rendering. We will ensure it is highly performant and doesn't cause any lag on lower-end mobile devices.
+9: 
+10: ## Open Questions
+11: - None. All requirements are fully specified. We will proceed to make the UI look absolutely state-of-the-art.
+12: 
+13: ---
+14: 
+15: ## Proposed Changes
+16: 
+17: ### Global Styles
+18: 
+19: #### [MODIFY] [globals.css](file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/globals.css)
+20: - Add premium utilities for 3D navigation menu icons (`.menu-icon-3d`, `.menu-icon-3d.active`).
+21: - Add glass-glow effects for small icons (`.glass-icon-3d`).
+22: - Add sleek keyframe animations (e.g., sonar waves, floating particles, card shimmer, and 3D hover scale).
+23: - Standardize dark mode color tokens with deeper slate-blue backdrops (`#030712`) and neon violet/indigo accents.
+24: 
+25: ---
+26: 
+27: ### Navigation & Homepage
+28: 
+29: #### [MODIFY] [page.tsx](file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx)
+30: - **Remove AI Weakness Alert**: Remove import and usage of `RemedialAlert` completely.
+31: - **3D Bottom Menu**: Redesign navigation menu items to use a smaller size (`w-5 h-5` / `w-[20px] h-[20px]`) with customized `motion.div` wraps, 3D isometric tilt transforms, and vibrant glow drop-shadows on selection.
+32: - **Header & Small Icons**: Redesign streak, notification, profile, and gift icons with glossy glass capsule containers (`glass-card` with gradient borders and 3D hover actions).
+33: - **Mode Switcher**: Style Gov/School prep pills with micro-animations and glowing indicators.
+34: - **Section Overview**: Apply smooth page transitions and micro-interactions on all interactive lists, cards, and buttons.
+35: 
+36: ---
+37: 
+38: ### Authentication & Profiles
+39: 
+40: #### [MODIFY] [login/page.tsx](file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/login/page.tsx)
+41: - Redesign the Login page with a beautiful glassmorphic container card.
+42: - Add animated floating glowing circles in the background.
+43: - Refine form/button UI with premium hover effects, 3D presses, and gradient borders.
+44: 
+45: #### [MODIFY] [profiles/page.tsx](file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/profiles/page.tsx)
+46: - Redesign the profile selection screen.
+47: - Make avatar cards hover-elevated with neon 3D shadows and circular metallic outlines.
+48: - Polish layout spacing, buttons, and animations.
+49: 
+50: ---
+51: 
+52: ### Billing & Parent Reports
+53: 
+54: #### [MODIFY] [subscription/page.tsx](file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/subscription/page.tsx)
+55: - Redesign the subscription page.
+56: - Make pricing cards look like glowing panels with animated checkmarks, custom outlines, and a distinct glass-morphic sheen.
+57: - Redesign the family members selection options with premium radio card layouts.
+58: - Polish the sticky checkout footer with premium gradients and double glow borders.
+59: 
+60: #### [MODIFY] [subscription/success/page.tsx](file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/subscription/success/page.tsx)
+61: - Redesign the success page with a sonar ring animation around the emerald checkmark.
+62: - Clean up the success text and style the dashboard redirect button as a glowing 3D button.
+63: 
+64: #### [MODIFY] [parent/page.tsx](file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/parent/page.tsx)
+65: - Overhaul Parent Insight page design.
+66: - Wrap cards with clean borders, light glows, and subtle 3D elevations.
+67: - Render achievements/badges as floating glossy coins.
+68: 
+69: ---
+70: 
+71: ### Clean Up
+72: 
+73: #### [DELETE] [RemedialAlert.tsx](file:///c:/Users/Admin/S2Dent/ExamHero-Next/components/RemedialAlert.tsx)
+74: - Delete this file since the AI Weakness Alert component is no longer used anywhere.
+75: 
+76: ---
+77: 
+78: ## Verification Plan
+79: 
+80: ### Automated Tests
+81: - Run `npm run build` to verify there are no compilation or TypeScript errors.
+82: 
+83: ### Manual Verification
+84: - Check all routes: `/`, `/login`, `/profiles`, `/subscription`, `/subscription/success`, `/parent`.
+85: - Verify the AI Weakness Alert is completely gone from the dashboard.
+86: - Verify the bottom navigation menu icons are smaller, exhibit a smooth 3D tilt, scale, and glow upon click.
+87: - Verify all header and in-app small icons have glassmorphic glow-borders and hover animations.
+88: - Check dark mode toggle compatibility across all pages.
+89: 
+The above content shows the entire, complete file contents of the requested file.

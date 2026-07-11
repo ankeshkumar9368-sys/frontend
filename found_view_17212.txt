@@ -1,0 +1,44 @@
+Created At: 2026-06-18T19:59:30Z
+Completed At: 2026-06-18T19:59:30Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2419
+Total Bytes: 125204
+Showing lines 975 to 1010
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+975:               transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+976:             />
+977:             <button 
+978:               onClick={() => setMode("govt")}
+979:               className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "govt" ? "text-white" : "text-slate-500 dark:text-slate-400"}`}
+980:             >
+981:               <Building2 className="w-4 h-4" /> Gov Prep <Lock className="w-3 h-3 opacity-60" />
+982:             </button>
+983:             <button 
+984:               onClick={() => setMode("school")}
+985:               className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "school" ? "text-white" : "text-slate-500 dark:text-slate-400"}`}
+986:             >
+987:               <GraduationCap className="w-4 h-4" /> School Prep
+988:             </button>
+989:           </div>
+990:         </div>
+991:       )}
+992: 
+993:       <main className="flex-1 overflow-y-auto">
+994:         <div className="px-4 py-3 space-y-4 pb-28">
+995:           {activeTab === "Home" && (
+996:             <AnimatePresence mode="wait">
+997:               {mode === "govt" ? (
+998:                 <motion.div 
+999:                   key="govt-locked"
+1000:                   initial={{ opacity: 0, y: 20 }}
+1001:                   animate={{ opacity: 1, y: 0 }}
+1002:                   exit={{ opacity: 0, y: -20 }}
+1003:                   className="flex flex-col items-center justify-center py-20 text-center space-y-6"
+1004:                 >
+1005:                   <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl shadow-primary/10">
+1006:                     <Lock className="w-5 h-5 text-primary" />
+1007:                   </div>
+1008:                   <div className="space-y-2">
+1009:                     <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tighter uppercase italic">Gov Prep Vault</h2>
+1010:                     <p className="text-primary font-black text-xs uppercase tracking-[0.3em]">Launching Very Soon</p>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

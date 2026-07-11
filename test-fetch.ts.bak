@@ -1,0 +1,11 @@
+import { fetchContent } from "./lib/content";
+
+async function test() {
+  const parentId = "boards_cbse__classes_class_11__subjects_accountancy";
+  console.log("Testing fetchContent for parentId:", parentId);
+  const results = await fetchContent("school", parentId, "Chapters");
+  console.log("Results count:", results.length);
+  console.log("Results:", JSON.stringify(results, null, 2));
+}
+
+test();

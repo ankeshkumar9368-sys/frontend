@@ -1,0 +1,31 @@
+Created At: 2026-06-19T07:13:30Z
+Completed At: 2026-06-19T07:13:31Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 1878 to 1900
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1878:               <button 
+1879:                 onClick={() => setSelectionModal(null)} 
+1880:                 className="absolute top-4 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-primary transition-all"
+1881:               >
+1882:                 <X className="w-5 h-5" />
+1883:               </button>
+1884:               <h3 className="text-xl font-black mb-6 text-slate-800 dark:text-white">{selectionModal.name}</h3>
+1885:               <div className="grid grid-cols-1 gap-3">
+1886:                  <button 
+1887:                   onClick={() => { handleAICoreAction("notes", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1888:                   className="bg-indigo-600 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1889:                 >
+1890:                   Smart Notes
+1891:                 </button>
+1892:                 <button 
+1893:                   onClick={() => { handleAICoreAction("quiz", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1894:                   className="bg-slate-900 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1895:                 >
+1896:                   Live Test
+1897:                 </button>
+1898:               </div>
+1899:             </motion.div>
+1900:           </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

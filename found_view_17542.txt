@@ -1,0 +1,68 @@
+Created At: 2026-06-19T07:56:50Z
+Completed At: 2026-06-19T07:56:51Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 331 to 390
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+331:           if (saved) setUserData(JSON.parse(saved));
+332:         }
+333:       } else {
+334:         setIsAuth(false);
+335:         if (userUnsub) userUnsub();
+336:         if (statsUnsub) statsUnsub();
+337:       }
+338:     });
+339: 
+340:     // 📢 GLOBAL BROADCAST LISTENER
+341:     const bQuery = query(collection(db, "broadcasts"), orderBy("createdAt", "desc"), limit(3));
+342:     const unsubscribeB = onSnapshot(bQuery, (snapshot) => {
+343:       setBroadcasts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+344:     });
+345: 
+346:     // 📡 REMOTE CONFIG & FORCE UPDATE LISTENER
+347:     const configUnsub = onSnapshot(doc(db, "system_config", "app_settings"), (snapshot) => {
+348:       if (snapshot.exists()) {
+349:         const data = snapshot.data();
+350:         setSystemConfig(data);
+351:       }
+352:     });
+353: 
+354:     return () => {
+355:       unsubscribe();
+356:       if (userUnsub) userUnsub();
+357:       if (statsUnsub) statsUnsub();
+358:       unsubscribeB();
+359:       configUnsub();
+360:     }
+361:   }, []);
+362: 
+363:   // Automatically force Goal Selection popup if user is logged in but goal is not set!
+364:   useEffect(() => {
+365:     if (userData && (!userData.board || !userData.cls)) {
+366:       setShowGoalSelector(true);
+367:     }
+368:   }, [userData]);
+369: 
+370:   // 🛤️ GENERATE MASTERY SEQUENCE
+371:   useEffect(() => {
+372:     if (userData?.board && userData?.cls) {
+373:       const seq = getMasterySequence(userData.board, userData.cls);
+374:       setMasterySequence(seq);
+375:       setMasteryLevel(userData.masteryLevel || 0);
+376:     }
+377:   }, [userData?.board, userData?.cls, userData?.masteryLevel]);
+378: 
+379:   useEffect(() => {
+380:     if (userData && auth.currentUser) {
+381:       localStorage.setItem(`achivox_user_${auth.currentUser.uid}`, JSON.stringify(userData));
+382:     }
+383:   }, [userData]);
+384: 
+385:   useEffect(() => {
+386:     const handleHardwareBack = (e: any) => {
+387:       if (showWelcome) { e.preventDefault(); setShowWelcome(false); return; }
+388:       if (showGiftModal) { e.preventDefault(); setShowGiftModal(false); return; }
+389:       if (showSubscriptionModal) { e.preventDefault(); setShowSubscriptionModal(false); return; }
+390:       if (testResult) { e.preventDefault(); setTestResult(null); return; }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

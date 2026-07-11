@@ -1,0 +1,24 @@
+Created At: 2026-06-18T19:53:43Z
+Completed At: 2026-06-18T19:53:43Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2425
+Total Bytes: 125441
+Showing lines 1255 to 1270
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1255:                     </div>
+1256:                   </motion.button>
+1257: 
+1258:                   <RemedialAlert 
+1259:                     onStartRemedial={(topic) => setActiveNotes({ title: topic, chapter: topic, mode: "remedial" })} 
+1260:                   />
+1261: 
+1262: 
+1263: 
+1264:                   <ExploreEngine 
+1265:                     mode={mode} 
+1266:                     isSubscribed={isSubscribed}
+1267:                     userData={userData}
+1268:                     onUpgrade={() => setShowSubscriptionModal(true)}
+1269:                     onFinalSelect={async (item) => {
+1270:                       const isPYQ = item.name.toLowerCase().includes("pyq") || item.name.toLowerCase().includes("previous year");
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

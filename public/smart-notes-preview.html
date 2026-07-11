@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Smart Notes — Newton's Laws | ExamHero AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--p:#6366f1;--v:#8b5cf6;--g:#10b981;--r:#f43f5e;--b:#3b82f6;--a:#f59e0b;--bg:#0f0f1a;--card:#1a1a2e;--bdr:rgba(255,255,255,.08);--txt:#f1f5f9;--mut:#94a3b8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(99,102,241,.15) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(139,92,246,.12) 0%,transparent 60%);pointer-events:none;z-index:0}
+.wrap{max-width:780px;margin:0 auto;padding:20px 16px 90px;position:relative;z-index:1}
+.pbw{position:sticky;top:0;z-index:100;height:3px;background:rgba(255,255,255,.05)}
+.pb{height:100%;width:0;background:linear-gradient(90deg,var(--p),var(--v));transition:width .2s}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#4f46e5,#7c3aed,#9333ea);border-radius:24px;padding:28px 24px;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(79,70,229,.4);animation:fiu .5s ease}
+.hero::before{content:'F=ma';position:absolute;right:-5px;top:-5px;font-size:70px;opacity:.07;font-weight:900;line-height:1}
+.hbadge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:4px 12px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:12px}
+.hero h1{font-size:26px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px}
+.htags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.htag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:rgba(255,255,255,.9)}
+.htime{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,.85)}
+
+/* STATS */
+.srow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.spill{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:10px 14px;flex:1;min-width:110px}
+.sico{font-size:20px}
+.snum{font-size:18px;font-weight:900}
+.slbl{font-size:10px;color:var(--mut);font-weight:600}
+
+/* REGEN */
+.rbar{display:flex;align-items:center;justify-content:space-between;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:14px;padding:12px 16px;margin-bottom:16px}
+.rtxt{font-size:12px;color:#fbbf24;font-weight:700}
+.rbtn{background:var(--a);color:#000;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:900;cursor:pointer}
+
+/* INTRO */
+.ibox{background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(139,92,246,.08));border:1px solid rgba(99,102,241,.25);border-radius:16px;padding:16px;margin-bottom:14px}
+.ilbl{font-size:9px;font-weight:900;color:var(--p);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.ien{font-size:13px;font-weight:500;color:#cbd5e1;line-height:1.7;margin-bottom:10px}
+.ihi{font-size:12px;font-weight:600;color:#818cf8;line-height:1.7;font-style:italic;border-left:3px solid var(--p);padding-left:12px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:20px;margin-bottom:14px;overflow:hidden;transition:transform .2s,box-shadow .2s;animation:fiu .4s ease both}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.1s}.card:nth-child(3){animation-delay:.15s}.card:nth-child(4){animation-delay:.2s}.card:nth-child(5){animation-delay:.25s}.card:nth-child(6){animation-delay:.3s}.card:nth-child(7){animation-delay:.35s}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;user-select:none}
+.chl{display:flex;align-items:center;gap:12px}
+.cico{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ctit{font-size:14px;font-weight:800}
+.cbdg{font-size:9px;font-weight:900;padding:2px 8px;border-radius:100px;letter-spacing:.8px;text-transform:uppercase}
+.chv{font-size:14px;color:var(--mut);transition:transform .3s;display:inline-block}
+.chv.o{transform:rotate(180deg)}
+.cb{padding:0 18px 18px}
+.cb.h{display:none}
+.cdiv{height:1px;background:var(--bdr);margin-bottom:14px}
+
+/* TOPICS */
+.tc{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;margin-bottom:10px;transition:border-color .2s}
+.tc:hover{border-color:rgba(99,102,241,.4)}
+.thd{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--bdr)}
+.tnum{font-size:11px;font-weight:900;color:var(--g);min-width:22px}
+.ten{font-size:13px;font-weight:800}
+.thi{font-size:11px;font-weight:700;color:#818cf8;opacity:.8}
+.tbody{padding:12px 14px}
+.tcon{font-size:12px;line-height:1.7;color:#cbd5e1;margin-bottom:8px}
+.tconh{font-size:11px;line-height:1.6;color:#818cf8;opacity:.75;font-style:italic;border-left:2px solid rgba(99,102,241,.4);padding-left:10px;margin-bottom:10px}
+.fpill{display:inline-flex;align-items:center;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));border:1px solid rgba(99,102,241,.3);border-radius:12px;padding:8px 16px;font-size:15px;font-weight:900;color:#a5b4fc;margin:6px 0 10px;font-family:'Courier New',monospace}
+.sp{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:#94a3b8;line-height:1.5;margin-bottom:5px}
+.sp .d{color:var(--g);font-size:14px;flex-shrink:0}
+.dbox{background:rgba(255,255,255,.04);border-radius:10px;padding:8px 12px;font-size:11px;font-style:italic;color:var(--mut);margin-top:8px}
+.etip{display:flex;align-items:center;gap:6px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:7px 12px;font-size:10px;font-weight:800;color:#fbbf24;text-transform:uppercase;margin-top:8px}
+
+/* FORMULAS */
+.frow{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.fnm{font-size:9px;font-weight:900;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.feq{font-size:22px;font-weight:900;color:#a5b4fc;font-family:'Courier New',monospace;margin-bottom:6px}
+.fus{font-size:11px;color:var(--mut);font-style:italic}
+
+/* TRICKS */
+.trick{display:flex;align-items:flex-start;gap:12px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:14px;padding:14px;margin-bottom:10px}
+.temo{font-size:22px;flex-shrink:0}
+.ttxt{font-size:13px;font-weight:700;color:#c4b5fd;line-height:1.5}
+.thi2{font-size:11px;color:#a78bfa;margin-top:4px;font-style:italic}
+
+/* MCQ */
+.mcard{background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.mqq{font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.5}
+.mqq span{color:var(--b);font-weight:900;margin-right:4px}
+.mopts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mopt{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;color:var(--mut);cursor:pointer;transition:all .2s}
+.mopt:hover{border-color:var(--p);color:var(--txt);background:rgba(99,102,241,.1)}
+.mopt.ok{border-color:var(--g);color:#6ee7b7;background:rgba(16,185,129,.1)}
+.mopt.no{border-color:var(--r);color:#fda4af;background:rgba(244,63,94,.1)}
+.mex{margin-top:10px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:8px 12px;font-size:11px;color:#6ee7b7;display:none}
+.mex.s{display:block}
+
+/* SQ */
+.sqc{background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-radius:16px;padding:16px;margin-bottom:10px}
+.sqlbl{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--a);margin-bottom:8px}
+.sqq{font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.5}
+.sqtog{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:#818cf8;cursor:pointer;transition:all .2s}
+.sqtog:hover{background:rgba(99,102,241,.25)}
+.sqa{margin-top:12px;background:rgba(255,255,255,.03);border-radius:12px;padding:12px;font-size:12px;color:#cbd5e1;line-height:1.7;display:none}
+.sqa.s{display:block}
+.sqtip{margin-top:10px;background:rgba(245,158,11,.08);border-radius:8px;padding:8px 10px;font-size:11px;color:#fbbf24;font-weight:700}
+
+/* REVISION */
+.revi{display:flex;align-items:flex-start;gap:10px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.rzap{color:#818cf8;font-size:16px;flex-shrink:0}
+.rtx{font-size:12px;font-weight:700;color:#c7d2fe;line-height:1.4}
+.rhi{font-size:10px;color:#818cf8;opacity:.7;margin-top:2px}
+
+/* SUMMARY */
+.sumi{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr);align-items:flex-start}
+.sumi:last-child{border-bottom:none}
+.sumd{width:8px;height:8px;border-radius:50%;background:var(--g);flex-shrink:0;margin-top:5px}
+.sumt{font-size:13px;color:#cbd5e1;line-height:1.6}
+
+/* ACTION BAR */
+.abar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,26,.95);backdrop-filter:blur(20px);border-top:1px solid var(--bdr);padding:12px 20px;display:flex;gap:10px;justify-content:center;z-index:100}
+.btn{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:14px;font-size:13px;font-weight:800;border:none;cursor:pointer;transition:all .2s}
+.btnp{background:linear-gradient(135deg,var(--p),var(--v));color:#fff;box-shadow:0 4px 20px rgba(99,102,241,.4)}
+.btnp:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.5)}
+.btns{background:rgba(255,255,255,.07);color:var(--txt);border:1px solid var(--bdr)}
+.btns:hover{background:rgba(255,255,255,.12)}
+
+@keyframes fiu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){.hero h1{font-size:20px}.mopts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="pbw"><div class="pb" id="pb"></div></div>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="htime">Generated in 22.2s</div>
+  <div class="hbadge">✨ AI Smart Notes</div>
+  <h1>Newton's Laws<br>of Motion</h1>
+  <div class="htags">
+    <span class="htag">📚 CBSE</span>
+    <span class="htag">🎓 Class 10th</span>
+    <span class="htag">⚛️ Physics</span>
+    <span class="htag">🇮🇳 Bilingual</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="srow">
+  <div class="spill"><div class="sico">📖</div><div><div class="snum">5</div><div class="slbl">Key Topics</div></div></div>
+  <div class="spill"><div class="sico">🧮</div><div><div class="snum">4</div><div class="slbl">Formulas</div></div></div>
+  <div class="spill"><div class="sico">❓</div><div><div class="snum">5</div><div class="slbl">MCQs</div></div></div>
+  <div class="spill"><div class="sico">🧠</div><div><div class="snum">3</div><div class="slbl">Tricks</div></div></div>
+</div>
+
+<!-- REGEN BAR -->
+<div class="rbar">
+  <div>
+    <div class="rtxt">✨ New Generation Available!</div>
+    <div style="font-size:10px;color:#94a3b8;margin-top:2px">Generated: July 6, 2026</div>
+  </div>
+  <button class="rbtn" onclick="alert('Generating new notes from server...')">Generate New</button>
+</div>
+
+<!-- INTRO -->
+<div class="ibox">
+  <div class="ilbl">📖 Overview</div>
+  <p class="ien">Newton's Laws of Motion are fundamental principles that describe the relationship between a body and the forces acting upon it. These laws form the basis of classical mechanics and are crucial for understanding how objects move in our everyday world.</p>
+  <p class="ihi">न्यूटन के गति के नियम वे मूलभूत सिद्धांत हैं जो किसी वस्तु और बलों के बीच संबंध का वर्णन करते हैं। ये नियम शास्त्रीय यांत्रिकी का आधार बनाते हैं।</p>
+</div>
+
+<!-- KEY CONCEPTS -->
+<div class="card">
+  <div class="ch" onclick="tog(this)">
+    <div class="chl">
+      <div class="cico" style="background:rgba(16,185,129,.15)">⚡</div>
+      <div class="ctit">Key Concepts</div>
+      <span class="cbdg" style="background:rgba(16,185,129,.15);color:#6ee7b7">5 Topics</span>
+    </div>
+    <span class="chv o">▾</span>
+  </div>
+  <div class="cb">
+    <div class="cdiv"></div>
+
+    <div class="tc">
+      <div class="thd"><span class="tnum">01</span><div><div class="ten">Inertia</div><div class="thi">जड़त्व</div></div></div>
+      <div class="tbody">
+        <p class="tcon">Inertia is the inherent property of an object by which it resists any change in its state of rest or uniform motion in a straight line. Heavier objects have greater inertia.</p>
+        <p class="tconh">जड़त्व वह गुण है जिसके कारण वस्तु अपनी विरामावस्था या एकसमान गति में परिवर्तन का विरोध करती है। भारी वस्तुओं में जड़त्व अधिक होता है।</p>
+        <div class="sp"><span class="d">✓</span>Greater mass = Greater inertia</div>
+        <div class="sp"><span class="d">✓</span>Inertia has no units — it is a property, not a quantity</div>
+        <div class="sp"><span class="d">✓</span>Example: Passengers jerk forward when bus brakes suddenly</div>
+        <div class="dbox">📖 The tendency of a body to resist changes in its state of motion or rest is called Inertia.</div>
+        <div class="etip">🎯 Exam Tip: Mass is the measure of inertia. Heavier object = More inertia.</div>
+      </div>
+    </div>
+
+    <div class="tc">
+      <div class="thd"><span class="tnum">02</span><div><div class="ten">Momentum</div><div class="thi">संवेग</div></div></div>
+      <div class="tbody">
+        <p class="tcon">Momentum is the product of mass and velocity of a body. It is a vector quantity with direction same as velocity.</p>
+        <p class="tconh">संवेग किसी वस्तु के द्रव्यमान और वेग का गुणनफल है। यह एक सदिश राशि है।</p>
+        <div class="fpill">p = m × v</div>
+        <div class="sp"><span class="d">✓</span>SI Unit: kg·m/s</div>
+        <div class="sp"><span class="d">✓</span>Vector quantity — direction same as velocity</div>
+        <div class="etip">🎯 Exam Tip: A bullet has high momentum despite small mass due to very high velocity!</div>
+      </div>
+    </div>
+
+    <div class="tc">
+      <div class="thd"><span class="tnum">03</span><div><div class="ten">Newton's First Law</div><div class="thi">न्यूटन का पहला नियम</div></div></div>
+      <div class="tbody">
+        <p class="tcon">An object at rest remains at rest, and an object in motion remains in uniform motion in a straight line, unless acted upon by an unbalanced external force. Also called the Law of Inertia.</p>
+        <p class="tconh">कोई वस्तु तब तक अपनी विरामावस्था या एकसमान गति में रहती है जब तक उस पर असंतुलित बाह्य बल न लगाया जाए।</p>
+        <div class="sp"><span class="d">✓</span>Also called: Law of Inertia</div>
+        <div class="sp"><span class="d">✓</span>Applies when Net Force = 0</div>
+        <div class="sp"><span class="d">✓</span>Example: Ball rolling on frictionless surface never stops</div>
+        <div class="etip">🎯 Exam Tip: First Law DEFINES force — it tells us what a force does (changes state of motion).</div>
+      </div>
+    </div>
+
+    <div class="tc">
+      <div class="thd"><span class="tnum">04</span><div><div class="ten">Newton's Second Law</div><div class="thi">न्यूटन का दूसरा नियम</div></div></div>
+      <div class="tbody">
+        <p class="tcon">The rate of change of momentum is directly proportional to the applied unbalanced force and acts in the direction of that force. Mathematically: F = ma</p>
+        <p class="tconh">किसी वस्तु के संवेग में परिवर्तन की दर उस पर लगे असंतुलित बल के समानुपाती होती है।</p>
+        <div class="fpill">F = m × a</div>
+        <div class="sp"><span class="d">✓</span>F = Force (N), m = mass (kg), a = acceleration (m/s²)</div>
+        <div class="sp"><span class="d">✓</span>SI Unit of Force: Newton (N) = kg·m/s²</div>
+        <div class="sp"><span class="d">✓</span>1 Newton = Force giving 1 kg an acceleration of 1 m/s²</div>
+        <div class="dbox">📖 F = Δp/Δt = ma | 1 N = 1 kg × 1 m/s²</div>
+        <div class="etip">🎯 Exam Tip: F = ma is the MOST IMPORTANT formula of this chapter!</div>
+      </div>
+    </div>
+
+    <div class="tc">
+      <div class="thd"><span class="tnum">05</span><div><div class="ten">Newton's Third Law</div><div class="thi">न्यूटन का तीसरा नियम</div></div></div>
+      <div class="tbody">
+        <p class="tcon">To every action there is always an equal and opposite reaction. Forces always occur in pairs — action and reaction are equal in magnitude, opposite in direction, acting on DIFFERENT bodies.</p>
+        <p class="tconh">प्रत्येक क्रिया के लिए सदैव एक समान और विपरीत प्रतिक्रिया होती है। बल सदैव जोड़े में आते हैं।</p>
+        <div class="sp"><span class="d">✓</span>Action and Reaction act on DIFFERENT objects</div>
+        <div class="sp"><span class="d">✓</span>Equal in magnitude, opposite in direction</div>
+        <div class="sp"><span class="d">✓</span>Example: Rocket — gases push down, rocket goes up</div>
+        <div class="sp"><span class="d">✓</span>Example: Swimming — push water back, water pushes you forward</div>
+        <div class="etip">🎯 Exam Tip: Action-Reaction CANNOT cancel — they act on DIFFERENT objects!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORMULA SHEET -->
+<div class="card">
+  <div class="ch" onclick="tog(this)">
+    <div class="chl">
+      <div class="cico" style="background:rgba(59,130,246,.15)">🧮</div>
+      <div class="ctit">Formula Sheet</div>
+      <span class="cbdg" style="background:rgba(59,130,246,.15);color:#93c5fd">Maths</span>
+    </div>
+    <span class="chv o">▾</span>
+  </div>
+  <div class="cb">
+    <div class="cdiv"></div>
+    <div class="frow"><div class="fnm">Momentum</div><div class="feq">p = m × v</div><div class="fus">Use when: calculating quantity of motion; impulse-momentum problems</div></div>
+    <div class="frow"><div class="fnm">Newton's Second Law</div><div class="feq">F = m × a</div><div class="fus">Use when: finding force, mass, or acceleration in motion problems</div></div>
+    <div class="frow"><div class="fnm">Rate of Change of Momentum</div><div class="feq">F = Δp / Δt</div><div class="fus">Use when: force is applied over a time interval (impulse problems)</div></div>
+    <div class="frow"><div class="fnm">Conservation of Momentum</div><div class="feq">m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂</div><div class="fus">Use when: two objects collide with no external force</div></div>
+  </div>
+</div>
+
+<!-- MEMORY TRICKS -->
+<div class="card">
+  <div class="ch" onclick="tog(this)">
+    <div class="chl">
+      <div class="cico" style="background:rgba(139,92,246,.15)">🧠</div>
+      <div class="ctit">Memory Tricks</div>
+      <span class="cbdg" style="background:rgba(139,92,246,.15);color:#c4b5fd">3 Tricks</span>
+    </div>
+    <span class="chv o">▾</span>
+  </div>
+  <div class="cb">
+    <div class="cdiv"></div>
+    <div class="trick">
+      <div class="temo">🧊</div>
+      <div>
+        <div class="ttxt">1st Law — "LAZY Law": Objects are LAZY. At rest? Stay at rest. Moving? Keep moving. Only a FORCE can disturb a lazy object!</div>
+        <div class="thi2">पहला नियम — "आलसी नियम": वस्तुएं आलसी हैं। बिना बल के नहीं बदलतीं!</div>
+      </div>
+    </div>
+    <div class="trick">
+      <div class="temo">🚀</div>
+      <div>
+        <div class="ttxt">2nd Law — "Force Makes Acceleration" (F=ma). More force = more acceleration. More mass = less acceleration for same force.</div>
+        <div class="thi2">दूसरा नियम — "बल त्वरण बनाता है": F=ma। अधिक द्रव्यमान = कम त्वरण।</div>
+      </div>
+    </div>
+    <div class="trick">
+      <div class="temo">🥊</div>
+      <div>
+        <div class="ttxt">3rd Law — "Punch Back Law": Every punch (action) gets a punch back (reaction) of EQUAL force! Gun recoil = rocket propulsion = swimming!</div>
+        <div class="thi2">तीसरा नियम — "मुक्का वापसी": हर क्रिया की समान प्रतिक्रिया होती है!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MCQs -->
+<div class="card">
+  <div class="ch" onclick="tog(this)">
+    <div class="chl">
+      <div class="cico" style="background:rgba(244,63,94,.15)">❓</div>
+      <div class="ctit">Practice MCQs</div>
+      <span class="cbdg" style="background:rgba(244,63,94,.15);color:#fda4af">5 Questions</span>
+    </div>
+    <span class="chv o">▾</span>
+  </div>
+  <div class="cb">
+    <div class="cdiv"></div>
+
+    <div class="mcard" data-c="0">
+      <div class="mqq"><span>Q1.</span>Which of Newton's Laws is also known as the Law of Inertia?</div>
+      <div class="mopts">
+        <div class="mopt" onclick="ca(this,0)">A. First Law</div>
+        <div class="mopt" onclick="ca(this,1)">B. Second Law</div>
+        <div class="mopt" onclick="ca(this,2)">C. Third Law</div>
+        <div class="mopt" onclick="ca(this,3)">D. Law of Conservation</div>
+      </div>
+      <div class="mex">✅ Correct! Newton's First Law is called the Law of Inertia — objects resist changes in their state of motion.</div>
+    </div>
+
+    <div class="mcard" data-c="2">
+      <div class="mqq"><span>Q2.</span>The SI unit of momentum is:</div>
+      <div class="mopts">
+        <div class="mopt" onclick="ca(this,0)">A. Newton (N)</div>
+        <div class="mopt" onclick="ca(this,1)">B. Joule (J)</div>
+        <div class="mopt" onclick="ca(this,2)">C. kg·m/s</div>
+        <div class="mopt" onclick="ca(this,3)">D. m/s²</div>
+      </div>
+      <div class="mex">✅ Correct! p = mv → kg × m/s = kg·m/s</div>
+    </div>
+
+    <div class="mcard" data-c="1">
+      <div class="mqq"><span>Q3.</span>A force of 20 N acts on a 4 kg object. What is the acceleration produced?</div>
+      <div class="mopts">
+        <div class="mopt" onclick="ca(this,0)">A. 2 m/s²</div>
+        <div class="mopt" onclick="ca(this,1)">B. 5 m/s²</div>
+        <div class="mopt" onclick="ca(this,2)">C. 80 m/s²</div>
+        <div class="mopt" onclick="ca(this,3)">D. 0.2 m/s²</div>
+      </div>
+      <div class="mex">✅ Correct! F = ma → a = F/m = 20/4 = 5 m/s²</div>
+    </div>
+
+    <div class="mcard" data-c="1">
+      <div class="mqq"><span>Q4.</span>Which statement is TRUE about action and reaction forces?</div>
+      <div class="mopts">
+        <div class="mopt" onclick="ca(this,0)">A. Act on same object</div>
+        <div class="mopt" onclick="ca(this,1)">B. Act on different objects</div>
+        <div class="mopt" onclick="ca(this,2)">C. They cancel each other</div>
+        <div class="mopt" onclick="ca(this,3)">D. Action is greater than reaction</div>
+      </div>
+      <div class="mex">✅ Correct! Action-Reaction act on DIFFERENT objects — so they cannot cancel each other.</div>
+    </div>
+
+    <div class="mcard" data-c="3">
+      <div class="mqq"><span>Q5.</span>Which of the following has the MOST inertia?</div>
+      <div class="mopts">
+        <div class="mopt" onclick="ca(this,0)">A. Tennis ball</div>
+        <div class="mopt" onclick="ca(this,1)">B. Cricket ball</div>
+        <div class="mopt" onclick="ca(this,2)">C. Rubber ball</div>
+        <div class="mopt" onclick="ca(this,3)">D. A stone</div>
+      </div>
+      <div class="mex">✅ Correct! Inertia depends on mass. A stone has the most mass — hence greatest inertia.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBJECTIVE -->
+<div class="card">
+  <div class="ch" onclick="tog(this)">
+    <div class="chl">
+      <div class="cico" style="background:rgba(245,158,11,.15)">✍️</div>
+      <div class="ctit">Subjective Questions</div>
+      <span class="cbdg" style="background:rgba(245,158,11,.15);color:#fcd34d">Board Level</span>
+    </div>
+    <span class="chv o">▾</span>
+  </div>
+  <div class="cb">
+    <div class="cdiv"></div>
+
+    <div class="sqc">
+      <div class="sqlbl">⭐ 5 Marks</div>
+      <div class="sqq">State Newton's Second Law. Derive F = ma. Give one real-life example.</div>
+      <button class="sqtog" onclick="ta(this)">👁️ Show Answer</button>
+      <div class="sqa">
+        <strong>Newton's Second Law:</strong> Rate of change of momentum is proportional to the applied unbalanced force and acts in its direction.<br><br>
+        <strong>Derivation:</strong><br>
+        Initial momentum = mu | Final = mv<br>
+        Change = m(v-u) | Rate = m(v-u)/t = ma<br>
+        So: F proportional to ma → F = ma (k=1 in SI units)<br><br>
+        <strong>Example:</strong> A cricket ball hit harder accelerates more — proving F = ma.
+        <div class="sqtip">💡 Easy Way: Delta-p / Delta-t = F. Change in momentum per second equals Force!</div>
+      </div>
+    </div>
+
+    <div class="sqc">
+      <div class="sqlbl">⭐ 3 Marks</div>
+      <div class="sqq">Why does a gun recoil backward when a bullet is fired? Explain with Newton's Third Law.</div>
+      <button class="sqtog" onclick="ta(this)">👁️ Show Answer</button>
+      <div class="sqa">
+        Gun exerts forward force on bullet (Action). By Newton's 3rd Law, bullet exerts equal backward force on gun (Reaction) → Gun RECOILS.<br><br>
+        Also: Before firing, total momentum = 0. After firing, bullet (+p) + gun (-p) = 0. Momentum is conserved!
+        <div class="sqtip">💡 Easy Way: Gun recoil = Action-Reaction + Conservation of Momentum (both apply here)!</div>
+      </div>
+    </div>
+
+    <div class="sqc">
+      <div class="sqlbl">⭐ 3 Marks Numerical</div>
+      <div class="sqq">A 1500 kg car accelerates from rest to 20 m/s in 10 s. Find the net force acting on it.</div>
+      <button class="sqtog" onclick="ta(this)">👁️ Show Answer</button>
+      <div class="sqa">
+        Given: m = 1500 kg, u = 0 m/s, v = 20 m/s, t = 10 s<br><br>
+        Step 1: Find acceleration → a = (v-u)/t = (20-0)/10 = <strong>2 m/s²</strong><br>
+        Step 2: Apply F = ma → F = 1500 × 2 = <strong>3000 N</strong><br><br>
+        Therefore, Net Force = 3000 N (in direction of motion)
+        <div class="sqtip">💡 Easy Way: ALWAYS find 'a' first using kinematics, THEN use F = ma!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK REVISION -->
+<div class="card">
+  <div class="ch" onclick="tog(this)">
+    <div class="chl">
+      <div class="cico" style="background:rgba(99,102,241,.15)">⚡</div>
+      <div class="ctit">Last-Minute Revision</div>
+      <span class="cbdg" style="background:rgba(99,102,241,.15);color:#a5b4fc">Fast</span>
+    </div>
+    <span class="chv o">▾</span>
+  </div>
+  <div class="cb">
+    <div class="cdiv"></div>
+    <div class="revi"><div class="rzap">⚡</div><div><div class="rtx">1st Law = Law of Inertia. No net force → no change in motion.</div><div class="rhi">पहला नियम = जड़त्व का नियम। बिना बल के कोई बदलाव नहीं।</div></div></div>
+    <div class="revi"><div class="rzap">⚡</div><div><div class="rtx">2nd Law: F = ma. SI unit of Force = Newton (N) = kg·m/s²</div><div class="rhi">दूसरा नियम: F = ma। बल का SI मात्रक = न्यूटन।</div></div></div>
+    <div class="revi"><div class="rzap">⚡</div><div><div class="rtx">3rd Law: Action = -Reaction. Acts on DIFFERENT bodies. Cannot cancel.</div><div class="rhi">तीसरा नियम: क्रिया = -प्रतिक्रिया। अलग-अलग वस्तुओं पर।</div></div></div>
+    <div class="revi"><div class="rzap">⚡</div><div><div class="rtx">Momentum: p = mv. Unit = kg·m/s. Vector quantity (has direction).</div><div class="rhi">संवेग: p = mv। मात्रक = kg·m/s। यह सदिश राशि है।</div></div></div>
+    <div class="revi"><div class="rzap">⚡</div><div><div class="rtx">Conservation: m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂ (no external force)</div><div class="rhi">संवेग संरक्षण: बाहरी बल न हो तो कुल संवेग नहीं बदलता।</div></div></div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="card">
+  <div class="ch" onclick="tog(this)">
+    <div class="chl">
+      <div class="cico" style="background:rgba(16,185,129,.15)">📋</div>
+      <div class="ctit">Key Takeaways</div>
+      <span class="cbdg" style="background:rgba(16,185,129,.15);color:#6ee7b7">Summary</span>
+    </div>
+    <span class="chv o">▾</span>
+  </div>
+  <div class="cb">
+    <div class="cdiv"></div>
+    <div class="sumi"><div class="sumd"></div><p class="sumt">Newton's Three Laws form the complete foundation of classical mechanics — describing inertia, force-acceleration relationship, and action-reaction pairs.</p></div>
+    <div class="sumi"><div class="sumd"></div><p class="sumt"><strong style="color:#a5b4fc">F = ma</strong> is the most important equation of this chapter. Every numerical problem uses it directly or indirectly.</p></div>
+    <div class="sumi"><div class="sumd"></div><p class="sumt">Momentum (p = mv) connects all three laws. Rate of change of momentum = Force. Total momentum is conserved when no external force acts.</p></div>
+    <div class="sumi"><div class="sumd"></div><p class="sumt">Real-life examples: Seatbelts (1st Law), Rocket engines (3rd Law), Car braking (2nd Law), Swimming (3rd Law).</p></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<div class="abar">
+  <button class="btn btns" onclick="window.print()">⬇️ Download PDF</button>
+  <button class="btn btnp" onclick="alert('Starting Practice Test on Newton Laws...')">🎯 Take Test</button>
+</div>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const p=Math.min((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100,100);
+  document.getElementById('pb').style.width=p+'%';
+});
+function tog(h){
+  const b=h.nextElementSibling,v=h.querySelector('.chv');
+  b.classList.toggle('h');v.classList.toggle('o');
+}
+function ca(el,idx){
+  const c=el.closest('.mcard');
+  if(c.querySelector('.ok'))return;
+  const cor=parseInt(c.dataset.c);
+  c.querySelectorAll('.mopt').forEach((o,i)=>{
+    if(i===cor)o.classList.add('ok');
+    else if(i===idx)o.classList.add('no');
+  });
+  const ex=c.querySelector('.mex');
+  if(ex)ex.classList.add('s');
+}
+function ta(btn){
+  const a=btn.nextElementSibling;
+  a.classList.toggle('s');
+  btn.textContent=a.classList.contains('s')?'🙈 Hide Answer':'👁️ Show Answer';
+}
+</script>
+</body>
+</html>

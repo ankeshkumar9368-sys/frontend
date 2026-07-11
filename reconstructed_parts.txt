@@ -1,0 +1,152 @@
+=== FOUND handleAICoreAction AT LINE 193 ===
+    const handleAICoreAction = async (type, target, parentId, isMastery = false, overrideSubject)=>{
+        setAILoadingType(type === "quiz" ? "test" : type);
+        setShowAILoading(true);
+        const taskId = Math.random().toString(36);
+        activeAICoreTaskRef.current = taskId;
+        try {
+            if (type === "notes") {
+                const classRaw = parentId?.match(/classes_class_(\d+)/)?.[1];
+                const clsName = classRaw ? `Class ${classRaw}` : userData?.cls || "Class 12";
+                const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
+                const subName = overrideSubject || (subRaw ? subRaw.split("_").map((w)=>w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "General");
+                const chapRaw = parentId?.match(/chapters_([a-z0-9_]+?)(?:__|$)/)?.[1];
+                const chapName = chapRaw ? chapRaw.split("_").map((w)=>w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : target;
+                // Instant local storage cache check
+                if ("undefined" !== "undefined") {
+                    const cacheKey = `achivox_notes_full_${subName || "gen"}_${chapName || "none"}_${target || "none"}_${userData?.id || "guest"}`.replace(/[^a-zA-Z0-9_]/g, "_");
+                    try {
+                        const cached = localStorage.getItem(cacheKey);
+                        if (cached) {
+                            const parsed = JSON.parse(cached);
+                            if (parsed && parsed.topics) {
+                                setShowAILoading(false);
+                                setActiveNotes({
+                                    title: target,
+                                    chapter: chapName,
+                                    subjectContext: subName,
+                                    classContext: clsName,
+                                    mode: "full",
+                                    data: parsed
+                                });
+                                return;
+                            }
+                        }
+                    } catch (e) {
+                        console.warn("Local cache check failed:", e);
+                    }
+                }
+                if (!userData?.isSubscribed) {
+                    const { allowed } = await checkAndIncrementUsage(userData?.id, "Smart Notes", 1, target);
+                    if (!allowed) {
+                        setShowAILoading(false);
+                        setShowSubscriptionModal(true);
+                        return;
+                    }
+                }
+                const notes = await fetchChapterNotes(target, userData, "dual", subName, chapName);
+                if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
+                if (notes) {
+                    setActiveNotes({
+                        title: target,
+                        chapter: chapName,
+                        subjectContext: subName,
+                        classContext: clsName,
+                        data: notes // Pass fetched data
+                    });
+                    trackTopicOpen({
+                        topicId: target.toLowerCase().replace(/\s+/g, "-"),
+                        topicName: target,
+                        subject: subName,
+                        chapter: chapName,
+                        cls: clsName,
+                        board: userData?.board || "CBSE"
+                    });
+                }
+            } else if (type === "test" || type === "quiz") {
+                // Dashboard Analysis for Test
+                const weakAreas = getWeakAreas();
+                let finalTarget = target;
+                let subjectContext = "";
+                if (target === "Daily Challenge" || !target) {
+                    if (weakAreas.length > 0) {
+                        finalTarget = weakAreas[0].topic;
+                        subjectContext = weakAreas[0].subject;
+                    } else {
+                        finalTarget = "General Science & Logic"; // Default fallback
+                    }
+                } else if (parentId) {
+                    // Check if parentId is actually a subject name (from MasteryRoadmap)
+                    if (!parentId.includes("_")) {
+                        subjectContext = parentId;
+                    } else {
+                        const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
+                        subjectContext = subRaw ? subRaw.split("_").map((w)=>w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "General";
+                    }
+                }
+                const questions = await fetchQuestions("full", finalTarget, userData, subjectContext);
+                if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
+                if (questions && questions.length > 0) {
+                    setActiveTest({
+                        title: finalTarget,
+                        subTitle: subjectContext ? `Context: ${subjectContext}` : "Practice Test",
+                        questions,
+                        isMastery,
+                        subject: subjectContext || "General",
+                        mode: mode
+                    });
+                } else {
+                    alert("AI core was unable to generate questions for this specific topic. Please try a different topic or board.");
+                }
+            }
+        } catch (err) {
+            console.error("AI Action Error:", err);
+            alert("AI Neural Core connection timeout. Please check your network.");
+        } finally{
+            setShowAILoading(false);
+        }
+    };
+    const handleTestComplete = async (score, total, results)=>{
+        setTestResult({
+            score,
+            total,
+            results,
+            title: activeTest.title
+        });
+        // 1. Record in Local Analytics
+        recordTestResult({
+            topicId: activeTest.title.toLowerCase().replace(/\s+/g, "-"),
+            topicName: activeTest.title,
+            subject: activeTest.subject || "General",
+            cls: userData?.cls || "12th",
+            score: Math.round(score / total * 100),
+            totalQ: total,
+            correctQ: score,
+            timeTakenSec: 0 // Mock for now
+        });
+        if (activeTest?.isSchoolTest) {
+            setActiveTest(null);
+            return;
+        }
+        setTestResult({
+            score,
+            total,
+            percentage: Math.round(score / total * 100),
+            results
+        });
+        // 2. Update Firestore
+        if (auth.currentUser) {
+            const userRef = doc(db, "users", auth.currentUser.uid);
+            // Right answers yield +5 XP, wrong answers deduct -2 XP
+            const pointsEarned = score * 5 - (total - score) * 2;
+            const updatePayload = {
+                totalSolved: increment(total),
+                correctAnswers: increment(score),
+                testsCompleted: increment(1),
+                attempts: arrayUnion({
+                    title: activeTest.title,
+                    score: Math.round(score / total * 100),
+                    date: new Date().toISOString()
+                }),
+                overallAccuracy: calculateWeightedAccuracy(userData?.overallAccuracy || 70, score, total)
+===============================================

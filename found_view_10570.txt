@@ -1,0 +1,69 @@
+Created At: 2026-06-12T18:06:53Z
+Completed At: 2026-06-12T18:06:54Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2174
+Total Bytes: 110148
+Showing lines 1700 to 1760
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1700:                 onClick={() => setSelectionModal(null)} 
+1701:                 className="absolute top-6 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-primary transition-all"
+1702:               >
+1703:                 <X className="w-5 h-5" />
+1704:               </button>
+1705:               <h3 className="text-xl font-black mb-6 text-slate-800 dark:text-white">{selectionModal.name}</h3>
+1706:               <div className="grid grid-cols-1 gap-3">
+1707:                  <button 
+1708:                   onClick={() => { handleAICoreAction("notes", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1709:                   className="bg-indigo-600 text-white p-6 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1710:                 >
+1711:                   Smart Notes
+1712:                 </button>
+1713:                 <button 
+1714:                   onClick={() => { handleAICoreAction("quiz", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1715:                   className="bg-slate-900 text-white p-6 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1716:                 >
+1717:                   Live Test
+1718:                 </button>
+1719:               </div>
+1720:             </motion.div>
+1721:           </div>
+1722:         )}
+1723: 
+1724:       </AnimatePresence>
+1725: 
+1726:       {showDoubtSolver && <AIDoubtSolver autoStartMic={autoStartMic} onExit={() => { setShowDoubtSolver(false); setAutoStartMic(false); }} isSubscribed={isSubscribed} />}
+1727: 
+1728:       {/* New Feature Overlays */}
+1729:       <AnimatePresence>
+1730:         {showSystemFlow && <SystemFlowModal onClose={() => setShowSystemFlow(false)} />}
+1731:       </AnimatePresence>
+1732: 
+1733:       <AnimatePresence>
+1734:         {showGamification && <GamificationHub userData={userData} onClose={() => setShowGamification(false)} />}
+1735:       </AnimatePresence>
+1736: 
+1737:       {showQuickRevision && (
+1738:         <QuickRevisionMode
+1739:           topic={quickRevisionTopic || "Current Topic"}
+1740:           onExit={() => setShowQuickRevision(false)}
+1741:         />
+1742:       )}
+1743: 
+1744:       {showWhyWrong && (
+1745:         <WhyGotWrong
+1746:           wrongQuestions={wrongQuestions}
+1747:           testTitle={testResult?.title || "Recent Test"}
+1748:           onClose={() => setShowWhyWrong(false)}
+1749:           isSubscribed={isSubscribed}
+1750:         />
+1751:       )}
+1752:       <AnimatePresence mode="wait">
+1753:         {activeNotes && (
+1754:           <SmartNotesViewer 
+1755:             key={`notes-${activeNotes.title}`}
+1756:             title={activeNotes.title} 
+1757:             chapterName={activeNotes.chapter || activeNotes.title}
+1758:             subjectContext={activeNotes.subjectContext}
+1759:             classContext={activeNotes.classContext}
+1760:             mode={activeNotes.mode}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

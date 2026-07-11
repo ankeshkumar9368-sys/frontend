@@ -1,0 +1,109 @@
+Created At: 2026-06-18T19:38:01Z
+Completed At: 2026-06-18T19:38:02Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2356
+Total Bytes: 122470
+Showing lines 700 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+700:           ai_chat: { name: "AI Whisperer", icon: "🤖" },
+701:           xp_5000: { name: "Glory Chaser", icon: "👑" },
+702:           mastery_5: { name: "Concept Conqueror", icon: "🔮" },
+703:           solver_100: { name: "Super Solver", icon: "🛡️" },
+704:           streak_15: { name: "Unstoppable", icon: "🔥" },
+705:           focus_10: { name: "Focus Master", icon: "⏱️" },
+706:           doubts_25: { name: "Doubt Buster", icon: "🧠" },
+707:           test_15: { name: "Grand Champion", icon: "🌟" },
+708:           xp_10000: { name: "Elite Learner", icon: "🌌" }
+709:         }[badgeId as keyof typeof badgeInfo] || { name: "New Achievement", icon: "🏅" };
+710:         
+711:         setUnlockedBadge(badgeInfo);
+712:       }
+713:     }
+714: 
+715:     setActiveTest(null);
+716:   };
+717: 
+718:   const handleCorrectAnswer = async (questionText: string) => {
+719:     if (!userData?.id || !activeTest) return;
+720:     
+721:     // Fire and forget
+722:     (async () => {
+723:       const topicName = activeTest.title.replace('PYQs: ', '');
+724:       const mode = activeTest.mode || (activeTest.title.includes('PYQs') ? 'pyq' : 'mock');
+725:       const safeId = getTestBankId(mode, topicName, userData, activeTest.subTitle);
+726:       const personalTestBankRef = doc(db, "users", userData.id, "test_banks", safeId);
+727:       
+728:       try {
+729:         const newQ = await generateSingleReplacementQuestion(topicName, questionText, userData, activeTest.subTitle);
+730:         if (newQ) {
+731:           const oldQObj = activeTest.questions.find((q: any) => q.text === questionText);
+732:           if (oldQObj) {
+733:             await updateDoc(personalTestBankRef, {
+734:               questions: arrayRemove(oldQObj)
+735:             });
+736:             await updateDoc(personalTestBankRef, {
+737:               questions: arrayUnion(newQ)
+738:             });
+739:             console.log("Background replaced question:", questionText, "with:", newQ.text);
+740:           }
+741:         }
+742:       } catch (e) {
+743:         console.error("Background replacement failed", e);
+744:       }
+745:     })();
+746:   };
+747: 
+748:   const switchProfile = (id: number) => {
+749:     setProfiles(profiles.map(p => ({ ...p, active: p.id === id })));
+750:     alert(`Switched to profile!`);
+751:   };
+752: 
+753: 
+754: 
+755:   // Real-time dynamic performance analyzer for Glowing recommended prep cards
+756:   const getGlowRecommendations = useCallback(() => {
+757:     const recommends = {
+758:       revisionVault: false,
+759:       flashcards: false,
+760:       timetable: false,
+761:       quickStudy: false,
+762:       battle: false,
+763:       scanSolve: false,
+764:       roadmap: false,
+765:     };
+766: 
+767:     if (!userData) return recommends;
+768: 
+769:     const totalSolved = userData.totalSolved || 0;
+770:     const correctAnswers = userData.correctAnswers || 0;
+771:     const accuracy = totalSolved > 0 ? (correctAnswers / totalSolved) * 100 : 100;
+772:     const attempts = userData.attempts || [];
+773: 
+774:     // 1. Low accuracy (< 70%) or high attempts with failures -> review mistakes
+775:     if (accuracy < 70 || (attempts.length > 0 && attempts.some((a: any) => a.score < 60))) {
+776:       recommends.revisionVault = true;
+777:       recommends.flashcards = true;
+778:     }
+779: 
+780:     // 2. Active but weak spots -> Skill roadmap
+781:     if (totalSolved > 15 && accuracy < 85) {
+782:       recommends.roadmap = true;
+783:     }
+784: 
+785:     // 3. Low study engagement -> AI Timetable Planner
+786:     if ((userData.streak || 0) === 0 || (userData.points || 0) < 1500) {
+787:       recommends.timetable = true;
+788:     }
+789: 
+790:     // 4. Brand new user -> Quick Study Swipe Cards & Battle Quiz
+791:     if (totalSolved < 5) {
+792:       recommends.quickStudy = true;
+793:       recommends.battle = true;
+794:     }
+795: 
+796:     // 5. Hard doubts solver -> Scan Camera
+797:     if (attempts.length > 8) {
+798:       recommends.scanSolve = true;
+799:     }
+800: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

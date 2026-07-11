@@ -1,0 +1,29 @@
+Created At: 2026-06-17T19:50:26Z
+Completed At: 2026-06-17T19:50:27Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2377
+Total Bytes: 123761
+Showing lines 1190 to 1210
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1190:                   />
+1191: 
+1192:                   {/* AR Hologram Promo Banner */}
+1193:                   <div className="mb-6 bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-5 text-white flex items-center justify-between border border-blue-500/30 shadow-lg shadow-blue-900/20">
+1194:                     <div>
+1195:                       <h3 className="font-black text-lg flex items-center gap-2">
+1196:                         <span className="text-xl">🌌</span> AR Hologram Lab
+1197:                       </h3>
+1198:                       <p className="text-sm text-blue-200 mt-0.5">Bring Science to life in your room</p>
+1199:                     </div>
+1200:                     <button 
+1201:                       onClick={() => setShowARViewer("Astronaut (Science)")}
+1202:                       className="bg-white text-blue-900 font-black px-4 py-2.5 rounded-xl text-sm shadow-md active:scale-95 transition-transform"
+1203:                     >
+1204:                       Open Lab
+1205:                     </button>
+1206:                   </div>
+1207: 
+1208:                   <ExploreEngine 
+1209:                     mode={mode} 
+1210:                     isSubscribed={isSubscribed}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,49 @@
+Created At: 2026-06-19T07:13:55Z
+Completed At: 2026-06-19T07:13:56Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 440 to 480
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+440:   ]);
+441: 
+442:   useEffect(() => {
+443:     const urlParams = new URLSearchParams(window.location.search);
+444:     if (urlParams.get("subscribed") === "true") {
+445:       setIsSubscribed(true);
+446:       window.history.replaceState({}, document.title, "/");
+447:     }
+448:   }, []);
+449: 
+450:   useEffect(() => {
+451:     if (!userData?.id) return;
+452:     const q = query(collection(db, "users", userData.id, "notifications"), orderBy("createdAt", "desc"), limit(20));
+453:     const unsubscribe = onSnapshot(q, (snapshot) => {
+454:       const notifs: any[] = [];
+455:       snapshot.forEach((doc) => {
+456:         notifs.push({ id: doc.id, ...doc.data() });
+457:       });
+458:       
+459:       // Trigger browser notification if new one arrives
+460:       if (notifs.length > notificationsList.length && notificationsList.length > 0) {
+461:         const newest = notifs[0];
+462:         if (notificationsEnabled && "Notification" in window && !newest.read) {
+463:           new Notification(newest.title, { body: newest.message });
+464:         }
+465:       }
+466:       
+467:       setNotificationsList(notifs);
+468:     });
+469:     return () => unsubscribe();
+470:   }, [userData?.id, notificationsEnabled, notificationsList.length]);
+471: 
+472:   useEffect(() => {
+473:     const prefetch = async () => {
+474:       await fetchContent("govt", null, "Categories");
+475:       await fetchContent("school", null, "Boards");
+476:     };
+477:     prefetch();
+478:   }, []);
+479: 
+480:   const handleDoubtSolverClick = () => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

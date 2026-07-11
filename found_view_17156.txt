@@ -1,0 +1,69 @@
+Created At: 2026-06-18T19:55:35Z
+Completed At: 2026-06-18T19:55:35Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2425
+Total Bytes: 125441
+Showing lines 1230 to 1290
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1230:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">Mistakes</span>
+1231:                         </motion.button>
+1232:                       </div>
+1233:                     );
+1234:                   })()}
+1235: 
+1236:                   {/* 🛣️ MASTERY ROADMAP CARD */}
+1237:                   <motion.button 
+1238:                     whileTap={{ scale: 0.97 }}
+1239:                     onClick={() => setShowRoadmap(true)}
+1240:                     className="w-full bg-slate-900 dark:bg-slate-800 p-4 rounded-[32px] border border-white/5 shadow-xl flex items-center justify-between group hover:border-primary/50 transition-all text-white relative overflow-hidden glow-primary"
+1241:                   >
+1242:                     <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+1243:                     <div className="flex items-center gap-4 relative z-10">
+1244:                       <div className="w-5 h-5 bg-indigo-500/30 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform icon-3d">🛤️</div>
+1245:                       <div className="text-left">
+1246:                         <div className="flex items-center gap-2 mb-1">
+1247:                           <h3 className="font-black text-sm uppercase tracking-tight">Mastery Roadmap</h3>
+1248:                           {!isSubscribed && <div className="bg-amber-400 text-slate-900 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">Trial</div>}
+1249:                         </div>
+1250:                         <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest leading-none">Mixed Subjects • Level {masteryLevel + 1}</p>
+1251:                       </div>
+1252:                     </div>
+1253:                     <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+1254:                       <ChevronRight className="w-5 h-5" />
+1255:                     </div>
+1256:                   </motion.button>
+1257: 
+1258:                   <RemedialAlert 
+1259:                     onStartRemedial={(topic) => setActiveNotes({ title: topic, chapter: topic, mode: "remedial" })} 
+1260:                   />
+1261: 
+1262: 
+1263: 
+1264:                   <ExploreEngine 
+1265:                     mode={mode} 
+1266:                     isSubscribed={isSubscribed}
+1267:                     userData={userData}
+1268:                     onUpgrade={() => setShowSubscriptionModal(true)}
+1269:                     onFinalSelect={async (item) => {
+1270:                       const isPYQ = item.name.toLowerCase().includes("pyq") || item.name.toLowerCase().includes("previous year");
+1271:                       if (isPYQ) {
+1272:                         if (userData?.planType === "standard") {
+1273:                           alert("👑 TOPPER PYQ Tests are exclusively available in the Achivox Pro Plan. Upgrade now to unlock!");
+1274:                           setShowSubscriptionModal(true);
+1275:                           return;
+1276:                         }
+1277:                         try {
+1278:                           setLoadingQuestions(true);
+1279:                           // Clean parent ID (e.g., topics_laws_of_motion -> Laws Of Motion)
+1280:                           const topicName = item.parentId?.split('_').pop()?.replace(/-/g, ' ') || "this topic";
+1281:                           const formattedTopic = topicName.charAt(0).toUpperCase() + topicName.slice(1);
+1282:                           
+1283:                           const pyqs = await generateAIPYQs(formattedTopic, userData);
+1284:                           if (pyqs && pyqs.length > 0) {
+1285:                             setActiveTest({ title: `PYQs: ${formattedTopic}`, questions: pyqs, mode: "pyq" });
+1286:                           } else {
+1287:                             alert("AI failed to generate PYQs. Please try again.");
+1288:                           }
+1289:                         } catch (e) {
+1290:                           console.error("PYQ Error:", e);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

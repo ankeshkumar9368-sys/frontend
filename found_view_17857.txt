@@ -1,0 +1,69 @@
+Created At: 2026-06-19T18:42:12Z
+Completed At: 2026-06-19T18:42:13Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2451
+Total Bytes: 126782
+Showing lines 1500 to 1560
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1500:                     subtitle: "Multiplayer Quiz",
+1501:                     emoji: "⚔️",
+1502:                     bgClass: "bg-red-100 text-red-500 dark:bg-red-950/20",
+1503:                     isGlowing: recs.battle,
+1504:                     glowClass: "glow-rose",
+1505:                     onClick: () => setShowBattle(true)
+1506:                   },
+1507:                   {
+1508:                     id: "achievements",
+1509:                     title: "Achievements",
+1510:                     subtitle: "XP & Badges",
+1511:                     emoji: "🏆",
+1512:                     bgClass: "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/20",
+1513:                     isGlowing: false,
+1514:                     glowClass: "",
+1515:                     onClick: () => setShowGamification(true)
+1516:                   }
+1517:                 ];
+1518: 
+1519:                 return (
+1520:                   <div className="grid grid-cols-2 gap-4">
+1521:                     {toolsList.map((tool) => (
+1522:                       <motion.button
+1523:                         key={tool.id}
+1524:                         whileHover={{ scale: 1.03, y: -2 }}
+1525:                         whileTap={{ scale: 0.97 }}
+1526:                         onClick={tool.onClick}
+1527:                         className={`relative overflow-hidden rounded-[24px] p-4 bg-white dark:bg-slate-900 border border-border shadow-md flex flex-col items-start gap-3 text-left transition-all ${tool.isGlowing ? `${tool.glowClass} animate-pulse scale-[1.01] border-red-500/40` : 'hover:border-primary/40'}`}
+1528:                       >
+1529:                         {/* 3D Icon Wrapper */}
+1530:                         <div className={`w-5 h-5 rounded-xl flex items-center justify-center text-xl icon-3d ${tool.bgClass}`}>
+1531:                           {tool.emoji}
+1532:                         </div>
+1533:                         {/* Labels */}
+1534:                         <div>
+1535:                           <h4 className="font-black text-xs sm:text-sm text-foreground tracking-tight leading-tight mb-1">{tool.title}</h4>
+1536:                           <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none">{tool.subtitle}</p>
+1537:                         </div>
+1538:                         
+1539:                         {/* Glowing Performance Recommendation tag */}
+1540:                         {tool.isGlowing && (
+1541:                           <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+1542:                             <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping" />
+1543:                             <span className="text-[7px] font-black uppercase text-rose-500 tracking-wider">Focus</span>
+1544:                           </div>
+1545:                         )}
+1546:                       </motion.button>
+1547:                     ))}
+1548:                   </div>
+1549:                 );
+1550:               })()}
+1551: 
+1552: 
+1553: 
+1554:               <div className="relative">
+1555:                 <PerformanceGraph isSubscribed={isSubscribed} refreshTrigger={analyticsUpdateTrigger} />
+1556:               </div>
+1557: 
+1558:               <div className="relative">
+1559:                 <SpacedRevisionSystem
+1560:                   isSubscribed={isSubscribed}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

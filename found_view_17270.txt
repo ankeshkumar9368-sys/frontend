@@ -1,0 +1,119 @@
+Created At: 2026-06-19T07:08:03Z
+Completed At: 2026-06-19T07:08:04Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 510 to 620
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+510:     setShowAILoading(true);
+511:     
+512:     const taskId = Math.random().toString(36);
+513:     activeAICoreTaskRef.current = taskId;
+514:     
+515:     try {
+516:       if (type === "notes") {
+517:         const classRaw = parentId?.match(/classes_class_(\d+)/)?.[1];
+518:         const clsName = classRaw ? `Class ${classRaw}` : (userData?.cls || "Class 12");
+519:         const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
+520:         const subName = overrideSubject || (subRaw ? subRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : "General");
+521:         const chapRaw = parentId?.match(/chapters_([a-z0-9_]+?)(?:__|$)/)?.[1];
+522:         const chapName = chapRaw ? chapRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : target;
+523: 
+524:         // Instant local storage cache check
+525:         if (typeof window !== "undefined") {
+526:           const cacheKey = `achivox_notes_full_${subName || 'gen'}_${chapName || 'none'}_${target || 'none'}_${userData?.id || 'guest'}`.replace(/[^a-zA-Z0-9_]/g, '_');
+527:           try {
+528:             const cached = localStorage.getItem(cacheKey);
+529:             if (cached) {
+530:               const parsed = JSON.parse(cached);
+531:               if (parsed && parsed.topics) {
+532:                 setShowAILoading(false);
+533:                 setActiveNotes({
+534:                   title: target,
+535:                   chapter: chapName,
+536:                   subjectContext: subName,
+537:                   classContext: clsName,
+538:                   mode: "full",
+539:                   data: parsed
+540:                 });
+541:                 return;
+542:               }
+543:             }
+544:           } catch (e) {
+545:             console.warn("Local cache check failed:", e);
+546:           }
+547:         }
+548: 
+549:         if (!userData?.isSubscribed) {
+550:           const { allowed } = await checkAndIncrementUsage(userData?.id, "Smart Notes", 1, target);
+551:           if (!allowed) {
+552:             setShowAILoading(false);
+553:             setShowSubscriptionModal(true);
+554:             return;
+555:           }
+556:         }
+557: 
+558:         const notes = await fetchChapterNotes(target, userData, "dual", subName, chapName);
+559:         if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
+560: 
+561:         if (notes) {
+562:           setActiveNotes({ 
+563:             title: target, 
+564:             chapter: chapName,
+565:             subjectContext: subName,
+566:             classContext: clsName,
+567:             data: notes // Pass fetched data
+568:           });
+569:           trackTopicOpen({
+570:             topicId: target.toLowerCase().replace(/\s+/g, '-'),
+571:             topicName: target,
+572:             subject: subName,
+573:             chapter: chapName,
+574:             cls: clsName,
+575:             board: userData?.board || "CBSE"
+576:           });
+577:         }
+578:       } else if (type === "test" || type === "quiz") {
+579:         // Dashboard Analysis for Test
+580:         const weakAreas = getWeakAreas();
+581:         let finalTarget = target;
+582:         let subjectContext = "";
+583: 
+584:         if (target === "Daily Challenge" || !target) {
+585:           if (weakAreas.length > 0) {
+586:             finalTarget = weakAreas[0].topic;
+587:             subjectContext = weakAreas[0].subject;
+588:           } else {
+589:             finalTarget = "General Science & Logic"; // Default fallback
+590:           }
+591:         } else if (parentId) {
+592:            // Check if parentId is actually a subject name (from MasteryRoadmap)
+593:            if (!parentId.includes("_")) {
+594:              subjectContext = parentId;
+595:            } else {
+596:              const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
+597:              subjectContext = subRaw ? subRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : "General";
+598:            }
+599:         }
+600: 
+601:         const questions = await fetchQuestions("full", finalTarget, userData, subjectContext);
+602:         if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
+603: 
+604:         if (questions && questions.length > 0) {
+605:           setActiveTest({ 
+606:             title: finalTarget, 
+607:             subTitle: subjectContext ? `Context: ${subjectContext}` : "Practice Test",
+608:             questions,
+609:             isMastery,
+610:             subject: subjectContext || "General",
+611:             mode: mode
+612:           });
+613:         } else {
+614:           alert("AI core was unable to generate questions for this specific topic. Please try a different topic or board.");
+615:         }
+616:       }
+617:     } catch (err) {
+618:       console.error("AI Action Error:", err);
+619:       alert("AI Neural Core connection timeout. Please check your network.");
+620:     } finally {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

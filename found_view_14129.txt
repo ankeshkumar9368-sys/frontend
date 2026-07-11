@@ -1,0 +1,29 @@
+Created At: 2026-06-14T20:43:15Z
+Completed At: 2026-06-14T20:43:15Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2363
+Total Bytes: 121058
+Showing lines 1220 to 1240
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1220:                       } else {
+1221:                         setSelectionModal(item);
+1222:                       }
+1223:                     }}
+1224:                   />
+1225:                 </motion.div>
+1226:               )}
+1227:             </AnimatePresence>
+1228: 
+1229:           {activeTab === "Tests" && (
+1230:             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+1231:               <div className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl flex gap-1 shadow-inner">
+1232:                 <button onClick={() => setMode("govt")} className={`flex-1 py-2.5 text-sm font-bold rounded-xl ${mode === "govt" ? "bg-white dark:bg-slate-700 shadow-md text-primary" : "text-slate-500"}`}>Gov Tests</button>
+1233:                 <button onClick={() => setMode("school")} className={`flex-1 py-2.5 text-sm font-bold rounded-xl ${mode === "school" ? "bg-white dark:bg-slate-700 shadow-md text-primary" : "text-slate-500"}`}>School Tests</button>
+1234:               </div>
+1235:               {mode === "school" ? (
+1236:                 <div className="space-y-6">
+1237:                   <div className="flex gap-4">
+1238:                     {/* Mock Exam Feature Card (Small & Locked) */}
+1239:                     <motion.button 
+1240:                       whileTap={{ scale: 0.95 }}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

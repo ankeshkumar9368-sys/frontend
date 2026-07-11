@@ -1,0 +1,108 @@
+Created At: 2026-06-17T05:00:14Z
+Completed At: 2026-06-17T05:00:15Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2364
+Total Bytes: 121031
+Showing lines 1 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: "use client";
+2: 
+3: import { useTheme } from "next-themes";
+4: import { 
+5:   Moon, Sun, BookOpen, User, Flame, Play, Target, Award, 
+6:   ChevronRight, FileSpreadsheet, Activity, BookText, 
+7:   GraduationCap, Building2, LogOut, TrendingUp, Trophy, 
+8:   CheckCircle2, Zap, RotateCcw, Plus, Clock, Sparkles, X, Loader2, LayoutDashboard, Brain, Lock, Bell, BellOff, ArrowDownRight,
+9:   Wrench, Info, Map, BarChart2, BarChart3, Star, Shield, Book, Gift, PartyPopper, Heart, Bookmark, Settings, Share2, ShieldCheck, UserPlus, Crown, PenTool
+10: } from "lucide-react";
+11: import { motion, AnimatePresence } from "framer-motion";
+12: import Image from "next/image";
+13: import Link from "next/link";
+14: import dynamic from "next/dynamic";
+15: import { useState, useEffect, useCallback, useRef } from "react";
+16: import { useRouter } from "next/navigation";
+17: import { auth, db } from "../lib/firebase";
+18: import { onAuthStateChanged, signOut } from "firebase/auth";
+19: import { doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp, collection, query, where, getDocs, orderBy, onSnapshot, limit, deleteField } from "firebase/firestore";
+20: import AIDoubtSolver from "../components/AIDoubtSolver";
+21: import { fetchContent, fetchQuestions, ContentItem, fetchDoubtResponse, generateAIPYQs, fetchChapterNotes, generateAIQuestions, getTestBankId, generateSingleReplacementQuestion } from "../lib/content";
+22: import ExploreEngine from "../components/ExploreEngine";
+23: import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics } from "../lib/analytics";
+24: const MockTestEngine = dynamic(() => import("../components/MockTestEngine"));
+25: const SchoolTestEngine = dynamic(() => import("../components/SchoolTestEngine"));
+26: const SubjectiveEngine = dynamic(() => import("../components/SubjectiveEngine"));
+27: import AnalysisEngine from "../components/AnalysisEngine";
+28: import SmartAvatar from "../components/SmartAvatar";
+29: const RevisionVault = dynamic(() => import("../components/RevisionVault"));
+30: const MasteryRoadmap = dynamic(() => import("../components/MasteryRoadmap"));
+31: import { getMasterySequence } from "../lib/curriculum";
+32: import SmartNotesViewer from "../components/SmartNotesViewer";
+33: import Leaderboard from "../components/Leaderboard";
+34: import StudyPlan from "../components/StudyPlan";
+35: import NotificationSidebar, { AppNotification } from "../components/NotificationSidebar";
+36: import StreakCelebration from "../components/StreakCelebration";
+37: import ProgressDashboard from "../components/ProgressDashboard";
+38: import SplashScreen from "../components/SplashScreen";
+39: import RemedialAlert from "../components/RemedialAlert";
+40: const ARViewer = dynamic(() => import("../components/ARViewer"));
+41: 
+42: import WeaknessHeatmap from "../components/WeaknessHeatmap";
+43: import QuickRevisionMode from "../components/QuickRevisionMode";
+44: import GamificationHub from "../components/GamificationHub";
+45: import WhyGotWrong from "../components/WhyGotWrong";
+46: import PerformanceGraph from "../components/PerformanceGraph";
+47: import SpacedRevisionSystem from "../components/SpacedRevisionSystem";
+48: import SystemFlowModal from "../components/SystemFlowModal";
+49: import LandingPage from "../components/LandingPage";
+50: import OnboardingFlow from "../components/OnboardingFlow";
+51: import SubscriptionModal from "../components/SubscriptionModal";
+52: import PremiumBanner from "../components/PremiumBanner";
+53: import SavedMCQs from "../components/SavedMCQs";
+54: import GoalSelector from "../components/GoalSelector";
+55: import AILoadingOverlay from "../components/AILoadingOverlay";
+56: import { getWeakAreas } from "../lib/analytics";
+57: 
+58: const tapEffect = { 
+59:   scale: 0.95, 
+60:   transition: { type: "spring" as const, stiffness: 400, damping: 17 } 
+61: };
+62: 
+63: 
+64: 
+65: import FlashcardForge from "../components/FlashcardForge";
+66: import AIVoiceCoach from "../components/AIVoiceCoach";
+67: const BattleQuiz = dynamic(() => import("../components/BattleQuiz"));
+68: import ScanAndSolve from "../components/ScanAndSolve";
+69: import SmartTimetable from "../components/SmartTimetable";
+70: import FormulaVault from "../components/FormulaVault";
+71: import RewardShop from "../components/RewardShop";
+72: import ReferralCenter from "../components/ReferralCenter";
+73: import { checkAndUnlockBadges, addXP } from "../lib/gamification";
+74: import BadgeUnlockOverlay from "../components/BadgeUnlockOverlay";
+75: import ParentReportTemplate from "../components/ParentReportTemplate";
+76: import StudyBuddy from "../components/StudyBuddy";
+77: import ExamPredictor from "../components/ExamPredictor";
+78: import QuickStudyCards from "../components/QuickStudyCards";
+79: import SchoolProjectAssistant from "../components/SchoolProjectAssistant";
+80: import { SUBJECTS_BY_BOARD_CLASS, SUBJECTS_BY_CLASS, getSubjects } from "../lib/curriculum";
+81: import QuestLog from "../components/QuestLog";
+82: import StudyPod from "../components/StudyPod";
+83: import MockExamSimulator from "../components/MockExamSimulator";
+84: import ForceUpdateModal from "../components/ForceUpdateModal";
+85: 
+86: const CURRENT_APP_VERSION = 1.0;
+87: 
+88: const generateUniqueId = async () => {
+89:   let attempts = 0;
+90:   while (attempts < 10) {
+91:     const candidateId = `EXH-${Math.floor(100000 + Math.random() * 900000)}`;
+92:     const q = query(collection(db, "users"), where("studentId", "==", candidateId));
+93:     const snap = await getDocs(q);
+94:     if (snap.empty) {
+95:       return candidateId;
+96:     }
+97:     attempts++;
+98:   }
+99:   return `EXH-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 100)}`;
+100: };
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
