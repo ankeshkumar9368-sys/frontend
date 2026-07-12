@@ -26,6 +26,15 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
+    const checkRedirect = async () => {
+      try {
+        await getRedirectResult(auth);
+      } catch (error: any) {
+        console.error("Redirect Login Error:", error);
+      }
+    };
+    checkRedirect();
+
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         router.push("/");
