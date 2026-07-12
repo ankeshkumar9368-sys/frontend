@@ -14,24 +14,22 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
 
-  // Keep a ref to pathname so the auth callback always has the latest value
-  // WITHOUT triggering a re-subscription when pathname changes.
   const pathnameRef = useRef(pathname);
   useEffect(() => {
     pathnameRef.current = pathname;
   }, [pathname]);
 
   useEffect(() => {
-    // Subscribe ONCE — never re-subscribe just because the URL changed.
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        // Not logged in: redirect to login unless already there.
+        // Not logged in — redirect to login ONLY if on a protected page
+        // (do NOT redirect /login → / here; login page handles that itself)
         if (pathnameRef.current !== "/login") {
           router.push("/login");
         }
         setLoading(false);
       } else {
-        // Logged in: check if account is blocked.
+        // Logged in — check if account is blocked
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists() && userDoc.data().isBlocked === true) {
@@ -42,20 +40,17 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             return;
           }
         } catch (e) {
+          // Firestore check failed — still let the user through
           console.error("Failed to check block status", e);
         }
-
-        // If user somehow lands on /login while authenticated, redirect home.
-        if (pathnameRef.current === "/login") {
-          router.push("/");
-        }
+        // Do NOT push to "/" here — login page handles that redirect itself.
         setLoading(false);
       }
     });
 
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // ← Empty array: runs ONCE, never re-subscribes on navigation.
+  }, []); // runs ONCE only
 
   if (loading) {
     return (
@@ -77,7 +72,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         <p className="text-slate-400 font-medium max-w-md mx-auto leading-relaxed mb-8">
           Your Achivox account has been permanently restricted due to a violation of our terms of service or abnormal activity.
         </p>
-        <button 
+        <button
           onClick={() => router.push("/login")}
           className="px-8 py-3 bg-white text-slate-900 font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-slate-200 transition-all"
         >

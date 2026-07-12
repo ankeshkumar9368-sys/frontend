@@ -64,7 +64,7 @@ export default function Login() {
         !!(window as any).Capacitor?.isNativePlatform?.();
 
       if (isNative) {
-        // Android / iOS native path
+        // Android / iOS native path — signInWithCredential triggers onAuthStateChanged
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
         const result = await FirebaseAuthentication.signInWithGoogle();
         if (result.credential?.idToken) {
@@ -73,12 +73,12 @@ export default function Login() {
         } else if (!result.user) {
           throw new Error("Missing authentication token from Google.");
         }
-        router.push("/");
+        // onAuthStateChanged handles redirect
       } else {
-        // Web path — called immediately within user gesture, popup allowed
+        // Web path — signInWithPopup; onAuthStateChanged handles the /→ redirect
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
-        router.push("/");
+        // Do NOT router.push here — onAuthStateChanged below will do it once
       }
     } catch (error: any) {
       console.error("Google Login Error:", error);
