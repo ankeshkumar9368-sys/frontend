@@ -58,24 +58,24 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const { Capacitor } = await import('@capacitor/core');
-      
-      if (Capacitor.isNativePlatform()) {
+      // Synchronous native check — no async delay, so popup won't be blocked by browser
+      const isNative =
+        typeof window !== "undefined" &&
+        !!(window as any).Capacitor?.isNativePlatform?.();
+
+      if (isNative) {
+        // Android / iOS native path
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
         const result = await FirebaseAuthentication.signInWithGoogle();
-        
         if (result.credential?.idToken) {
           const credential = GoogleAuthProvider.credential(result.credential.idToken);
           await signInWithCredential(auth, credential);
-          router.push("/");
-        } else {
-          if (result.user) {
-            router.push("/");
-          } else {
-            throw new Error("Missing authentication token from Google.");
-          }
+        } else if (!result.user) {
+          throw new Error("Missing authentication token from Google.");
         }
+        router.push("/");
       } else {
+        // Web path — called immediately within user gesture, popup allowed
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
         router.push("/");
