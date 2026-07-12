@@ -83,17 +83,21 @@ import StudyPod from "../components/StudyPod";
 import MockExamSimulator from "../components/MockExamSimulator";
 import ForceUpdateModal from "../components/ForceUpdateModal";
 const generateUniqueId = async ()=>{
-    let attempts = 0;
-    while(attempts < 10){
-        const candidateId = `EXH-${Math.floor(100000 + Math.random() * 900000)}`;
-        const q = query(collection(db, "users"), where("studentId", "==", candidateId));
-        const snap = await getDocs(q);
-        if (snap.empty) {
-            return candidateId;
+    try {
+        let attempts = 0;
+        while(attempts < 10){
+            const candidateId = `EXH-${Math.floor(100000 + Math.random() * 900000)}`;
+            const q = query(collection(db, "users"), where("studentId", "==", candidateId));
+            const snap = await getDocs(q);
+            if (snap.empty) {
+                return candidateId;
+            }
+            attempts++;
         }
-        attempts++;
+    } catch (error) {
+        console.warn("[Auth] Firestore query for unique student ID failed (likely permissions). Using fallback ID:", error);
     }
-    return `EXH-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 100)}`;
+    return `EXH-${Math.floor(100000 + Math.random() * 900000)}`;
 };
 
 
