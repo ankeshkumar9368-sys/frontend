@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { clearLocalAnalytics } from "../lib/analytics";
 import { auth, db } from "../lib/firebase";
@@ -14,13 +14,24 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
 
+  // Keep a ref to pathname so the auth callback always has the latest value
+  // WITHOUT triggering a re-subscription when pathname changes.
+  const pathnameRef = useRef(pathname);
   useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
+
+  useEffect(() => {
+    // Subscribe ONCE — never re-subscribe just because the URL changed.
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user && pathname !== "/login") {
-        router.push("/login");
+      if (!user) {
+        // Not logged in: redirect to login unless already there.
+        if (pathnameRef.current !== "/login") {
+          router.push("/login");
+        }
         setLoading(false);
-      } else if (user) {
-        // Check if user is blocked
+      } else {
+        // Logged in: check if account is blocked.
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists() && userDoc.data().isBlocked === true) {
@@ -33,18 +44,18 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         } catch (e) {
           console.error("Failed to check block status", e);
         }
-        
-        if (pathname === "/login") {
+
+        // If user somehow lands on /login while authenticated, redirect home.
+        if (pathnameRef.current === "/login") {
           router.push("/");
         }
-        setLoading(false);
-      } else {
         setLoading(false);
       }
     });
 
     return () => unsubscribe();
-  }, [pathname, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ← Empty array: runs ONCE, never re-subscribes on navigation.
 
   if (loading) {
     return (
