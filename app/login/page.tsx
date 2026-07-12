@@ -9,6 +9,7 @@ import { signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInAnonym
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [showWarningModal, setShowWarningModal] = useState(false);
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,15 +29,19 @@ export default function Login() {
   useEffect(() => {
     const checkRedirect = async () => {
       try {
-        await getRedirectResult(auth);
+        const result = await getRedirectResult(auth);
+        console.log("[Auth] getRedirectResult:", result?.user?.email ?? "no redirect user");
       } catch (error: any) {
-        console.error("Redirect Login Error:", error);
+        console.error("[Auth] Redirect Login Error:", error);
+        setErrorMsg("Redirect error: " + error.message);
       }
     };
     checkRedirect();
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log("[Auth] onAuthStateChanged fired. user:", user?.email ?? "null");
       if (user) {
+        console.log("[Auth] User detected, pushing to /");
         router.push("/");
       }
     });
@@ -57,32 +62,34 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
+    setErrorMsg("");
     try {
-      // Synchronous native check — no async delay, so popup won't be blocked by browser
       const isNative =
         typeof window !== "undefined" &&
         !!(window as any).Capacitor?.isNativePlatform?.();
 
+      console.log("[Auth] isNative:", isNative);
+      console.log("[Auth] Starting Google login on domain:", window.location.hostname);
+
       if (isNative) {
-        // Android / iOS native path — signInWithCredential triggers onAuthStateChanged
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
         const result = await FirebaseAuthentication.signInWithGoogle();
+        console.log("[Auth] Native signIn result user:", result.user?.email);
         if (result.credential?.idToken) {
           const credential = GoogleAuthProvider.credential(result.credential.idToken);
           await signInWithCredential(auth, credential);
         } else if (!result.user) {
           throw new Error("Missing authentication token from Google.");
         }
-        // onAuthStateChanged handles redirect
       } else {
-        // Web path — signInWithPopup; onAuthStateChanged handles the /→ redirect
+        console.log("[Auth] Calling signInWithPopup...");
         const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-        // Do NOT router.push here — onAuthStateChanged below will do it once
+        const result = await signInWithPopup(auth, provider);
+        console.log("[Auth] Popup success! user:", result.user?.email);
       }
     } catch (error: any) {
-      console.error("Google Login Error:", error);
-      alert("Google login failed: " + error.message);
+      console.error("[Auth] Google Login Error:", error.code, error.message);
+      setErrorMsg(error.code + ": " + error.message);
     } finally {
       setLoading(false);
     }
@@ -141,6 +148,13 @@ export default function Login() {
         <p className="text-white/70 text-sm mt-1 text-center select-text">
           Start your learning journey today
         </p>
+
+        {/* Visible Error Box — shows exact Firebase error on screen */}
+        {errorMsg && (
+          <div className="w-full mt-4 p-3 bg-red-500/80 rounded-2xl text-white text-xs font-mono text-center break-all">
+            ❌ {errorMsg}
+          </div>
+        )}
 
         <div className="space-y-4 w-full mt-8">
           {/* Google Login */}
