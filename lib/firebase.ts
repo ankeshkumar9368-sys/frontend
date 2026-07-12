@@ -5,7 +5,7 @@ import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAtAvWpl48EVyQkN6QaMcTGY6_Veg2mOeo",
-  authDomain: "achivox-76f43.firebaseapp.com",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "achivox-76f43.firebaseapp.com",
   projectId: "achivox-76f43",
   storageBucket: "achivox-76f43.firebasestorage.app",
   messagingSenderId: "993951956139",
