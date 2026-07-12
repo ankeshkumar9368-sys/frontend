@@ -5,7 +5,7 @@ import { Chrome, User, ShieldAlert, Sparkles, X, ArrowRight, Lock, BookOpen, Roc
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { auth } from "../../lib/firebase";
-import { signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInAnonymously, signInWithCredential } from "firebase/auth";
+import { signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInAnonymously, signInWithCredential, signInWithPopup } from "firebase/auth";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -77,7 +77,8 @@ export default function Login() {
         }
       } else {
         const provider = new GoogleAuthProvider();
-        await signInWithRedirect(auth, provider);
+        await signInWithPopup(auth, provider);
+        router.push("/");
       }
     } catch (error: any) {
       console.error("Google Login Error:", error);
