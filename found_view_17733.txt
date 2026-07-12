@@ -1,0 +1,39 @@
+Created At: 2026-06-19T09:50:35Z
+Completed At: 2026-06-19T09:50:36Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2450
+Total Bytes: 126731
+Showing lines 1850 to 1880
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1850:           { icon: FileSpreadsheet, label: "Tests" },
+1851:           { icon: Trophy, label: "Rank" },
+1852:           { icon: Activity, label: "Analysis" },
+1853:           { icon: Wrench, label: "Tools" },
+1854:           { icon: User, label: "Profile" }
+1855:         ].map((item, i) => {
+1856:           const isActive = activeTab === item.label;
+1857:           return (
+1858:             <motion.div
+1859:               key={i}
+1860:               onClick={() => setActiveTab(item.label)}
+1861:               whileTap={{ scale: 0.92 }}
+1862:               className="flex flex-col items-center gap-1.5 cursor-pointer relative"
+1863:             >
+1864:               <div 
+1865:                 className={`menu-icon-3d flex items-center justify-center p-1.5 rounded-[14px] ${
+1866:                   isActive 
+1867:                     ? "active bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-indigo-500 dark:text-indigo-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]" 
+1868:                     : "text-slate-400 hover:text-slate-500 dark:hover:text-slate-300"
+1869:                 }`}
+1870:               >
+1871:                 <item.icon className="w-5 h-5 drop-shadow-[0_1.5px_3px_rgba(99,102,241,0.15)]" />
+1872:               </div>
+1873:               <span className={`text-[8.5px] font-black uppercase tracking-widest transition-all duration-300 leading-none ${
+1874:                 isActive ? "text-indigo-500 dark:text-indigo-400 font-extrabold scale-105" : "text-slate-400/80 dark:text-slate-500 font-bold"
+1875:               }`}>
+1876:                 {item.label}
+1877:               </span>
+1878:             </motion.div>
+1879:           );
+1880:         })}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

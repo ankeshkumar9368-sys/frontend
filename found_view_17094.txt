@@ -1,0 +1,129 @@
+Created At: 2026-06-18T19:37:05Z
+Completed At: 2026-06-18T19:37:06Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2356
+Total Bytes: 122470
+Showing lines 1100 to 1220
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1100: 
+1101:                         <motion.button
+1102:                           whileTap={{ scale: 0.95 }}
+1103:                           onClick={() => setShowScanSolve(true)}
+1104:                           className="flex flex-col items-center gap-1.5 min-w-[72px]"
+1105:                         >
+1106:                           <div className={`w-5 h-5 bg-sky-50 dark:bg-sky-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.scanSolve ? 'glow-primary animate-pulse border-sky-300' : 'border-sky-100 dark:border-sky-900/40'}`}>
+1107:                             📸
+1108:                           </div>
+1109:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">AI Vision</span>
+1110:                         </motion.button>
+1111:                         
+1112:                         <motion.button
+1113:                           whileTap={{ scale: 0.95 }}
+1114:                           onClick={() => {
+1115:                             if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+1116:                             setShowRevisionVault(true);
+1117:                           }}
+1118:                           className="flex flex-col items-center gap-1.5 min-w-[72px]"
+1119:                         >
+1120:                           <div className={`w-5 h-5 bg-rose-50 dark:bg-rose-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.revisionVault ? 'glow-rose animate-pulse border-rose-300' : 'border-rose-100 dark:border-rose-900/40'}`}>
+1121:                             🧠
+1122:                           </div>
+1123:                           <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">Mistakes</span>
+1124:                         </motion.button>
+1125:                       </div>
+1126:                     );
+1127:                   })()}
+1128: 
+1129:                    {/* 🧠 AI "NEXT STEP" SUGGESTION */}
+1130:                   {(() => {
+1131:                     const suggestion = getAISuggestion();
+1132:                     return (
+1133:                       <motion.div 
+1134:                         initial={{ scale: 0.95, opacity: 0 }}
+1135:                         animate={{ scale: 1, opacity: 1 }}
+1136:                         className="bg-gradient-to-br from-indigo-600 to-violet-700 p-4 rounded-[32px] text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden group transition-all"
+1137:                       >
+1138:                         <div className="absolute top-0 right-0 opacity-10 -mr-6 -mt-6 rotate-12 transition-transform group-hover:scale-110">
+1139:                           <Sparkles className="w-32 h-32" />
+1140:                         </div>
+1141:                         <div className="relative z-10">
+1142:                           <div className="flex items-center gap-2 mb-3">
+1143:                             <div className="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-lg">
+1144:                               <p className="text-[9px] font-black uppercase tracking-widest">AI Performance Insight • Next Step</p>
+1145:                             </div>
+1146:                             {suggestion.priority === 1 && (
+1147:                               <span className="flex h-2 w-2 rounded-full bg-rose-400 animate-ping" />
+1148:                             )}
+1149:                           </div>
+1150:                           <h3 className="text-xl font-black leading-tight mb-2">{suggestion.title}</h3>
+1151:                           <p className="text-xs text-white/90 font-bold leading-relaxed">{suggestion.subtitle}</p>
+1152:                           
+1153:                           <div className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-200">
+1154:                             <Brain className="w-3.5 h-3.5" /> Analyzing your dashboard patterns...
+1155:                           </div>
+1156:                         </div>
+1157:                       </motion.div>
+1158:                     );
+1159:                   })()}
+1160: 
+1161:                   {/* 🛣️ MASTERY ROADMAP CARD */}
+1162:                   <motion.button 
+1163:                     whileTap={{ scale: 0.97 }}
+1164:                     onClick={() => setShowRoadmap(true)}
+1165:                     className="w-full bg-slate-900 dark:bg-slate-800 p-4 rounded-[32px] border border-white/5 shadow-xl flex items-center justify-between group hover:border-primary/50 transition-all text-white relative overflow-hidden glow-primary"
+1166:                   >
+1167:                     <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+1168:                     <div className="flex items-center gap-4 relative z-10">
+1169:                       <div className="w-5 h-5 bg-indigo-500/30 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform icon-3d">🛤️</div>
+1170:                       <div className="text-left">
+1171:                         <div className="flex items-center gap-2 mb-1">
+1172:                           <h3 className="font-black text-sm uppercase tracking-tight">Mastery Roadmap</h3>
+1173:                           {!isSubscribed && <div className="bg-amber-400 text-slate-900 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">Trial</div>}
+1174:                         </div>
+1175:                         <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest leading-none">Mixed Subjects • Level {masteryLevel + 1}</p>
+1176:                       </div>
+1177:                     </div>
+1178:                     <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+1179:                       <ChevronRight className="w-5 h-5" />
+1180:                     </div>
+1181:                   </motion.button>
+1182: 
+1183:                   <StudyPlan 
+1184:                     userData={userData}
+1185:                     isSubscribed={isSubscribed}
+1186:                     onStartTask={(type, title) => handleAICoreAction(type as "notes" | "test", title)} 
+1187:                   />
+1188: 
+1189:                   <RemedialAlert 
+1190:                     onStartRemedial={(topic) => setActiveNotes({ title: topic, chapter: topic, mode: "remedial" })} 
+1191:                   />
+1192: 
+1193: 
+1194: 
+1195:                   <ExploreEngine 
+1196:                     mode={mode} 
+1197:                     isSubscribed={isSubscribed}
+1198:                     userData={userData}
+1199:                     onUpgrade={() => setShowSubscriptionModal(true)}
+1200:                     onFinalSelect={async (item) => {
+1201:                       const isPYQ = item.name.toLowerCase().includes("pyq") || item.name.toLowerCase().includes("previous year");
+1202:                       if (isPYQ) {
+1203:                         if (userData?.planType === "standard") {
+1204:                           alert("👑 TOPPER PYQ Tests are exclusively available in the Achivox Pro Plan. Upgrade now to unlock!");
+1205:                           setShowSubscriptionModal(true);
+1206:                           return;
+1207:                         }
+1208:                         try {
+1209:                           setLoadingQuestions(true);
+1210:                           // Clean parent ID (e.g., topics_laws_of_motion -> Laws Of Motion)
+1211:                           const topicName = item.parentId?.split('_').pop()?.replace(/-/g, ' ') || "this topic";
+1212:                           const formattedTopic = topicName.charAt(0).toUpperCase() + topicName.slice(1);
+1213:                           
+1214:                           const pyqs = await generateAIPYQs(formattedTopic, userData);
+1215:                           if (pyqs && pyqs.length > 0) {
+1216:                             setActiveTest({ title: `PYQs: ${formattedTopic}`, questions: pyqs, mode: "pyq" });
+1217:                           } else {
+1218:                             alert("AI failed to generate PYQs. Please try again.");
+1219:                           }
+1220:                         } catch (e) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,49 @@
+Created At: 2026-06-19T18:45:01Z
+Completed At: 2026-06-19T18:45:01Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2451
+Total Bytes: 126782
+Showing lines 2300 to 2340
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2300:             <SmartTimetable userData={userData} weaknesses={getWeakAreas().map((w: any) => w.topic)} onClose={() => setShowTimetable(false)} />
+2301:           </motion.div>
+2302:         )}
+2303:       </AnimatePresence>
+2304: 
+2305:       <AnimatePresence>
+2306:         {showFormulaVault && (
+2307:           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+2308:              <FormulaVault userData={userData} onClose={() => setShowFormulaVault(false)} />
+2309:           </motion.div>
+2310:         )}
+2311:       </AnimatePresence>
+2312: 
+2313:       <AnimatePresence>
+2314:         {showRewardShop && (
+2315:           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+2316:             <RewardShop userId={userData?.id || auth.currentUser?.uid || "anonymous"} onClose={() => setShowRewardShop(false)} />
+2317:           </motion.div>
+2318:         )}
+2319:       </AnimatePresence>
+2320: 
+2321:       <AnimatePresence>
+2322:         {showReferralCenter && (
+2323:           <ReferralCenter 
+2324:             userData={userData} 
+2325:             onClose={() => setShowReferralCenter(false)} 
+2326:             onSuccess={() => {
+2327:               // Soft refresh user data
+2328:               if (auth.currentUser) {
+2329:                 getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
+2330:                   if (snap.exists()) setUserData({ id: auth.currentUser!.uid, ...snap.data() });
+2331:                 });
+2332:               }
+2333:             }}
+2334:           />
+2335:         )}
+2336:       </AnimatePresence>
+2337: 
+2338:       <AnimatePresence>
+2339:         {showSavedMCQs && (
+2340:           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

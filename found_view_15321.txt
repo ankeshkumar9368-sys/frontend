@@ -1,0 +1,49 @@
+Created At: 2026-06-17T19:34:25Z
+Completed At: 2026-06-17T19:34:25Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2384
+Total Bytes: 124060
+Showing lines 1500 to 1540
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1500: 
+1501:               <div className="relative">
+1502:                 <PerformanceGraph isSubscribed={isSubscribed} refreshTrigger={analyticsUpdateTrigger} />
+1503:               </div>
+1504: 
+1505:               <div className="relative">
+1506:                 <SpacedRevisionSystem
+1507:                   isSubscribed={isSubscribed}
+1508:                   refreshTrigger={analyticsUpdateTrigger}
+1509:                   onRevise={(topic, subject) => handleAICoreAction("notes", topic, undefined, false, subject)}
+1510:                 />
+1511:               </div>
+1512:             </motion.div>
+1513:           )}
+1514: 
+1515:           {activeTab === "Analysis" && (
+1516:             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+1517:               <div className="space-y-1">
+1518:                 <h2 className="text-2xl font-black tracking-tight leading-none">My Analytics</h2>
+1519:                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Real-time performance insights</p>
+1520:               </div>
+1521: 
+1522:               <ExamPredictor 
+1523:                 subjects={
+1524:                   (userData?.board && userData?.cls) 
+1525:                     ? getSubjects(userData.cls, userData.board)
+1526:                     : []
+1527:                 } 
+1528:               />
+1529: 
+1530:               <ProgressDashboard />
+1531: 
+1532:               {/* 👨‍👩‍👧‍👦 PARENT INSIGHT SHARING */}
+1533:               <motion.div 
+1534:                 whileHover={{ y: -4 }}
+1535:                 className="bg-indigo-600 rounded-[32px] p-4 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden"
+1536:               >
+1537:                 <div className="absolute top-0 right-0 p-4 opacity-10">
+1538:                   <Share2 className="w-24 h-24 rotate-12" />
+1539:                 </div>
+1540:                 <div className="relative z-10 flex flex-col gap-4">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

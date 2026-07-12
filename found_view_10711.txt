@@ -1,0 +1,59 @@
+Created At: 2026-06-12T18:15:19Z
+Completed At: 2026-06-12T18:15:19Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2174
+Total Bytes: 110148
+Showing lines 470 to 520
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+470:         const subName = subRaw ? subRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : "General";
+471:         const chapRaw = parentId?.match(/chapters_([a-z0-9_]+?)(?:__|$)/)?.[1];
+472:         const chapName = chapRaw ? chapRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : target;
+473: 
+474:         // Instant local storage cache check
+475:         if (typeof window !== "undefined") {
+476:           const cacheKey = `achivox_notes_full_${subName || 'gen'}_${chapName || 'none'}_${target || 'none'}_${userData?.id || 'guest'}`.replace(/[^a-zA-Z0-9_]/g, '_');
+477:           try {
+478:             const cached = localStorage.getItem(cacheKey);
+479:             if (cached) {
+480:               const parsed = JSON.parse(cached);
+481:               if (parsed && parsed.topics) {
+482:                 setShowAILoading(false);
+483:                 setActiveNotes({
+484:                   title: target,
+485:                   chapter: chapName,
+486:                   subjectContext: subName,
+487:                   classContext: clsName,
+488:                   mode: "full",
+489:                   data: parsed
+490:                 });
+491:                 return;
+492:               }
+493:             }
+494:           } catch (e) {
+495:             console.warn("Local cache check failed:", e);
+496:           }
+497:         }
+498: 
+499:         if (!userData?.isSubscribed) {
+500:           const { allowed } = await checkAndIncrementUsage(userData?.id, "Smart Notes", 1, target);
+501:           if (!allowed) {
+502:             setShowAILoading(false);
+503:             setShowSubscriptionModal(true);
+504:             return;
+505:           }
+506:         }
+507: 
+508:         const notes = await fetchChapterNotes(target, userData, "dual", subName, chapName);
+509:         if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
+510: 
+511:         if (notes) {
+512:           setActiveNotes({ 
+513:             title: target, 
+514:             chapter: chapName,
+515:             subjectContext: subName,
+516:             classContext: clsName,
+517:             data: notes // Pass fetched data
+518:           });
+519:           trackTopicOpen({
+520:             topicId: target.toLowerCase().replace(/\s+/g, '-'),
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

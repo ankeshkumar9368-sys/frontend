@@ -1,0 +1,28 @@
+Created At: 2026-06-19T18:57:39Z
+Completed At: 2026-06-19T18:57:40Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/found_view_17496.txt`
+Total Lines: 204
+Total Bytes: 14577
+Showing lines 1 to 20
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: Created At: 2026-06-19T07:55:18Z
+2: Completed At: 2026-06-19T07:55:18Z
+3: File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+4: Total Lines: 2436
+5: Total Bytes: 125818
+6: Showing lines 1101 to 1295
+7: The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+8: 1101:                   <div className="grid grid-cols-2 gap-3">
+9: 1102:                     {/* Goal Card */}
+10: 1103:                     <motion.div 
+11: 1104:                       className="feature-card p-4 cursor-pointer"
+12: 1105:                       style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(99,102,241,0.15)' }}
+13: 1106:                       initial={{ opacity: 0, y: 15, scale: 0.95 }}
+14: 1107:                       animate={{ opacity: 1, y: 0, scale: 1 }}
+15: 1108:                       transition={{ delay: 0.2 }}
+16: 1109:                       whileTap={{ scale: 0.96 }}
+17: 1110:                       onClick={() => setShowGoalSelector(true)}
+18: 1111:                     >
+19: 1112:                       <motion.div 
+20: 1113:                         className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3 icon-3d"
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

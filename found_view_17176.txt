@@ -1,0 +1,59 @@
+Created At: 2026-06-18T19:56:18Z
+Completed At: 2026-06-18T19:56:19Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2425
+Total Bytes: 125441
+Showing lines 770 to 820
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+770:     const correctAnswers = userData.correctAnswers || 0;
+771:     const accuracy = totalSolved > 0 ? (correctAnswers / totalSolved) * 100 : 100;
+772:     const attempts = userData.attempts || [];
+773: 
+774:     // 1. Low accuracy (< 70%) or high attempts with failures -> review mistakes
+775:     if (accuracy < 70 || (attempts.length > 0 && attempts.some((a: any) => a.score < 60))) {
+776:       recommends.revisionVault = true;
+777:       recommends.flashcards = true;
+778:     }
+779: 
+780:     // 2. Active but weak spots -> Skill roadmap
+781:     if (totalSolved > 15 && accuracy < 85) {
+782:       recommends.roadmap = true;
+783:     }
+784: 
+785:     // 3. Low study engagement -> AI Timetable Planner
+786:     if ((userData.streak || 0) === 0 || (userData.points || 0) < 1500) {
+787:       recommends.timetable = true;
+788:     }
+789: 
+790:     // 4. Brand new user -> Quick Study Swipe Cards & Battle Quiz
+791:     if (totalSolved < 5) {
+792:       recommends.quickStudy = true;
+793:       recommends.battle = true;
+794:     }
+795: 
+796:     // 5. Hard doubts solver -> Scan Camera
+797:     if (attempts.length > 8) {
+798:       recommends.scanSolve = true;
+799:     }
+800: 
+801:     return recommends;
+802:   }, [userData]);
+803: 
+804:   const toggleNotifications = async () => {
+805:     if (!notificationsEnabled) {
+806:       if ("Notification" in window) {
+807:         const permission = await Notification.requestPermission();
+808:         if (permission === "granted") {
+809:           setNotificationsEnabled(true);
+810:           alert("Success! AI Study Reminders are now active. 🚀");
+811:         } else {
+812:           alert("Please enable notifications in your browser settings to stay updated!");
+813:         }
+814:       }
+815:     } else {
+816:       setNotificationsEnabled(false);
+817:     }
+818:   };
+819: 
+820:   const sendTestNotification = () => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

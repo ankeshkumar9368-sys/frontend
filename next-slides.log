@@ -1,0 +1,23 @@
+  ▲ Next.js 14.2.3
+  - Local:        http://127.0.0.1:3000
+  - Network:      http://127.0.0.1:3000
+  - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 2.9s
+ ○ Compiling /slides-formatter ...
+ ✓ Compiled /slides-formatter in 16.2s (812 modules)
+ GET /slides-formatter/ 200 in 16603ms
+ GET /slides-formatter/ 200 in 8452ms
+ ✓ Compiled in 2.2s (321 modules)
+  ▲ Next.js 14.2.3
+  - Local:        http://127.0.0.1:3000
+  - Network:      http://127.0.0.1:3000
+  - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 3.2s
+ ○ Compiling /slides-formatter ...
+ ✓ Compiled /slides-formatter in 15.3s (812 modules)
+ GET /slides-formatter/ 200 in 17419ms
+ ✓ Compiled in 2.2s (321 modules)

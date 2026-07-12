@@ -1,0 +1,39 @@
+Created At: 2026-06-18T19:59:34Z
+Completed At: 2026-06-18T19:59:34Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2419
+Total Bytes: 125204
+Showing lines 1835 to 1865
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1835: 
+1836:       <nav className="glass-card backdrop-blur-xl border-t border-border flex justify-around items-center p-3 z-50 shrink-0 w-full pb-safe">
+1837:         {[
+1838:           { icon: BookOpen, label: "Home" },
+1839:           { icon: FileSpreadsheet, label: "Tests" },
+1840:           { icon: Trophy, label: "Rank" },
+1841:           { icon: Activity, label: "Analysis" },
+1842:           { icon: Wrench, label: "Tools" },
+1843:           { icon: User, label: "Profile" }
+1844:         ].map((item, i) => (
+1845:           <div key={i} onClick={() => setActiveTab(item.label)} className={`flex flex-col items-center gap-1.5 cursor-pointer transition-all ${activeTab === item.label ? "text-primary scale-110" : "text-slate-400"}`}>
+1846:             <item.icon className="w-6 h-6" />
+1847:             <span className="text-[10px] font-black uppercase tracking-tighter">{item.label}</span>
+1848:           </div>
+1849:         ))}
+1850:       </nav>
+1851: 
+1852:       <AnimatePresence>
+1853:         {selectionModal && (
+1854:           <div className="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+1855:             <motion.div 
+1856:               initial={{ scale: 0.9, opacity: 0 }} 
+1857:               animate={{ scale: 1, opacity: 1 }} 
+1858:               exit={{ scale: 0.9, opacity: 0 }}
+1859:               className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[40px] p-4 text-center border border-border relative shadow-2xl"
+1860:             >
+1861:               <button 
+1862:                 onClick={() => setSelectionModal(null)} 
+1863:                 className="absolute top-4 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-primary transition-all"
+1864:               >
+1865:                 <X className="w-5 h-5" />
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

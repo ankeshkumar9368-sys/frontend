@@ -1,0 +1,40 @@
+Created At: 2026-06-16T19:39:03Z
+Completed At: 2026-06-16T19:39:03Z
+File Path: `file:///c:/Users/Admin/.gemini/antigravity/brain/166c9201-d61f-4f97-920c-36b495150ab2/scratch/shrink_ui.js`
+Total Lines: 32
+Total Bytes: 1167
+Showing lines 1 to 32
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: const fs = require('fs');
+2: const path = require('path');
+3: 
+4: const applyUIOptimizations = (filePath) => {
+5:   let content = fs.readFileSync(filePath, 'utf8');
+6: 
+7:   // Background and Glassmorphism
+8:   content = content.replace(/bg-card(\/(\d+))?/g, 'glass-card');
+9:   content = content.replace(/bg-white dark:bg-slate-800/g, 'glass-card');
+10:   content = content.replace(/bg-white\/5/g, 'glass-card');
+11:   
+12:   // Padding Reductions
+13:   content = content.replace(/p-6/g, 'p-4');
+14:   content = content.replace(/p-8/g, 'p-5');
+15:   content = content.replace(/px-6/g, 'px-4');
+16:   content = content.replace(/py-6/g, 'py-4');
+17:   
+18:   // Typography Reductions
+19:   content = content.replace(/text-4xl/g, 'text-3xl');
+20:   content = content.replace(/text-3xl/g, 'text-2xl');
+21: 
+22:   // Animation refinements
+23:   content = content.replace(/hover:scale-105/g, 'hover:scale-[1.02] hover:shadow-indigo-500/20');
+24: 
+25:   fs.writeFileSync(filePath, content, 'utf8');
+26:   console.log(`Optimized UI classes in ${path.basename(filePath)}`);
+27: };
+28: 
+29: applyUIOptimizations('ExamHero-Next/app/page.tsx');
+30: applyUIOptimizations('ExamHero-Next/components/MockTestEngine.tsx');
+31: applyUIOptimizations('ExamHero-Next/components/ExploreEngine.tsx');
+32: 
+The above content shows the entire, complete file contents of the requested file.

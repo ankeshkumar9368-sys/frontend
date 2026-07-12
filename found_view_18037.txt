@@ -1,0 +1,326 @@
+Created At: 2026-06-19T18:58:41Z
+Completed At: 2026-06-19T18:58:42Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 418
+Total Bytes: 22112
+Showing lines 101 to 418
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+101: import BadgeUnlockOverlay from "../components/BadgeUnlockOverlay";
+102: import ParentReportTemplate from "../components/ParentReportTemplate";
+103: import StudyBuddy from "../components/StudyBuddy";
+104: 
+105: import QuickStudyCards from "../components/QuickStudyCards";
+106: import SchoolProjectAssistant from "../components/SchoolProjectAssistant";
+107: import { SUBJECTS_BY_BOARD_CLASS, SUBJECTS_BY_CLASS, getSubjects } from "../lib/curriculum";
+108: import QuestLog from "../components/QuestLog";
+109: import StudyPod from "../components/StudyPod";
+110: import MockExamSimulator from "../components/MockExamSimulator";
+111: import ForceUpdateModal from "../components/ForceUpdateModal";
+112: const generateUniqueId = async () => {
+113:   let attempts = 0;
+114:   while (attempts < 10) {
+115:     const candidateId = `EXH-${Math.floor(100000 + Math.random() * 900000)}`;
+116:     const q = query(collection(db, "users"), where("studentId", "==", candidateId));
+117:     const snap = await getDocs(q);
+118:     if (snap.empty) {
+119:       return candidateId;
+120:     }
+121:     attempts++;
+122:   }
+123:   return `EXH-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 100)}`;
+124: };
+125: 
+126: export default function Home() {
+127:   const { theme, setTheme } = useTheme();
+128:   // ... existing states ...
+129:   const [mode, setMode] = useState<"govt" | "school">("govt");
+130:   const [activeTab, setActiveTab] = useState("Home");
+131:   const [isSubscribed, setIsSubscribed] = useState(false);
+132:   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+133:   const [loadingQuestions, setLoadingQuestions] = useState(false);
+134:   const [loadingNotes, setLoadingNotes] = useState(false);
+135:   const [profiles, setProfiles] = useState([
+136:     { id: 1, name: "Main Aspirant", icon: User, active: true }
+137:   ]);
+138:   const [activeTest, setActiveTest] = useState<any>(null);
+139:   const [showSavedMCQs, setShowSavedMCQs] = useState(false);
+140:   const [activeNotes, setActiveNotes] = useState<any>(null);
+141:   const [selectionModal, setSelectionModal] = useState<any>(null);
+142:   const [testResult, setTestResult] = useState<any>(null);
+143:   const [userData, setUserData] = useState<any>(null);
+144:   const [showDoubtSolver, setShowDoubtSolver] = useState(false);
+145:   const [autoStartMic, setAutoStartMic] = useState(false);
+146:   const [showWelcome, setShowWelcome] = useState(false);
+147:   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+148:   const [showNotifications, setShowNotifications] = useState(false);
+149:   const [notificationsList, setNotificationsList] = useState<AppNotification[]>([]);
+150:   const [broadcasts, setBroadcasts] = useState<any[]>([]);
+151:   const [showSplash, setShowSplash] = useState(false);
+152:   // New feature states
+153:   const [showQuickRevision, setShowQuickRevision] = useState(false);
+154:   const [showFlashcards, setShowFlashcards] = useState(false);
+155:   const [quickRevisionTopic, setQuickRevisionTopic] = useState("");
+156:   const [showGamification, setShowGamification] = useState(false);
+157:   const [showFormulaVault, setShowFormulaVault] = useState(false);
+158:   const [showTopperNotes, setShowTopperNotes] = useState(false);
+159:   const [showSubjective, setShowSubjective] = useState(false);
+160:   const [showQuestLog, setShowQuestLog] = useState(false);
+161:   const [showTimetable, setShowTimetable] = useState(false);
+162:   const [showStudyPods, setShowStudyPods] = useState(false);
+163:   const [showWhyWrong, setShowWhyWrong] = useState(false);
+164:   const [wrongQuestions, setWrongQuestions] = useState<any[]>([]);
+165:   const [showSystemFlow, setShowSystemFlow] = useState(false);
+166:   const [xpPoints, setXpPoints] = useState(0);
+167:   const [masterySequence, setMasterySequence] = useState<any[]>([]);
+168:   const [masteryLevel, setMasteryLevel] = useState(0);
+169:   const [isAuth, setIsAuth] = useState<boolean | null>(null);
+170:   const [showOnboarding, setShowOnboarding] = useState(false);
+171:   const [showGiftModal, setShowGiftModal] = useState(false);
+172:   const [showGoalSelector, setShowGoalSelector] = useState(false);
+173:   const [showRevisionVault, setShowRevisionVault] = useState(false);
+174:   const [showQuickStudy, setShowQuickStudy] = useState(false);
+175:   const [showARViewer, setShowARViewer] = useState<string | null>(null);
+176:   const [showProjectAssistant, setShowProjectAssistant] = useState(false);
+177:   const [analyticsUpdateTrigger, setAnalyticsUpdateTrigger] = useState(0);
+178:   const [showAnalysis, setShowAnalysis] = useState(false);
+179:   const [showBattle, setShowBattle] = useState(false);
+180:   const [showScanSolve, setShowScanSolve] = useState(false);
+181:   const [showRewardShop, setShowRewardShop] = useState(false);
+182:   const [showReferralCenter, setShowReferralCenter] = useState(false);
+183:   const [unlockedBadge, setUnlockedBadge] = useState<{ name: string; icon: string } | null>(null);
+184:   const [showRoadmap, setShowRoadmap] = useState(false);
+185:   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+186:   const [showAILoading, setShowAILoading] = useState(false);
+187:   const [showPrivacy, setShowPrivacy] = useState(false);
+188:   const activeAICoreTaskRef = useRef<string | null>(null);
+189:   const [aiLoadingType, setAILoadingType] = useState<string>("analysis");
+190:   const [systemConfig, setSystemConfig] = useState<any>({ maintenance: false, xpBoost: 1 });
+191:   const [showMockExam, setShowMockExam] = useState(false);
+192:   const [forceUpdateUrl, setForceUpdateUrl] = useState<string | null>(null);
+193:   const [currentAppVersion, setCurrentAppVersion] = useState<number>(1.0);
+194: 
+195:   useEffect(() => {
+196:     const fetchNativeVersion = async () => {
+197:       try {
+198:         const { App } = await import('@capacitor/app');
+199:         const info = await App.getInfo();
+200:         const ver = parseFloat(info.version);
+201:         if (!isNaN(ver)) {
+202:           setCurrentAppVersion(ver);
+203:         }
+204:       } catch (e) {
+205:         console.log("Web mode or App plugin not available, using fallback version 1.0");
+206:       }
+207:     };
+208:     fetchNativeVersion();
+209:   }, []);
+210: 
+211:   useEffect(() => {
+212:     if (systemConfig?.min_app_version && currentAppVersion < systemConfig.min_app_version) {
+213:       setForceUpdateUrl(systemConfig.download_url || "https://play.google.com");
+214:     } else {
+215:       setForceUpdateUrl(null);
+216:     }
+217:   }, [systemConfig, currentAppVersion]);
+218:   const router = useRouter();
+219: 
+220:   // Performance optimizations
+221:   const springConfig = { type: "spring" as const, damping: 30, stiffness: 300, restDelta: 0.001 };
+222:   const fadeUp = {
+223:     initial: { opacity: 0, y: 10 },
+224:     animate: { opacity: 1, y: 0 },
+225:     transition: { duration: 0.3 }
+226:   };
+227: 
+228:   const downloadParentReport = async () => {
+229:     if (!userData) return;
+230:     setIsGeneratingReport(true);
+231:     try {
+232:       const html2pdf = (await import("html2pdf.js")).default;
+233:       const element = document.getElementById("parent-report-template");
+234:       const opt = {
+235:         margin: 0,
+236:         filename: `ExamHero_Report_${userData.name.replace(/\s+/g, '_')}.pdf`,
+237:         image: { type: 'jpeg', quality: 0.98 },
+238:         html2canvas: { scale: 2, useCORS: true },
+239:         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+240:       } as any;
+241:       await html2pdf().set(opt).from(element).save();
+242:     } catch (error) {
+243:       console.error("PDF Export Error:", error);
+244:       alert("Failed to generate report. Please try again.");
+245:     } finally {
+246:       setIsGeneratingReport(false);
+247:     }
+248:   };
+249: 
+250:   // SECURE AUTH: Listen for state changes
+251:   useEffect(() => {
+252:     let userUnsub: any = null;
+253:     let statsUnsub: any = null; // 🔴 Real-time listener for user_stats XP
+254:     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+255:       if (user) {
+256:         setIsAuth(true);
+257:         setShowSplash(true);
+258:         try {
+259:           // 📈 UPDATE STREAK ON LOGIN
+260:           await updateStreak();
+261:           
+262:           const userRef = doc(db, "users", user.uid);
+263:           
+264:           if (userUnsub) userUnsub(); // Clear previous listener if any
+265:           userUnsub = onSnapshot(userRef, async (userSnap) => {
+266:             if (userSnap.exists()) {
+267:               const data = userSnap.data();
+268:               
+269:               // Restore and synchronize performance data from Firestore to local storage
+270:               if (data) {
+271:                 if (data.quizResults) localStorage.setItem("achivox_quiz_results", JSON.stringify(data.quizResults));
+272:                 if (data.mistakes) localStorage.setItem("achivox_mistakes", JSON.stringify(data.mistakes));
+273:                 if (data.studyTimes) localStorage.setItem("achivox_study_times", JSON.stringify(data.studyTimes));
+274:                 if (data.masteredQuestions) localStorage.setItem("achivox_mastered_qs", JSON.stringify(data.masteredQuestions));
+275:                 if (data.streak !== undefined) {
+276:                   localStorage.setItem("achivox_streak", String(data.streak));
+277:                 }
+278:                 if (data.lastStreakDate) {
+279:                   localStorage.setItem("achivox_last_streak_date", data.lastStreakDate);
+280:                 }
+281:         {showRewardShop && (
+282:           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+283:             <RewardShop userId={userData?.id || auth.currentUser?.uid || "anonymous"} onClose={() => setShowRewardShop(false)} />
+284:           </motion.div>
+285:         )}
+286:       </AnimatePresence>
+287: 
+288:       <AnimatePresence>
+289:         {showReferralCenter && (
+290:           <ReferralCenter 
+291:             userData={userData} 
+292:             onClose={() => setShowReferralCenter(false)} 
+293:             onSuccess={() => {
+294:               // Soft refresh user data
+295:               if (auth.currentUser) {
+296:                 getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
+297:                   if (snap.exists()) setUserData({ id: auth.currentUser!.uid, ...snap.data() });
+298:                 });
+299:               }
+300:             }}
+301:           />
+302:         )}
+303:       </AnimatePresence>
+304: 
+305:       <AnimatePresence>
+306:         {showSavedMCQs && (
+307:           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+308:             <SavedMCQs onClose={() => setShowSavedMCQs(false)} />
+309:           </motion.div>
+310:         )}
+311:       </AnimatePresence>
+312: 
+313:       <AILoadingOverlay 
+314:         isOpen={showAILoading} 
+315:         onCancel={() => {
+316:           setShowAILoading(false);
+317:           activeAICoreTaskRef.current = null;
+318:         }} 
+319:         type={aiLoadingType as any} 
+320:       />
+321:     <AnimatePresence>
+322:       {showMockExam && (
+323:         <MockExamSimulator 
+324:           userData={userData} 
+325:           onClose={() => setShowMockExam(false)} 
+326:         />
+327:       )}
+328:     </AnimatePresence>
+329: 
+330:     <AnimatePresence>
+331:       {showARViewer && (
+332:         <ARViewer 
+333:           topic={showARViewer} 
+334:           onClose={() => setShowARViewer(null)} 
+335:         />
+336:       )}
+337:     </AnimatePresence>
+338: 
+339:       <AnimatePresence>
+340:         {showPrivacy && (
+341:           <motion.div 
+342:             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+343:             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+344:           >
+345:             <motion.div 
+346:               initial={{ scale: 0.95, opacity: 0, y: 20 }}
+347:               animate={{ scale: 1, opacity: 1, y: 0 }}
+348:               exit={{ scale: 0.95, opacity: 0, y: 20 }}
+349:               className="bg-white dark:bg-slate-900 rounded-[32px] border border-border shadow-2xl overflow-hidden w-full max-w-lg flex flex-col max-h-[85vh]"
+350:             >
+351:               <div className="bg-slate-950 p-6 flex items-center justify-between sticky top-0 z-10 shrink-0">
+352:                 <div className="flex items-center gap-3">
+353:                   <div className="w-5 h-5 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+354:                     <ShieldCheck className="w-5 h-5" />
+355:                   </div>
+356:                   <div>
+357:                     <h2 className="text-lg font-black text-white">Terms & Privacy</h2>
+358:                     <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">100% Transparent Data Policy</p>
+359:                   </div>
+360:                 </div>
+361:                 <button onClick={() => setShowPrivacy(false)} className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+362:                   <X className="w-5 h-5" />
+363:                 </button>
+364:               </div>
+365:               
+366:               <div className="p-6 overflow-y-auto space-y-6 flex-1 text-slate-600 dark:text-slate-300 text-sm">
+367:                 
+368:                 <section>
+369:                   <h3 className="font-black text-slate-800 dark:text-white text-base mb-2 flex items-center gap-2">
+370:                     <Shield className="w-5 h-5 text-emerald-500" /> Data Safety & Permissions
+371:                   </h3>
+372:                   <p className="mb-3">Your privacy is our priority. We only collect the data necessary to provide you with the best learning experience.</p>
+373:                   <div className="bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-4 space-y-3 border border-border">
+374:                     <div>
+375:                       <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 mb-1">Microphone Access</h4>
+376:                       <p className="text-xs">Required ONLY when you use the AI Doubt Solver to ask questions via voice. We do not listen in the background.</p>
+377:                     </div>
+378:                     <div>
+379:                       <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 mb-1">Device Storage</h4>
+380:                       <p className="text-xs">Required ONLY to save downloaded PDF notes or offline study material to your device.</p>
+381:                     </div>
+382:                   </div>
+383:                 </section>
+384: 
+385:                 <section>
+386:                   <h3 className="font-black text-slate-800 dark:text-white text-base mb-2">What Data Do We Collect?</h3>
+387:                   <ul className="list-disc pl-5 space-y-2 text-xs">
+388:                     <li><strong>Basic Profile Info:</strong> Name, Email, and chosen Avatar for your account identity.</li>
+389:                     <li><strong>Study Analytics:</strong> Test scores, time spent, and weak topics to generate your personalized AI study plan.</li>
+390:                     <li><strong>Subscription Status:</strong> To manage your access to premium features like VVIP notes and AI tools.</li>
+391:                   </ul>
+392:                   <p className="text-xs mt-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-xl">
+393:                     <strong className="block mb-1">Our Promise:</strong> We never sell your personal data or test performance metrics to any third-party advertisers.
+394:                   </p>
+395:                 </section>
+396: 
+397:                 <section>
+398:                   <h3 className="font-black text-slate-800 dark:text-white text-base mb-2">Terms of Service</h3>
+399:                   <p className="text-xs space-y-2">
+400:                     By using ExamHero, you agree to use the platform for educational purposes only. Our AI-generated content is designed for practice and learning assistance, but should not completely replace your prescribed syllabus materials.<br/><br/>
+401:                     Premium subscriptions are auto-revoked upon expiration, and all subscription sales are final as per our standard refund policy. ExamHero operates with absolute transparency and ensures all data complies with global privacy standards.
+402:                   </p>
+403:                 </section>
+404: 
+405:               </div>
+406:               <div className="p-4 border-t border-border bg-slate-50 dark:bg-slate-800/50 text-center shrink-0">
+407:                  <button onClick={() => setShowPrivacy(false)} className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-sm hover:scale-[0.98] transition-transform">
+408:                    I Understand & Agree
+409:                  </button>
+410:               </div>
+411:             </motion.div>
+412:           </motion.div>
+413:         )}
+414:       </AnimatePresence>
+415:     </motion.div>
+416:   );
+417: }
+418: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

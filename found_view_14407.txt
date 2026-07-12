@@ -1,0 +1,54 @@
+Created At: 2026-06-16T19:51:46Z
+Completed At: 2026-06-16T19:51:47Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2364
+Total Bytes: 121031
+Showing lines 1512 to 1557
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1512: 
+1513:               {/* 👨‍👩‍👧‍👦 PARENT INSIGHT SHARING */}
+1514:               <motion.div 
+1515:                 whileHover={{ y: -4 }}
+1516:                 className="bg-indigo-600 rounded-[32px] p-4 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden"
+1517:               >
+1518:                 <div className="absolute top-0 right-0 p-4 opacity-10">
+1519:                   <Share2 className="w-24 h-24 rotate-12" />
+1520:                 </div>
+1521:                 <div className="relative z-10 flex flex-col gap-4">
+1522:                   <div className="flex items-center gap-3">
+1523:                     <div className="w-4 h-4 bg-white/20 rounded-xl flex items-center justify-center">
+1524:                       <ShieldCheck className="w-4 h-4 text-white" />
+1525:                     </div>
+1526:                     <h3 className="font-black text-lg">Parent's Insight Link</h3>
+1527:                   </div>
+1528:                   <p className="text-indigo-100 text-xs font-medium leading-relaxed">
+1529:                     Share a verified academic report with your parents. It includes your predicted marks and AI feedback.
+1530:                   </p>
+1531:                   <button 
+1532:                     onClick={async () => {
+1533:                       if (!auth.currentUser) return;
+1534:                       const shareUrl = `${window.location.origin}/parent?id=${auth.currentUser.uid}`;
+1535:                       if (navigator.share) {
+1536:                         try {
+1537:                           await navigator.share({
+1538:                             title: 'ExamHero Academic Report',
+1539:                             text: `Hey! Check out my AI-predicted exam report on ExamHero.`,
+1540:                             url: shareUrl,
+1541:                           });
+1542:                         } catch (err) {
+1543:                           console.log("Share cancelled");
+1544:                         }
+1545:                       } else {
+1546:                         navigator.clipboard.writeText(shareUrl);
+1547:                         alert("Link copied to clipboard! Share it with your parents.");
+1548:                       }
+1549:                     }}
+1550:                     className="bg-white text-indigo-600 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+1551:                   >
+1552:                     <Share2 className="w-4 h-4" /> Share Report with Parents
+1553:                   </button>
+1554:                 </div>
+1555:               </motion.div>
+1556:             </motion.div>
+1557:           )}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

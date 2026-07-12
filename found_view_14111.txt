@@ -1,0 +1,29 @@
+Created At: 2026-06-14T20:42:37Z
+Completed At: 2026-06-14T20:42:37Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2368
+Total Bytes: 121078
+Showing lines 1215 to 1235
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1215:                           console.error("PYQ Error:", e);
+1216:                           alert("Failed to connect to AI server. Please try again.");
+1217:                         } finally {
+1218:                           setLoadingQuestions(false);
+1219:                         }
+1220:                       } else {
+1221:                         setSelectionModal(item);
+1222:                       }
+1223:                     }}
+1224:                   />
+1225:                 </motion.div>
+1226:               )}
+1227:             </AnimatePresence>
+1228: 
+1229: 
+1230:     </div>
+1231:   );
+1232: }
+1233: 
+1234:           {activeTab === "Tests" && (
+1235:             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

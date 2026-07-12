@@ -1,0 +1,119 @@
+Created At: 2026-06-19T07:11:12Z
+Completed At: 2026-06-19T07:11:13Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 220 to 330
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+220:     }
+221:   };
+222: 
+223:   // SECURE AUTH: Listen for state changes
+224:   useEffect(() => {
+225:     let userUnsub: any = null;
+226:     let statsUnsub: any = null; // 🔴 Real-time listener for user_stats XP
+227:     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+228:       if (user) {
+229:         setIsAuth(true);
+230:         setShowSplash(true);
+231:         try {
+232:           // 📈 UPDATE STREAK ON LOGIN
+233:           await updateStreak();
+234:           
+235:           const userRef = doc(db, "users", user.uid);
+236:           
+237:           if (userUnsub) userUnsub(); // Clear previous listener if any
+238:           userUnsub = onSnapshot(userRef, async (userSnap) => {
+239:             if (userSnap.exists()) {
+240:               const data = userSnap.data();
+241:               
+242:               // Premium Expiry Check
+243:               if (data?.isSubscribed && data?.premiumEndDate) {
+244:                 if (new Date() > new Date(data.premiumEndDate)) {
+245:                   // Revoke premium
+246:                   await updateDoc(userRef, {
+247:                     isSubscribed: deleteField(),
+248:                     planType: deleteField(),
+249:                     premiumEndDate: deleteField()
+250:                   });
+251:                   data.isSubscribed = false;
+252:                   data.planType = null;
+253:                   data.premiumEndDate = null;
+254:                   alert("Your premium subscription has expired.");
+255:                 }
+256:               }
+257: 
+258:               setUserData({ id: user.uid, ...data });
+259:               setIsSubscribed(!!data?.isSubscribed);
+260:               
+261:               // If user is Google user (not anonymous) and doesn't have a unique ID yet, generate and save one!
+262:               if (!user.isAnonymous && !data.studentId) {
+263:                 const uniqueId = await generateUniqueId();
+264:                 await updateDoc(userRef, { studentId: uniqueId });
+265:                 setUserData((prev: any) => ({ ...prev, studentId: uniqueId }));
+266:               }
+267: 
+268:               // Lucky Gift Logic
+269:               if (data?.giftMessage && !localStorage.getItem(`gift_seen_${user.uid}`)) {
+270:                 setTimeout(() => setShowGiftModal(true), 2000);
+271:               }
+272: 
+273:               // Check if onboarded
+274:               const onboarded = localStorage.getItem("achivox_onboarded");
+275:               if (!onboarded) setShowOnboarding(true);
+276:             } else {
+277:               // Generate unique ID only if they are not anonymous
+278:               let uniqueId = null;
+279:               if (!user.isAnonymous) {
+280:                 uniqueId = await generateUniqueId();
+281:               }
+282: 
+283:               const initialData: any = {
+284:                 id: user.uid,
+285:                 name: user.displayName || "New Aspirant",
+286:                 email: user.email,
+287:                 totalSolved: 0,
+288:                 correctAnswers: 0,
+289:                 streak: 0,
+290:                 rank: "N/A",
+291:                 points: 0,
+292:                 isSubscribed: false,
+293:                 createdAt: serverTimestamp(),
+294:                 attempts: []
+295:               };
+296: 
+297:               if (uniqueId) {
+298:                 initialData.studentId = uniqueId;
+299:               }
+300: 
+301:               await setDoc(userRef, initialData);
+302:               setUserData(initialData);
+303:               setShowOnboarding(true);
+304:             }
+305:           });
+306: 
+307:           // 🔴 REAL-TIME XP SYNC: Listen to user_stats and push xp → userData.points
+308:           // This keeps Home tab XP perfectly in sync with ALL XP sources
+309:           // (tests, quests, pomodoro, school prep, daily challenge, etc.)
+310:           if (statsUnsub) statsUnsub();
+311:           statsUnsub = onSnapshot(doc(db, "user_stats", user.uid), (statsSnap) => {
+312:             if (statsSnap.exists()) {
+313:               const statsData = statsSnap.data();
+314:               const authoritativeXP = statsData.xp || 0;
+315:               // Sync the authoritative XP from user_stats into userData.points (Home tab source)
+316:               setUserData((prev: any) => {
+317:                 if (!prev) return prev;
+318:                 // Only update if value actually changed to avoid re-render loops
+319:                 if ((prev.points || 0) === authoritativeXP) return prev;
+320:                 return { ...prev, points: authoritativeXP };
+321:               });
+322:             }
+323:           });
+324: 
+325:           setTimeout(() => {
+326:             setShowWelcome(true);
+327:           }, 800);
+328:         } catch (error) {
+329:           console.error("Firestore Error:", error);
+330:           const saved = localStorage.getItem(`achivox_user_${user.uid}`);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,13 @@
+Created At: 2026-06-19T10:44:16Z
+Completed At: 2026-06-19T10:44:17Z
+File Path: `file:///C:/Users/Admin/.gemini/antigravity/brain/166c9201-d61f-4f97-920c-36b495150ab2/task.md`
+Total Lines: 5
+Total Bytes: 352
+Showing lines 1 to 5
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: - `[x]` 1. Add springy hover micro-animations to bottom navigation tabs in `app/page.tsx`
+2: - `[x]` 2. Update progress bar transition time in `components/AILoadingOverlay.tsx` to 2.2s
+3: - `[x]` 3. Refactor mistake loading, mastering, and 3D card transitions in `components/FlashcardForge.tsx`
+4: - `[/]` 4. Verify compilation and run build check successfully
+5: 
+The above content shows the entire, complete file contents of the requested file.

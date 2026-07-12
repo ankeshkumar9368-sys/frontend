@@ -1,0 +1,108 @@
+Created At: 2026-06-19T18:58:26Z
+Completed At: 2026-06-19T18:58:27Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 418
+Total Bytes: 22112
+Showing lines 1 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: "use client";
+2: 
+3: import { useTheme } from "next-themes";
+4: import { 
+5:   Moon, Sun, BookOpen, User, Flame, Play, Target, Award, 
+6:   ChevronRight, FileSpreadsheet, Activity, BookText, 
+7:   GraduationCap, Building2, LogOut, TrendingUp, Trophy, 
+8:   CheckCircle2, Zap, RotateCcw, Plus, Clock, Sparkles, X, Loader2, LayoutDashboard, Brain, Lock, Bell, BellOff, ArrowDownRight,
+9:   Wrench, Info, Map, BarChart2, BarChart3, Star, Shield, Book, Gift, PartyPopper, Heart, Bookmark, Settings, Share2, ShieldCheck, UserPlus, Crown, PenTool
+10: } from "lucide-react";
+11: import { motion, AnimatePresence } from "framer-motion";
+12: import Image from "next/image";
+13: import Link from "next/link";
+14: import dynamic from "next/dynamic";
+15: import { useState, useEffect, useCallback, useRef } from "react";
+16: import { useRouter } from "next/navigation";
+17: import { auth, db } from "../lib/firebase";
+18: import { onAuthStateChanged, signOut } from "firebase/auth";
+19: import { doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp, collection, query, where, getDocs, orderBy, onSnapshot, limit, deleteField } from "firebase/firestore";
+20: import AIDoubtSolver from "../components/AIDoubtSolver";
+21: import { fetchContent, fetchQuestions, ContentItem, fetchDoubtResponse, generateAIPYQs, fetchChapterNotes, generateAIQuestions, getTestBankId, generateSingleReplacementQuestion } from "../lib/content";
+22: import ExploreEngine from "../components/ExploreEngine";
+23: import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics } from "../lib/analytics";
+24: const MockTestEngine = dynamic(() => import("../components/MockTestEngine"));
+25: const SchoolTestEngine = dynamic(() => import("../components/SchoolTestEngine"));
+26: "use client";
+27: 
+28: import { useTheme } from "next-themes";
+29: import { 
+30:   Moon, Sun, BookOpen, User, Flame, Play, Target, Award, 
+31:   ChevronRight, FileSpreadsheet, Activity, BookText, 
+32:   GraduationCap, Building2, LogOut, TrendingUp, Trophy, 
+33:   CheckCircle2, Zap, RotateCcw, Plus, Clock, Sparkles, X, Loader2, LayoutDashboard, Brain, Lock, Bell, BellOff, ArrowDownRight,
+34:   Wrench, Info, Map, BarChart2, BarChart3, Star, Shield, Book, Gift, PartyPopper, Heart, Bookmark, Settings, Share2, ShieldCheck, UserPlus, Crown, PenTool
+35: } from "lucide-react";
+36: import { motion, AnimatePresence } from "framer-motion";
+37: import Image from "next/image";
+38: import Link from "next/link";
+39: import dynamic from "next/dynamic";
+40: import { useState, useEffect, useCallback, useRef } from "react";
+41: import { useRouter } from "next/navigation";
+42: import { auth, db } from "../lib/firebase";
+43: import { onAuthStateChanged, signOut } from "firebase/auth";
+44: import { doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp, collection, query, where, getDocs, orderBy, onSnapshot, limit, deleteField } from "firebase/firestore";
+45: import AIDoubtSolver from "../components/AIDoubtSolver";
+46: import { fetchContent, fetchQuestions, ContentItem, fetchDoubtResponse, generateAIPYQs, fetchChapterNotes, generateAIQuestions, getTestBankId, generateSingleReplacementQuestion } from "../lib/content";
+47: import ExploreEngine from "../components/ExploreEngine";
+48: import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics } from "../lib/analytics";
+49: const MockTestEngine = dynamic(() => import("../components/MockTestEngine"));
+50: const SchoolTestEngine = dynamic(() => import("../components/SchoolTestEngine"));
+51: const SubjectiveEngine = dynamic(() => import("../components/SubjectiveEngine"));
+52: import AnalysisEngine from "../components/AnalysisEngine";
+53: import SmartAvatar from "../components/SmartAvatar";
+54: const RevisionVault = dynamic(() => import("../components/RevisionVault"));
+55: const MasteryRoadmap = dynamic(() => import("../components/MasteryRoadmap"));
+56: import { getMasterySequence } from "../lib/curriculum";
+57: import SmartNotesViewer from "../components/SmartNotesViewer";
+58: import TopperNotes from "../components/TopperNotes";
+59: import Leaderboard from "../components/Leaderboard";
+60: import StudyPlan from "../components/StudyPlan";
+61: import NotificationSidebar, { AppNotification } from "../components/NotificationSidebar";
+62: import StreakCelebration from "../components/StreakCelebration";
+63: import ProgressDashboard from "../components/ProgressDashboard";
+64: import DailyTasksTracker from "../components/DailyTasksTracker";
+65: import SplashScreen from "../components/SplashScreen";
+66: 
+67: const ARViewer = dynamic(() => import("../components/ARViewer"));
+68: 
+69: import WeaknessHeatmap from "../components/WeaknessHeatmap";
+70: import QuickRevisionMode from "../components/QuickRevisionMode";
+71: import GamificationHub from "../components/GamificationHub";
+72: import WhyGotWrong from "../components/WhyGotWrong";
+73: import PerformanceGraph from "../components/PerformanceGraph";
+74: import SpacedRevisionSystem from "../components/SpacedRevisionSystem";
+75: import SystemFlowModal from "../components/SystemFlowModal";
+76: import LandingPage from "../components/LandingPage";
+77: import OnboardingFlow from "../components/OnboardingFlow";
+78: import SubscriptionModal from "../components/SubscriptionModal";
+79: import PremiumBanner from "../components/PremiumBanner";
+80: import SavedMCQs from "../components/SavedMCQs";
+81: import GoalSelector from "../components/GoalSelector";
+82: import AILoadingOverlay from "../components/AILoadingOverlay";
+83: import { getWeakAreas } from "../lib/analytics";
+84: 
+85: const tapEffect = { 
+86:   scale: 0.95, 
+87:   transition: { type: "spring" as const, stiffness: 400, damping: 17 } 
+88: };
+89: 
+90: 
+91: 
+92: import FlashcardForge from "../components/FlashcardForge";
+93: import AIVoiceCoach from "../components/AIVoiceCoach";
+94: const BattleQuiz = dynamic(() => import("../components/BattleQuiz"));
+95: import ScanAndSolve from "../components/ScanAndSolve";
+96: import SmartTimetable from "../components/SmartTimetable";
+97: import FormulaVault from "../components/FormulaVault";
+98: import RewardShop from "../components/RewardShop";
+99: import ReferralCenter from "../components/ReferralCenter";
+100: import { checkAndUnlockBadges, addXP } from "../lib/gamification";
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,69 @@
+Created At: 2026-06-19T07:54:26Z
+Completed At: 2026-06-19T07:54:27Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 1850 to 1910
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1850:               <div 
+1851:                 className={`menu-icon-3d flex items-center justify-center p-1.5 rounded-[14px] ${
+1852:                   isActive 
+1853:                     ? "active bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-indigo-500 dark:text-indigo-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]" 
+1854:                     : "text-slate-400 hover:text-slate-500 dark:hover:text-slate-300"
+1855:                 }`}
+1856:               >
+1857:                 <item.icon className="w-5 h-5 drop-shadow-[0_1.5px_3px_rgba(99,102,241,0.15)]" />
+1858:               </div>
+1859:               <span className={`text-[8.5px] font-black uppercase tracking-widest transition-all duration-300 leading-none ${
+1860:                 isActive ? "text-indigo-500 dark:text-indigo-400 font-extrabold scale-105" : "text-slate-400/80 dark:text-slate-500 font-bold"
+1861:               }`}>
+1862:                 {item.label}
+1863:               </span>
+1864:             </motion.div>
+1865:           );
+1866:         })}
+1867:       </nav>
+1868: 
+1869:       <AnimatePresence>
+1870:         {selectionModal && (
+1871:           <div className="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+1872:             <motion.div 
+1873:               initial={{ scale: 0.9, opacity: 0 }} 
+1874:               animate={{ scale: 1, opacity: 1 }} 
+1875:               exit={{ scale: 0.9, opacity: 0 }}
+1876:               className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[40px] p-4 text-center border border-border relative shadow-2xl"
+1877:             >
+1878:               <button 
+1879:                 onClick={() => setSelectionModal(null)} 
+1880:                 className="absolute top-4 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-primary transition-all"
+1881:               >
+1882:                 <X className="w-5 h-5" />
+1883:               </button>
+1884:               <h3 className="text-xl font-black mb-6 text-slate-800 dark:text-white">{selectionModal.name}</h3>
+1885:               <div className="grid grid-cols-1 gap-3">
+1886:                  <button 
+1887:                   onClick={() => { handleAICoreAction("notes", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1888:                   className="bg-indigo-600 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1889:                 >
+1890:                   Smart Notes
+1891:                 </button>
+1892:                 <button 
+1893:                   onClick={() => { handleAICoreAction("quiz", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1894:                   className="bg-slate-900 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1895:                 >
+1896:                   Live Test
+1897:                 </button>
+1898:               </div>
+1899:             </motion.div>
+1900:           </div>
+1901:         )}
+1902: 
+1903:       </AnimatePresence>
+1904: 
+1905:       {showDoubtSolver && <AIDoubtSolver autoStartMic={autoStartMic} onExit={() => { setShowDoubtSolver(false); setAutoStartMic(false); }} isSubscribed={isSubscribed} />}
+1906: 
+1907:       {/* New Feature Overlays */}
+1908:       <AnimatePresence>
+1909:         {showSystemFlow && <SystemFlowModal onClose={() => setShowSystemFlow(false)} />}
+1910:       </AnimatePresence>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

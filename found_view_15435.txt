@@ -1,0 +1,39 @@
+Created At: 2026-06-17T19:50:13Z
+Completed At: 2026-06-17T19:50:14Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2377
+Total Bytes: 123761
+Showing lines 1480 to 1510
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1480:                           <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+1481:                             <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping" />
+1482:                             <span className="text-[7px] font-black uppercase text-rose-500 tracking-wider">Focus</span>
+1483:                           </div>
+1484:                         )}
+1485:                       </motion.button>
+1486:                     ))}
+1487:                   </div>
+1488:                 );
+1489:               })()}
+1490: 
+1491:               <div className="relative">
+1492:                  <WeaknessHeatmap
+1493:                   isSubscribed={isSubscribed}
+1494:                   refreshTrigger={analyticsUpdateTrigger}
+1495:                   onBoostTopic={(topic, subject) => {
+1496:                     handleAICoreAction("notes", topic, undefined, false, subject);
+1497:                   }}
+1498:                 />
+1499:               </div>
+1500: 
+1501:               <div className="relative">
+1502:                 <PerformanceGraph isSubscribed={isSubscribed} refreshTrigger={analyticsUpdateTrigger} />
+1503:               </div>
+1504: 
+1505:               <div className="relative">
+1506:                 <SpacedRevisionSystem
+1507:                   isSubscribed={isSubscribed}
+1508:                   refreshTrigger={analyticsUpdateTrigger}
+1509:                   onRevise={(topic, subject) => handleAICoreAction("notes", topic, undefined, false, subject)}
+1510:                 />
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

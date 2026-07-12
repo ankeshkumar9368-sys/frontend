@@ -1,0 +1,129 @@
+Created At: 2026-06-18T19:37:51Z
+Completed At: 2026-06-18T19:37:51Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2356
+Total Bytes: 122470
+Showing lines 80 to 200
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+80: import SchoolProjectAssistant from "../components/SchoolProjectAssistant";
+81: import { SUBJECTS_BY_BOARD_CLASS, SUBJECTS_BY_CLASS, getSubjects } from "../lib/curriculum";
+82: import QuestLog from "../components/QuestLog";
+83: import StudyPod from "../components/StudyPod";
+84: import MockExamSimulator from "../components/MockExamSimulator";
+85: import ForceUpdateModal from "../components/ForceUpdateModal";
+86: const generateUniqueId = async () => {
+87:   let attempts = 0;
+88:   while (attempts < 10) {
+89:     const candidateId = `EXH-${Math.floor(100000 + Math.random() * 900000)}`;
+90:     const q = query(collection(db, "users"), where("studentId", "==", candidateId));
+91:     const snap = await getDocs(q);
+92:     if (snap.empty) {
+93:       return candidateId;
+94:     }
+95:     attempts++;
+96:   }
+97:   return `EXH-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 100)}`;
+98: };
+99: 
+100: export default function Home() {
+101:   const { theme, setTheme } = useTheme();
+102:   // ... existing states ...
+103:   const [mode, setMode] = useState<"govt" | "school">("govt");
+104:   const [activeTab, setActiveTab] = useState("Home");
+105:   const [isSubscribed, setIsSubscribed] = useState(false);
+106:   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+107:   const [loadingQuestions, setLoadingQuestions] = useState(false);
+108:   const [loadingNotes, setLoadingNotes] = useState(false);
+109:   const [profiles, setProfiles] = useState([
+110:     { id: 1, name: "Main Aspirant", icon: User, active: true }
+111:   ]);
+112:   const [activeTest, setActiveTest] = useState<any>(null);
+113:   const [showSavedMCQs, setShowSavedMCQs] = useState(false);
+114:   const [activeNotes, setActiveNotes] = useState<any>(null);
+115:   const [selectionModal, setSelectionModal] = useState<any>(null);
+116:   const [testResult, setTestResult] = useState<any>(null);
+117:   const [userData, setUserData] = useState<any>(null);
+118:   const [showDoubtSolver, setShowDoubtSolver] = useState(false);
+119:   const [autoStartMic, setAutoStartMic] = useState(false);
+120:   const [showWelcome, setShowWelcome] = useState(false);
+121:   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+122:   const [showNotifications, setShowNotifications] = useState(false);
+123:   const [notificationsList, setNotificationsList] = useState<AppNotification[]>([]);
+124:   const [broadcasts, setBroadcasts] = useState<any[]>([]);
+125:   const [showSplash, setShowSplash] = useState(false);
+126:   // New feature states
+127:   const [showQuickRevision, setShowQuickRevision] = useState(false);
+128:   const [showFlashcards, setShowFlashcards] = useState(false);
+129:   const [quickRevisionTopic, setQuickRevisionTopic] = useState("");
+130:   const [showGamification, setShowGamification] = useState(false);
+131:   const [showFormulaVault, setShowFormulaVault] = useState(false);
+132:   const [showSubjective, setShowSubjective] = useState(false);
+133:   const [showQuestLog, setShowQuestLog] = useState(false);
+134:   const [showTimetable, setShowTimetable] = useState(false);
+135:   const [showStudyPods, setShowStudyPods] = useState(false);
+136:   const [showWhyWrong, setShowWhyWrong] = useState(false);
+137:   const [wrongQuestions, setWrongQuestions] = useState<any[]>([]);
+138:   const [showSystemFlow, setShowSystemFlow] = useState(false);
+139:   const [xpPoints, setXpPoints] = useState(0);
+140:   const [masterySequence, setMasterySequence] = useState<any[]>([]);
+141:   const [masteryLevel, setMasteryLevel] = useState(0);
+142:   const [isAuth, setIsAuth] = useState<boolean | null>(null);
+143:   const [showOnboarding, setShowOnboarding] = useState(false);
+144:   const [showGiftModal, setShowGiftModal] = useState(false);
+145:   const [showGoalSelector, setShowGoalSelector] = useState(false);
+146:   const [showRevisionVault, setShowRevisionVault] = useState(false);
+147:   const [showQuickStudy, setShowQuickStudy] = useState(false);
+148:   const [showARViewer, setShowARViewer] = useState<string | null>(null);
+149:   const [showProjectAssistant, setShowProjectAssistant] = useState(false);
+150:   const [analyticsUpdateTrigger, setAnalyticsUpdateTrigger] = useState(0);
+151:   const [showAnalysis, setShowAnalysis] = useState(false);
+152:   const [showBattle, setShowBattle] = useState(false);
+153:   const [showScanSolve, setShowScanSolve] = useState(false);
+154:   const [showRewardShop, setShowRewardShop] = useState(false);
+155:   const [showReferralCenter, setShowReferralCenter] = useState(false);
+156:   const [unlockedBadge, setUnlockedBadge] = useState<{ name: string; icon: string } | null>(null);
+157:   const [showRoadmap, setShowRoadmap] = useState(false);
+158:   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+159:   const [showAILoading, setShowAILoading] = useState(false);
+160:   const [showPrivacy, setShowPrivacy] = useState(false);
+161:   const activeAICoreTaskRef = useRef<string | null>(null);
+162:   const [aiLoadingType, setAILoadingType] = useState<string>("analysis");
+163:   const [systemConfig, setSystemConfig] = useState<any>({ maintenance: false, xpBoost: 1 });
+164:   const [showMockExam, setShowMockExam] = useState(false);
+165:   const [forceUpdateUrl, setForceUpdateUrl] = useState<string | null>(null);
+166:   const [currentAppVersion, setCurrentAppVersion] = useState<number>(1.0);
+167: 
+168:   useEffect(() => {
+169:     const fetchNativeVersion = async () => {
+170:       try {
+171:         const { App } = await import('@capacitor/app');
+172:         const info = await App.getInfo();
+173:         const ver = parseFloat(info.version);
+174:         if (!isNaN(ver)) {
+175:           setCurrentAppVersion(ver);
+176:         }
+177:       } catch (e) {
+178:         console.log("Web mode or App plugin not available, using fallback version 1.0");
+179:       }
+180:     };
+181:     fetchNativeVersion();
+182:   }, []);
+183: 
+184:   useEffect(() => {
+185:     if (systemConfig?.min_app_version && currentAppVersion < systemConfig.min_app_version) {
+186:       setForceUpdateUrl(systemConfig.download_url || "https://play.google.com");
+187:     } else {
+188:       setForceUpdateUrl(null);
+189:     }
+190:   }, [systemConfig, currentAppVersion]);
+191:   const router = useRouter();
+192: 
+193:   // Performance optimizations
+194:   const springConfig = { type: "spring" as const, damping: 30, stiffness: 300, restDelta: 0.001 };
+195:   const fadeUp = {
+196:     initial: { opacity: 0, y: 10 },
+197:     animate: { opacity: 1, y: 0 },
+198:     transition: { duration: 0.3 }
+199:   };
+200: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

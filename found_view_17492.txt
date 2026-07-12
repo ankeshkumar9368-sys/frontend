@@ -1,0 +1,88 @@
+Created At: 2026-06-19T07:55:11Z
+Completed At: 2026-06-19T07:55:12Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 1461 to 1540
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1461:                     onClick: () => setShowQuickStudy(true)
+1462:                   },
+1463:                   {
+1464:                     id: "quests",
+1465:                     title: "Daily Quests",
+1466:                     subtitle: "XP Loot Box",
+1467:                     emoji: "⚔️",
+1468:                     bgClass: "bg-rose-100 text-rose-500 dark:bg-rose-950/20",
+1469:                     isGlowing: false,
+1470:                     glowClass: "",
+1471:                     onClick: () => setShowQuestLog(true)
+1472:                   },
+1473:                   {
+1474:                     id: "studyPods",
+1475:                     title: "Grind Pods",
+1476:                     subtitle: "Live Study Pods",
+1477:                     emoji: "🧘‍♂️",
+1478:                     bgClass: "bg-teal-100 text-teal-600 dark:bg-teal-950/20",
+1479:                     isGlowing: false,
+1480:                     glowClass: "",
+1481:                     onClick: () => setShowStudyPods(true)
+1482:                   },
+1483:                   {
+1484:                     id: "battle",
+1485:                     title: "Battle Arena",
+1486:                     subtitle: "Multiplayer Quiz",
+1487:                     emoji: "⚔️",
+1488:                     bgClass: "bg-red-100 text-red-500 dark:bg-red-950/20",
+1489:                     isGlowing: recs.battle,
+1490:                     glowClass: "glow-rose",
+1491:                     onClick: () => setShowBattle(true)
+1492:                   },
+1493:                   {
+1494:                     id: "achievements",
+1495:                     title: "Achievements",
+1496:                     subtitle: "XP & Badges",
+1497:                     emoji: "🏆",
+1498:                     bgClass: "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/20",
+1499:                     isGlowing: false,
+1500:                     glowClass: "",
+1501:                     onClick: () => setShowGamification(true)
+1502:                   }
+1503:                 ];
+1504: 
+1505:                 return (
+1506:                   <div className="grid grid-cols-2 gap-4">
+1507:                     {toolsList.map((tool) => (
+1508:                       <motion.button
+1509:                         key={tool.id}
+1510:                         whileHover={{ scale: 1.03, y: -2 }}
+1511:                         whileTap={{ scale: 0.97 }}
+1512:                         onClick={tool.onClick}
+1513:                         className={`relative overflow-hidden rounded-[24px] p-4 bg-white dark:bg-slate-900 border border-border shadow-md flex flex-col items-start gap-3 text-left transition-all ${tool.isGlowing ? `${tool.glowClass} animate-pulse scale-[1.01] border-red-500/40` : 'hover:border-primary/40'}`}
+1514:                       >
+1515:                         {/* 3D Icon Wrapper */}
+1516:                         <div className={`w-5 h-5 rounded-xl flex items-center justify-center text-xl icon-3d ${tool.bgClass}`}>
+1517:                           {tool.emoji}
+1518:                         </div>
+1519:                         {/* Labels */}
+1520:                         <div>
+1521:                           <h4 className="font-black text-xs sm:text-sm text-foreground tracking-tight leading-tight mb-1">{tool.title}</h4>
+1522:                           <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none">{tool.subtitle}</p>
+1523:                         </div>
+1524:                         
+1525:                         {/* Glowing Performance Recommendation tag */}
+1526:                         {tool.isGlowing && (
+1527:                           <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+1528:                             <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping" />
+1529:                             <span className="text-[7px] font-black uppercase text-rose-500 tracking-wider">Focus</span>
+1530:                           </div>
+1531:                         )}
+1532:                       </motion.button>
+1533:                     ))}
+1534:                   </div>
+1535:                 );
+1536:               })()}
+1537: 
+1538: 
+1539: 
+1540:               <div className="relative">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

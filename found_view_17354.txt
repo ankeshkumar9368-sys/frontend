@@ -1,0 +1,77 @@
+Created At: 2026-06-19T07:13:07Z
+Completed At: 2026-06-19T07:13:08Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 1352 to 1420
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1352:           {activeTab === "Tools" && (
+1353:             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+1354:               <div className="space-y-1">
+1355:                 <h2 className="text-2xl font-black tracking-tight leading-none">AI Tools</h2>
+1356:                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Power features for smarter study</p>
+1357:               </div>
+1358: 
+1359:               {/* System Flow Banner */}
+1360:               <motion.button
+1361:                 whileTap={{ scale: 0.97 }}
+1362:                 onClick={() => setShowSystemFlow(true)}
+1363:                 className="w-full bg-gradient-to-r from-primary via-violet-600 to-indigo-700 text-white p-5 rounded-[28px] flex items-center justify-between shadow-xl shadow-primary/20"
+1364:               >
+1365:                 <div className="flex items-center gap-3">
+1366:                   <div className="w-5 h-5 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">🔄</div>
+1367:                   <div className="text-left">
+1368:                     <p className="font-black text-sm">How ExamHero AI Works</p>
+1369:                     <p className="text-white/70 text-xs font-semibold">See the 8-step learning loop</p>
+1370:                   </div>
+1371:                 </div>
+1372:                 <Info className="w-5 h-5 text-white/70" />
+1373:               </motion.button>
+1374: 
+1375:               {/* 3D ICON GRID OF COMPACTED FEATURES */}
+1376:               {(() => {
+1377:                 const recs = getGlowRecommendations();
+1378:                 
+1379:                 const toolsList = [
+1380:                   {
+1381:                     id: "formula",
+1382:                     title: "Smart Formulas",
+1383:                     subtitle: "Formula Vault",
+1384:                     emoji: "📚",
+1385:                     bgClass: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-950/20",
+1386:                     isGlowing: false,
+1387:                     glowClass: "",
+1388:                     onClick: () => setShowFormulaVault(true)
+1389:                   },
+1390:                   {
+1391:                     id: "revisionVault",
+1392:                     title: "Mistake Bank",
+1393:                     subtitle: "Revision Vault",
+1394:                     emoji: "🧠",
+1395:                     bgClass: "bg-amber-100 text-amber-500 dark:bg-amber-950/20",
+1396:                     isGlowing: recs.revisionVault,
+1397:                     glowClass: "glow-amber",
+1398:                     onClick: () => {
+1399:                       if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+1400:                       setShowRevisionVault(true);
+1401:                     }
+1402:                   },
+1403:                   {
+1404:                     id: "flashcards",
+1405:                     title: "AI Flashcards",
+1406:                     subtitle: "Flashcard Forge",
+1407:                     emoji: "⚡",
+1408:                     bgClass: "bg-orange-100 text-orange-500 dark:bg-orange-950/20",
+1409:                     isGlowing: recs.flashcards,
+1410:                     glowClass: "glow-amber",
+1411:                     onClick: () => setShowFlashcards(true)
+1412:                   },
+1413:                   {
+1414:                     id: "roadmap",
+1415:                     title: "Skill Journey",
+1416:                     subtitle: "Mastery Roadmap",
+1417:                     emoji: "🗺️",
+1418:                     bgClass: "bg-indigo-100 text-indigo-500 dark:bg-indigo-950/20",
+1419:                     isGlowing: recs.roadmap,
+1420:                     glowClass: "glow-primary",
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

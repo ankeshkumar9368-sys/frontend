@@ -1,0 +1,89 @@
+Created At: 2026-06-18T19:59:27Z
+Completed At: 2026-06-18T19:59:27Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2419
+Total Bytes: 125204
+Showing lines 900 to 980
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+900:           >
+901:             <Image src="/achivox-logo.png" alt="Achivox" width={40} height={40} className="object-cover w-full h-full" priority />
+902:           </motion.div>
+903:           <div>
+904:             <h1 className="text-xl font-black tracking-tighter leading-none" style={{background:'linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>ACHIVOX</h1>
+905:             <p className="text-[9px] font-black uppercase tracking-[0.25em]" style={{color:'#8b5cf6'}}>{mode === 'govt' ? '⚡ Gov Prep' : '🎓 School Core'}</p>
+906:           </div>
+907:         </motion.div>
+908:         
+909:         <div className="flex items-center gap-2">
+910:           {/* Streak Badge */}
+911:           <motion.div 
+912:             className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl"
+913:             style={{ background: 'linear-gradient(135deg, rgba(251,146,60,0.15), rgba(249,115,22,0.1))', border: '1px solid rgba(249,115,22,0.25)' }}
+914:             whileTap={{ scale: 0.95 }}
+915:             animate={{ scale: [1, 1.02, 1] }}
+916:             transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+917:           >
+918:             <Flame className="w-3.5 h-3.5 text-orange-500" style={{ filter: 'drop-shadow(0 0 4px rgba(249,115,22,0.6))' }} />
+919:             <span className="text-[10px] font-black text-orange-600 dark:text-orange-400">{userData?.streak || 0}d</span>
+920:           </motion.div>
+921: 
+922:           {/* Notifications */}
+923:           <motion.div 
+924:             onClick={() => setShowNotifications(true)}
+925:             className="relative w-9 h-9 rounded-xl flex items-center justify-center cursor-pointer"
+926:             style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
+927:             whileHover={{ scale: 1.08 }}
+928:             whileTap={{ scale: 0.9 }}
+929:           >
+930:             <Bell className="w-4.5 h-4.5 text-indigo-500 dark:text-indigo-400" />
+931:             {notificationsList.filter(n => !n.read).length > 0 && (
+932:               <motion.span 
+933:                 className="absolute -top-1 -right-1 w-4 h-4 text-white text-[8px] font-black rounded-full flex items-center justify-center"
+934:                 style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)' }}
+935:                 initial={{ scale: 0 }}
+936:                 animate={{ scale: 1 }}
+937:                 transition={{ type: 'spring', stiffness: 500 }}
+938:               >
+939:                 {notificationsList.filter(n => !n.read).length}
+940:               </motion.span>
+941:             )}
+942:           </motion.div>
+943: 
+944:           {/* Referral */}
+945:           <motion.button
+946:             whileHover={{ scale: 1.08 }}
+947:             whileTap={{ scale: 0.9 }}
+948:             onClick={() => setShowReferralCenter(true)}
+949:             className="w-9 h-9 rounded-xl flex items-center justify-center"
+950:             style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.08))', border: '1px solid rgba(16,185,129,0.2)' }}
+951:           >
+952:             <UserPlus className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+953:           </motion.button>
+954: 
+955:           {/* Reward Shop */}
+956:           <motion.button
+957:             whileHover={{ scale: 1.08 }}
+958:             whileTap={{ scale: 0.9 }}
+959:             onClick={() => setShowRewardShop(true)}
+960:             className="w-9 h-9 rounded-xl flex items-center justify-center"
+961:             style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.08))', border: '1px solid rgba(245,158,11,0.25)' }}
+962:           >
+963:             <Gift className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+964:           </motion.button>
+965:         </div>
+966:       </header>
+967: 
+968:       {activeTab === "Home" && (
+969:         <div className="px-4 pt-3 pb-2 shrink-0 z-40">
+970:           <div className="relative flex gap-1 p-1.5 rounded-2xl" style={{background:'rgba(99,102,241,0.06)', border:'1px solid rgba(99,102,241,0.1)'}}>
+971:             <motion.div 
+972:               className="absolute inset-1.5 rounded-xl"
+973:               style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
+974:               animate={{ left: mode === 'govt' ? '6px' : '50%', width: mode === 'govt' ? 'calc(50% - 6px)' : 'calc(50% - 6px)' }}
+975:               transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+976:             />
+977:             <button 
+978:               onClick={() => setMode("govt")}
+979:               className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "govt" ? "text-white" : "text-slate-500 dark:text-slate-400"}`}
+980:             >
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

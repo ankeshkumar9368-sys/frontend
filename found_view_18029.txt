@@ -1,0 +1,108 @@
+Created At: 2026-06-19T18:58:12Z
+Completed At: 2026-06-19T18:58:13Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/found_view_17098.txt`
+Total Lines: 190
+Total Bytes: 11661
+Showing lines 1 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: Created At: 2026-06-18T19:37:18Z
+2: Completed At: 2026-06-18T19:37:19Z
+3: File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+4: Total Lines: 2356
+5: Total Bytes: 122470
+6: Showing lines 820 to 1000
+7: The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+8: 820:   const sendTestNotification = () => {
+9: 821:     if (notificationsEnabled && "Notification" in window) {
+10: 822:       new Notification("🚀 Achivox Study Alert", {
+11: 823:         body: "Time to crush your goals! Your daily streak is waiting for you.",
+12: 824:         icon: "/favicon.ico"
+13: 825:       });
+14: 826:     } else {
+15: 827:       alert("Please enable 'Study Reminders' first to test notifications!");
+16: 828:     }
+17: 829:   };
+18: 830: 
+19: 831:   if (forceUpdateUrl) {
+20: 832:     return <ForceUpdateModal downloadUrl={forceUpdateUrl} />;
+21: 833:   }
+22: 834: 
+23: 835:   if (isAuth === false) {
+24: 836:     return <LandingPage onLogin={() => router.push("/login")} />;
+25: 837:   }
+26: 838: 
+27: 839:   if (isAuth === null) {
+28: 840:     return (
+29: 841:       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+30: 842:         <Loader2 className="w-5 h-5 text-primary animate-spin" />
+31: 843:       </div>
+32: 844:     );
+33: 845:   }
+34: 846: 
+35: 847:   if (systemConfig?.maintenance) {
+36: 848:     return (
+37: 849:       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 text-center space-y-6">
+38: 850:         <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl animate-pulse">
+39: 851:            <Wrench className="w-5 h-5 text-primary" />
+40: 852:         </div>
+41: 853:         <div className="space-y-2">
+42: 854:           <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">System Upgrade</h2>
+43: 855:           <p className="text-slate-400 font-medium max-w-xs mx-auto">{systemConfig?.maintenanceMessage || "We are improving ExamHero. Back in a few minutes!"}</p>
+44: 856:         </div>
+45: 857:         <div className="glass-card px-4 py-2 rounded-2xl border border-white/10 text-[10px] font-black text-primary uppercase tracking-widest">
+46: 858:            Live Update in Progress
+47: 859:         </div>
+48: 860:       </div>
+49: 861:     );
+50: 862:   }
+51: 863: 
+52: 864:   if (showSplash) {
+53: 865:     return <SplashScreen onDone={() => setShowSplash(false)} />;
+54: 866:   }
+55: 867: 
+56: 868:   const hasGoldenFrame = userData?.redemptions?.some((r: any) => r.itemName === "Golden Topper Frame");
+57: 869:   const hasMythicAura = userData?.redemptions?.some((r: any) => r.itemName === "Mythic Profile Aura");
+58: 870:   const hasNeonTheme = userData?.redemptions?.some((r: any) => r.itemName === "Secret App Theme");
+59: 871:   const hasVVIPFormulas = userData?.redemptions?.some((r: any) => r.itemName === "VVIP Formula Bank");
+60: 872: 
+61: 873:   return (
+62: 874:     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className={`mobile-container hide-scrollbar relative ${hasNeonTheme ? 'theme-neon bg-slate-950 text-pink-400' : ''}`}>
+63: 875:       <AnimatePresence>
+64: 876:         {showOnboarding && (
+65: 877:           <OnboardingFlow 
+66: 878:             onComplete={() => {
+67: 879:               setShowOnboarding(false);
+68: 880:               localStorage.setItem("achivox_onboarded", "true");
+69: 881:             }} 
+70: 882:           />
+71: 883:         )}
+72: 884:       </AnimatePresence>
+73: 885: 
+74: 886:       {!isSubscribed && <PremiumBanner onUpgrade={() => setShowSubscriptionModal(true)} />}
+75: 887: 
+76: 888:       <header className="px-4 py-2.5 flex justify-between items-center border-b border-border glass-card backdrop-blur-md shrink-0 z-50">
+77: 889:         <div className="flex items-center gap-2.5">
+78: 890:           <div className="w-5 h-5 rounded-xl overflow-hidden shadow-lg border border-white/10 shrink-0">
+79: 891:             <Image src="/achivox-logo.png" alt="Achivox" width={40} height={40} className="object-cover w-full h-full" priority />
+80: 892:           </div>
+81: 893:           <div>
+82: 894:             <h1 className="text-lg font-black tracking-tighter leading-none" style={{background:'linear-gradient(90deg,#60a5fa,#a78bfa)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>ACHIVOX</h1>
+83: 895:             <p className="text-[9px] font-bold text-primary uppercase tracking-[0.2em]">{mode === 'govt' ? 'Gov Prep' : 'School Core'}</p>
+84: 896:           </div>
+85: 897:         </div>
+86: 898:         
+87: 899:         <div className="flex items-center gap-2">
+88: 900:           <div 
+89: 901:             onClick={() => setShowNotifications(true)}
+90: 902:             className="relative w-5 h-5 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+91: 903:           >
+92: 904:             <Bell className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+93: 905:             {notificationsList.filter(n => !n.read).length > 0 && (
+94: 906:               <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-[8px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800">
+95: 907:                 {notificationsList.filter(n => !n.read).length}
+96: 908:               </span>
+97: 909:             )}
+98: 910:           </div>
+99: 911:           <div className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 px-2.5 py-1 rounded-full border border-orange-200 dark:border-orange-800/50">
+100: 912:             <Flame className="w-3.5 h-3.5 text-orange-500" />
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

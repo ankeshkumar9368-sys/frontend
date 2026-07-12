@@ -1,0 +1,18 @@
+Created At: 2026-06-19T07:14:23Z
+Completed At: 2026-06-19T07:14:24Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 1346 to 1355
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1346:           {activeTab === "Rank" && (
+1347:             <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
+1348:               <Leaderboard userData={userData} />
+1349:             </motion.div>
+1350:           )}
+1351: 
+1352:           {activeTab === "Tools" && (
+1353:             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+1354:               <div className="space-y-1">
+1355:                 <h2 className="text-2xl font-black tracking-tight leading-none">AI Tools</h2>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

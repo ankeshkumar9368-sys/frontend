@@ -1,0 +1,79 @@
+Created At: 2026-06-18T19:56:01Z
+Completed At: 2026-06-18T19:56:02Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2425
+Total Bytes: 125441
+Showing lines 1820 to 1890
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1820:                       <p className="text-sm font-black text-foreground">Appearance</p>
+1821:                       <p className="text-[10px] font-bold text-slate-400">Toggle dark mode</p>
+1822:                     </div>
+1823:                   </div>
+1824:                   <ChevronRight className="w-5 h-5 text-slate-300" />
+1825:                 </button>
+1826:               </div>
+1827: 
+1828:             </motion.div>
+1829:           )}
+1830:         </div>
+1831:         <AnimatePresence>
+1832:         {isAuth && <StreakCelebration currentStreak={userData?.streak || 0} />}
+1833:       </AnimatePresence>
+1834:       {showSubjective && (
+1835:         <div className="fixed inset-0 z-[60] bg-slate-950 overflow-y-auto">
+1836:           <SubjectiveEngine userData={userData} onExit={() => setShowSubjective(false)} />
+1837:         </div>
+1838:       )}
+1839: 
+1840:     </main>
+1841: 
+1842:       <nav className="glass-card backdrop-blur-xl border-t border-border flex justify-around items-center p-3 z-50 shrink-0 w-full pb-safe">
+1843:         {[
+1844:           { icon: BookOpen, label: "Home" },
+1845:           { icon: FileSpreadsheet, label: "Tests" },
+1846:           { icon: Trophy, label: "Rank" },
+1847:           { icon: Activity, label: "Analysis" },
+1848:           { icon: Wrench, label: "Tools" },
+1849:           { icon: User, label: "Profile" }
+1850:         ].map((item, i) => (
+1851:           <div key={i} onClick={() => setActiveTab(item.label)} className={`flex flex-col items-center gap-1.5 cursor-pointer transition-all ${activeTab === item.label ? "text-primary scale-110" : "text-slate-400"}`}>
+1852:             <item.icon className="w-6 h-6" />
+1853:             <span className="text-[10px] font-black uppercase tracking-tighter">{item.label}</span>
+1854:           </div>
+1855:         ))}
+1856:       </nav>
+1857: 
+1858:       <AnimatePresence>
+1859:         {selectionModal && (
+1860:           <div className="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+1861:             <motion.div 
+1862:               initial={{ scale: 0.9, opacity: 0 }} 
+1863:               animate={{ scale: 1, opacity: 1 }} 
+1864:               exit={{ scale: 0.9, opacity: 0 }}
+1865:               className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[40px] p-4 text-center border border-border relative shadow-2xl"
+1866:             >
+1867:               <button 
+1868:                 onClick={() => setSelectionModal(null)} 
+1869:                 className="absolute top-4 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-primary transition-all"
+1870:               >
+1871:                 <X className="w-5 h-5" />
+1872:               </button>
+1873:               <h3 className="text-xl font-black mb-6 text-slate-800 dark:text-white">{selectionModal.name}</h3>
+1874:               <div className="grid grid-cols-1 gap-3">
+1875:                  <button 
+1876:                   onClick={() => { handleAICoreAction("notes", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1877:                   className="bg-indigo-600 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1878:                 >
+1879:                   Smart Notes
+1880:                 </button>
+1881:                 <button 
+1882:                   onClick={() => { handleAICoreAction("quiz", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+1883:                   className="bg-slate-900 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+1884:                 >
+1885:                   Live Test
+1886:                 </button>
+1887:               </div>
+1888:             </motion.div>
+1889:           </div>
+1890:         )}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

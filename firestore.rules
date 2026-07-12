@@ -1,0 +1,119 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      // Hardcoded admin emails for ExamHero
+      return isAuthenticated() && (
+        request.auth.token.email == "ankeshkumar9368@gmail.com" ||
+        request.auth.token.email == "ankeshkumar0506@gmail.com" ||
+        request.auth.token.email == "nitishkumarbzp29@gmail.com" ||
+        request.auth.token.email == "abhijeet01512@gmail.com"
+      );
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // User Profiles & Nested Subcollections (notifications, saved_mcqs)
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      
+      match /{document=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+    
+    // User Stats & Timetable Suffix Documents
+    match /user_stats/{docId} {
+      allow read, write: if isAuthenticated() && (docId == request.auth.uid || docId == request.auth.uid + "_timetable") || isAdmin();
+      
+      match /{document=**} {
+        allow read, write: if isAuthenticated() && (docId == request.auth.uid || docId == request.auth.uid + "_timetable") || isAdmin();
+      }
+    }
+
+    // Global Educational Cache Content (Publicly readable, authenticated user writable)
+    match /global_notes/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /global_questions/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /global_chapters/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /global_topics/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Goal Requests (Changed to goal_change_requests to match frontend code)
+    match /goal_change_requests/{docId} {
+      allow create: if isAuthenticated();
+      allow read, update, delete: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+    }
+    
+    // Broadcasts
+    match /broadcasts/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // System Logs & Security Alerts
+    match /system_logs/{logId} {
+      allow create: if isAuthenticated(); 
+      allow read, update, delete: if isAdmin(); 
+    }
+    
+    match /security_alerts/{alertId} {
+      allow create: if isAuthenticated(); 
+      allow read, update, delete: if isAdmin(); 
+    }
+
+    // Admin Stats
+    match /admin_stats/{statId} {
+      allow read: if isAdmin();
+      allow write: if isAuthenticated(); // Allows authenticated users to increment token counts
+    }
+    
+    // AI Cache
+    match /ai_cache/{cacheId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated(); 
+    }
+    
+    // System Config (App updates, maintenance, etc.)
+    match /system_config/{configId} {
+      allow read: if true; // Open to read so app can check before login
+      allow write: if isAdmin();
+    }
+    
+    // Core Educational Content
+    match /subject_concepts/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Admin Settings (API Keys, Configurations)
+    match /settings/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Stickers Cache
+    match /stickers/{stickerId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Default rule
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

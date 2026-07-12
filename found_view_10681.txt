@@ -1,0 +1,59 @@
+Created At: 2026-06-12T18:12:56Z
+Completed At: 2026-06-12T18:12:56Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2174
+Total Bytes: 110148
+Showing lines 400 to 450
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+400: 
+401:   useEffect(() => {
+402:     const urlParams = new URLSearchParams(window.location.search);
+403:     if (urlParams.get("subscribed") === "true") {
+404:       setIsSubscribed(true);
+405:       window.history.replaceState({}, document.title, "/");
+406:     }
+407:   }, []);
+408: 
+409:   useEffect(() => {
+410:     if (!userData?.id) return;
+411:     const q = query(collection(db, "users", userData.id, "notifications"), orderBy("createdAt", "desc"), limit(20));
+412:     const unsubscribe = onSnapshot(q, (snapshot) => {
+413:       const notifs: any[] = [];
+414:       snapshot.forEach((doc) => {
+415:         notifs.push({ id: doc.id, ...doc.data() });
+416:       });
+417:       
+418:       // Trigger browser notification if new one arrives
+419:       if (notifs.length > notificationsList.length && notificationsList.length > 0) {
+420:         const newest = notifs[0];
+421:         if (notificationsEnabled && "Notification" in window && !newest.read) {
+422:           new Notification(newest.title, { body: newest.message });
+423:         }
+424:       }
+425:       
+426:       setNotificationsList(notifs);
+427:     });
+428:     return () => unsubscribe();
+429:   }, [userData?.id, notificationsEnabled, notificationsList.length]);
+430: 
+431:   useEffect(() => {
+432:     const prefetch = async () => {
+433:       await fetchContent("govt", null, "Categories");
+434:       await fetchContent("school", null, "Boards");
+435:     };
+436:     prefetch();
+437:   }, []);
+438: 
+439:   const handleLogout = async () => {
+440:     clearLocalAnalytics();
+441:     await signOut(auth);
+442:     router.push("/login");
+443:   };
+444: 
+445:   const handleAddProfile = () => {
+446:     if (!isSubscribed) {
+447:       setShowSubscriptionModal(true);
+448:       return;
+449:     }
+450:     const name = prompt("Enter sibling's name for new profile:");
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

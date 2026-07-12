@@ -1,0 +1,99 @@
+Created At: 2026-06-18T19:42:17Z
+Completed At: 2026-06-18T19:42:18Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2358
+Total Bytes: 121981
+Showing lines 990 to 1080
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+990:         </div>
+991:       )}
+992: 
+993:       <main className="flex-1 overflow-y-auto">
+994:         <div className="px-4 py-3 space-y-4 pb-28">
+995:           {activeTab === "Home" && (
+996:             <AnimatePresence mode="wait">
+997:               {mode === "govt" ? (
+998:                 <motion.div 
+999:                   key="govt-locked"
+1000:                   initial={{ opacity: 0, y: 20 }}
+1001:                   animate={{ opacity: 1, y: 0 }}
+1002:                   exit={{ opacity: 0, y: -20 }}
+1003:                   className="flex flex-col items-center justify-center py-20 text-center space-y-6"
+1004:                 >
+1005:                   <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl shadow-primary/10">
+1006:                     <Lock className="w-5 h-5 text-primary" />
+1007:                   </div>
+1008:                   <div className="space-y-2">
+1009:                     <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tighter uppercase italic">Gov Prep Vault</h2>
+1010:                     <p className="text-primary font-black text-xs uppercase tracking-[0.3em]">Launching Very Soon</p>
+1011:                   </div>
+1012:                   <p className="text-slate-500 dark:text-slate-400 text-sm font-medium max-w-[280px] leading-relaxed">
+1013:                     We are currently indexing 50,000+ government exam questions.
+1014:                   </p>
+1015:                   <motion.div 
+1016:                     animate={{ scale: [1, 1.1, 1] }}
+1017:                     transition={{ duration: 2, repeat: Infinity }}
+1018:                     className="bg-emerald-500/10 text-emerald-500 px-4 py-2.5 rounded-2xl border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest"
+1019:                   >
+1020:                     94% Completed
+1021:                   </motion.div>
+1022:                 </motion.div>
+1023:               ) : (
+1024:                 <motion.div 
+1025:                   key="home-content"
+1026:                   initial={{ opacity: 0 }} 
+1027:                   animate={{ opacity: 1 }}
+1028:                   exit={{ opacity: 0 }}
+1029:                   className="space-y-4 overflow-x-hidden"
+1030:                 >
+1031: 
+1032:                   <div className="flex justify-between items-end mb-4">
+1033:                     <div className="space-y-1">
+1034:                       <h2 className="text-2xl font-black tracking-tighter leading-none">Hi, {auth.currentUser?.displayName?.split(" ")[0] || "Aspirant"}! 👋</h2>
+1035:                       <p className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest mt-1">Daily Mastery Session</p>
+1036:                       
+1037:                       <div className="flex items-center gap-2 mt-4">
+1038:                         <div onClick={() => setShowRewardShop(true)} className="glass-card px-4 py-2 rounded-2xl flex items-center gap-2 cursor-pointer border border-border hover:border-primary/50 transition-all shadow-sm">
+1039:                           <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+1040:                           <span className="text-sm font-black tracking-tight">{(userData?.points || 0).toLocaleString()} XP</span>
+1041:                           <ChevronRight className="w-3 h-3 text-slate-300" />
+1042:                         </div>
+1043:                         {userData?.streak > 0 && (
+1044:                           <div className="bg-orange-500/10 text-orange-600 px-3 py-2 rounded-2xl border border-orange-100 flex items-center gap-1.5 shadow-sm">
+1045:                             <Flame className="w-3.5 h-3.5 fill-orange-500" />
+1046:                             <span className="text-[11px] font-black">{userData.streak}d</span>
+1047:                           </div>
+1048:                         )}
+1049:                       </div>
+1050:                     </div>
+1051:                     <StudyBuddy points={userData?.points || 0} streak={userData?.streak || 0} />
+1052:                   </div>
+1053: 
+1054:                   {/* Goal Selector Header */}
+1055:                   <div className="glass-card border border-border p-4 rounded-3xl shadow-sm flex items-center justify-between mt-2">
+1056:                     <div className="flex items-center gap-3">
+1057:                       <div className="w-5 h-5 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+1058:                         <Target className="w-5 h-5" />
+1059:                       </div>
+1060:                       <div>
+1061:                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Your Goal</p>
+1062:                         <h2 className="text-sm font-black text-foreground">
+1063:                           {userData?.board && userData?.cls ? `${userData.board} • ${userData.cls}` : "Select Board & Class"}
+1064:                         </h2>
+1065:                       </div>
+1066:                     </div>
+1067:                     <button 
+1068:                       onClick={() => setShowGoalSelector(true)}
+1069:                       className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors"
+1070:                     >
+1071:                       {userData?.board ? "Change" : "Set Goal"}
+1072:                     </button>
+1073:                   </div>
+1074: 
+1075:                   <div className="glass-card p-3.5 rounded-2xl border border-border shadow-sm flex items-center gap-4">
+1076:                     <div className="relative w-5 h-5 shrink-0">
+1077:                       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+1078:                         <circle className="text-slate-100 dark:text-slate-800" strokeWidth="10" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+1079:                         <motion.circle
+1080:                           className="text-primary"
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

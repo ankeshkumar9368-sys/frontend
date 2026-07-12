@@ -1,0 +1,39 @@
+Created At: 2026-06-19T07:09:11Z
+Completed At: 2026-06-19T07:09:12Z
+File Path: `file:///c:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2436
+Total Bytes: 125818
+Showing lines 480 to 510
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+480:   const handleDoubtSolverClick = () => {
+481:     if (userData?.planType === "standard") {
+482:       alert("👑 AI Doubt Solver is exclusively available in the Achivox Pro Plan. Upgrade now to unlock!");
+483:       setShowSubscriptionModal(true);
+484:       return;
+485:     }
+486:     setShowDoubtSolver(true);
+487:   };
+488: 
+489:   const handleLogout = async () => {
+490:     clearLocalAnalytics();
+491:     await signOut(auth);
+492:     router.push("/login");
+493:   };
+494: 
+495:   const handleAddProfile = () => {
+496:     if (!isSubscribed) {
+497:       setShowSubscriptionModal(true);
+498:       return;
+499:     }
+500:     const name = prompt("Enter sibling's name for new profile:");
+501:     if (name) {
+502:       const newProfile = { id: Date.now(), name, icon: User, active: false };
+503:       setProfiles([...profiles, newProfile]);
+504:     }
+505:   };
+506: 
+507: 
+508:   const handleAICoreAction = async (type: "notes" | "test" | "quiz", target: string, parentId?: string, isMastery = false, overrideSubject?: string) => {
+509:     setAILoadingType(type === "quiz" ? "test" : type);
+510:     setShowAILoading(true);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

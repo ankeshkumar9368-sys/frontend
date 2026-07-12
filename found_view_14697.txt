@@ -1,0 +1,44 @@
+Created At: 2026-06-16T20:22:55Z
+Completed At: 2026-06-16T20:22:55Z
+File Path: `file:///C:/Users/Admin/.gemini/antigravity/brain/166c9201-d61f-4f97-920c-36b495150ab2/scratch/shrink_icons.js`
+Total Lines: 36
+Total Bytes: 1205
+Showing lines 1 to 36
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: const fs = require('fs');
+2: const path = require('path');
+3: 
+4: const applyUIOptimizations = (filePath) => {
+5:   if (!fs.existsSync(filePath)) return;
+6:   let content = fs.readFileSync(filePath, 'utf8');
+7: 
+8:   // Shrink large elements
+9:   content = content.replace(/w-16 h-16/g, 'w-12 h-12');
+10:   content = content.replace(/w-14 h-14/g, 'w-10 h-10');
+11:   content = content.replace(/w-12 h-12/g, 'w-10 h-10');
+12:   content = content.replace(/w-10 h-10/g, 'w-8 h-8');
+13:   content = content.replace(/w-8 h-8/g, 'w-6 h-6');
+14:   
+15:   // Also shrink inner icon sizes if they were 8/6/5
+16:   content = content.replace(/w-8 h-8(?!.*rounded)/g, 'w-6 h-6'); // prevent shrinking wrappers twice
+17:   content = content.replace(/w-6 h-6/g, 'w-5 h-5');
+18:   content = content.replace(/w-5 h-5/g, 'w-4 h-4');
+19: 
+20:   fs.writeFileSync(filePath, content, 'utf8');
+21:   console.log(`Optimized icons in ${path.basename(filePath)}`);
+22: };
+23: 
+24: // Apply to page.tsx and all components
+25: applyUIOptimizations('app/page.tsx');
+26: 
+27: const componentsDir = 'components';
+28: if (fs.existsSync(componentsDir)) {
+29:   const files = fs.readdirSync(componentsDir);
+30:   for (const file of files) {
+31:     if (file.endsWith('.tsx')) {
+32:       applyUIOptimizations(path.join(componentsDir, file));
+33:     }
+34:   }
+35: }
+36: 
+The above content shows the entire, complete file contents of the requested file.

@@ -1,0 +1,2340 @@
+"use client";
+// MISSING LINE 2
+import { useTheme } from "next-themes";
+import { 
+  Moon, Sun, BookOpen, User, Flame, Play, Target, Award, 
+  ChevronRight, FileSpreadsheet, Activity, BookText, 
+  GraduationCap, Building2, LogOut, TrendingUp, Trophy, 
+  CheckCircle2, Zap, RotateCcw, Plus, Clock, Sparkles, X, Loader2, LayoutDashboard, Brain, Lock, Bell, BellOff, ArrowDownRight,
+  Wrench, Info, Map, BarChart2, BarChart3, Star, Shield, Book, Gift, PartyPopper, Heart, Bookmark, Settings, Share2, ShieldCheck, UserPlus, Crown, PenTool
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { auth, db } from "../lib/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp, collection, query, where, getDocs, orderBy, onSnapshot, limit, deleteField } from "firebase/firestore";
+import AIDoubtSolver from "../components/AIDoubtSolver";
+import { fetchContent, fetchQuestions, ContentItem, fetchDoubtResponse, generateAIPYQs, fetchChapterNotes, generateAIQuestions, getTestBankId, generateSingleReplacementQuestion } from "../lib/content";
+import ExploreEngine from "../components/ExploreEngine";
+import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics } from "../lib/analytics";
+const MockTestEngine = dynamic(() => import("../components/MockTestEngine"));
+const SchoolTestEngine = dynamic(() => import("../components/SchoolTestEngine"));
+"use client";
+// MISSING LINE 27
+import { useTheme } from "next-themes";
+import { 
+  Moon, Sun, BookOpen, User, Flame, Play, Target, Award, 
+  ChevronRight, FileSpreadsheet, Activity, BookText, 
+  GraduationCap, Building2, LogOut, TrendingUp, Trophy, 
+  CheckCircle2, Zap, RotateCcw, Plus, Clock, Sparkles, X, Loader2, LayoutDashboard, Brain, Lock, Bell, BellOff, ArrowDownRight,
+  Wrench, Info, Map, BarChart2, BarChart3, Star, Shield, Book, Gift, PartyPopper, Heart, Bookmark, Settings, Share2, ShieldCheck, UserPlus, Crown, PenTool
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { auth, db } from "../lib/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp, collection, query, where, getDocs, orderBy, onSnapshot, limit, deleteField } from "firebase/firestore";
+import AIDoubtSolver from "../components/AIDoubtSolver";
+import { fetchContent, fetchQuestions, ContentItem, fetchDoubtResponse, generateAIPYQs, fetchChapterNotes, generateAIQuestions, getTestBankId, generateSingleReplacementQuestion } from "../lib/content";
+import ExploreEngine from "../components/ExploreEngine";
+import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics } from "../lib/analytics";
+const MockTestEngine = dynamic(() => import("../components/MockTestEngine"));
+const SchoolTestEngine = dynamic(() => import("../components/SchoolTestEngine"));
+const SubjectiveEngine = dynamic(() => import("../components/SubjectiveEngine"));
+import AnalysisEngine from "../components/AnalysisEngine";
+import SmartAvatar from "../components/SmartAvatar";
+const RevisionVault = dynamic(() => import("../components/RevisionVault"));
+const MasteryRoadmap = dynamic(() => import("../components/MasteryRoadmap"));
+import { getMasterySequence } from "../lib/curriculum";
+import SmartNotesViewer from "../components/SmartNotesViewer";
+import TopperNotes from "../components/TopperNotes";
+import Leaderboard from "../components/Leaderboard";
+import StudyPlan from "../components/StudyPlan";
+import NotificationSidebar, { AppNotification } from "../components/NotificationSidebar";
+import StreakCelebration from "../components/StreakCelebration";
+import ProgressDashboard from "../components/ProgressDashboard";
+import DailyTasksTracker from "../components/DailyTasksTracker";
+import SplashScreen from "../components/SplashScreen";
+// MISSING LINE 66
+const ARViewer = dynamic(() => import("../components/ARViewer"));
+// MISSING LINE 68
+import WeaknessHeatmap from "../components/WeaknessHeatmap";
+import QuickRevisionMode from "../components/QuickRevisionMode";
+import GamificationHub from "../components/GamificationHub";
+import WhyGotWrong from "../components/WhyGotWrong";
+import PerformanceGraph from "../components/PerformanceGraph";
+import SpacedRevisionSystem from "../components/SpacedRevisionSystem";
+import SystemFlowModal from "../components/SystemFlowModal";
+import LandingPage from "../components/LandingPage";
+import OnboardingFlow from "../components/OnboardingFlow";
+import SubscriptionModal from "../components/SubscriptionModal";
+import PremiumBanner from "../components/PremiumBanner";
+import SavedMCQs from "../components/SavedMCQs";
+import GoalSelector from "../components/GoalSelector";
+import AILoadingOverlay from "../components/AILoadingOverlay";
+import { getWeakAreas } from "../lib/analytics";
+// MISSING LINE 84
+const tapEffect = { 
+  scale: 0.95, 
+  transition: { type: "spring" as const, stiffness: 400, damping: 17 } 
+};
+// MISSING LINE 89
+// MISSING LINE 90
+// MISSING LINE 91
+import FlashcardForge from "../components/FlashcardForge";
+import AIVoiceCoach from "../components/AIVoiceCoach";
+const BattleQuiz = dynamic(() => import("../components/BattleQuiz"));
+import ScanAndSolve from "../components/ScanAndSolve";
+import SmartTimetable from "../components/SmartTimetable";
+import FormulaVault from "../components/FormulaVault";
+import RewardShop from "../components/RewardShop";
+import ReferralCenter from "../components/ReferralCenter";
+import { checkAndUnlockBadges, addXP } from "../lib/gamification";
+import BadgeUnlockOverlay from "../components/BadgeUnlockOverlay";
+import ParentReportTemplate from "../components/ParentReportTemplate";
+import StudyBuddy from "../components/StudyBuddy";
+// MISSING LINE 104
+import QuickStudyCards from "../components/QuickStudyCards";
+import SchoolProjectAssistant from "../components/SchoolProjectAssistant";
+import { SUBJECTS_BY_BOARD_CLASS, SUBJECTS_BY_CLASS, getSubjects } from "../lib/curriculum";
+import QuestLog from "../components/QuestLog";
+import StudyPod from "../components/StudyPod";
+import MockExamSimulator from "../components/MockExamSimulator";
+import ForceUpdateModal from "../components/ForceUpdateModal";
+const generateUniqueId = async () => {
+  let attempts = 0;
+  while (attempts < 10) {
+    const candidateId = `EXH-${Math.floor(100000 + Math.random() * 900000)}`;
+    const q = query(collection(db, "users"), where("studentId", "==", candidateId));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      return candidateId;
+    }
+    attempts++;
+  }
+  return `EXH-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 100)}`;
+};
+// MISSING LINE 125
+export default function Home() {
+  const { theme, setTheme } = useTheme();
+  // ... existing states ...
+  const [mode, setMode] = useState<"govt" | "school">("govt");
+  const [activeTab, setActiveTab] = useState("Home");
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [loadingNotes, setLoadingNotes] = useState(false);
+  const [profiles, setProfiles] = useState([
+    { id: 1, name: "Main Aspirant", icon: User, active: true }
+  ]);
+  const [activeTest, setActiveTest] = useState<any>(null);
+  const [showSavedMCQs, setShowSavedMCQs] = useState(false);
+  const [activeNotes, setActiveNotes] = useState<any>(null);
+  const [selectionModal, setSelectionModal] = useState<any>(null);
+  const [testResult, setTestResult] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
+  const [showDoubtSolver, setShowDoubtSolver] = useState(false);
+  const [autoStartMic, setAutoStartMic] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationsList, setNotificationsList] = useState<AppNotification[]>([]);
+  const [broadcasts, setBroadcasts] = useState<any[]>([]);
+  const [showSplash, setShowSplash] = useState(false);
+  // New feature states
+  const [showQuickRevision, setShowQuickRevision] = useState(false);
+  const [showFlashcards, setShowFlashcards] = useState(false);
+  const [quickRevisionTopic, setQuickRevisionTopic] = useState("");
+  const [showGamification, setShowGamification] = useState(false);
+  const [showFormulaVault, setShowFormulaVault] = useState(false);
+  const [showTopperNotes, setShowTopperNotes] = useState(false);
+  const [showSubjective, setShowSubjective] = useState(false);
+  const [showQuestLog, setShowQuestLog] = useState(false);
+  const [showTimetable, setShowTimetable] = useState(false);
+  const [showStudyPods, setShowStudyPods] = useState(false);
+  const [showWhyWrong, setShowWhyWrong] = useState(false);
+  const [wrongQuestions, setWrongQuestions] = useState<any[]>([]);
+  const [showSystemFlow, setShowSystemFlow] = useState(false);
+  const [xpPoints, setXpPoints] = useState(0);
+  const [masterySequence, setMasterySequence] = useState<any[]>([]);
+  const [masteryLevel, setMasteryLevel] = useState(0);
+  const [isAuth, setIsAuth] = useState<boolean | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showGiftModal, setShowGiftModal] = useState(false);
+  const [showGoalSelector, setShowGoalSelector] = useState(false);
+  const [showRevisionVault, setShowRevisionVault] = useState(false);
+  const [showQuickStudy, setShowQuickStudy] = useState(false);
+  const [showARViewer, setShowARViewer] = useState<string | null>(null);
+  const [showProjectAssistant, setShowProjectAssistant] = useState(false);
+  const [analyticsUpdateTrigger, setAnalyticsUpdateTrigger] = useState(0);
+  const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showBattle, setShowBattle] = useState(false);
+  const [showScanSolve, setShowScanSolve] = useState(false);
+  const [showRewardShop, setShowRewardShop] = useState(false);
+  const [showReferralCenter, setShowReferralCenter] = useState(false);
+  const [unlockedBadge, setUnlockedBadge] = useState<{ name: string; icon: string } | null>(null);
+  const [showRoadmap, setShowRoadmap] = useState(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [showAILoading, setShowAILoading] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const activeAICoreTaskRef = useRef<string | null>(null);
+  const [aiLoadingType, setAILoadingType] = useState<string>("analysis");
+  const [systemConfig, setSystemConfig] = useState<any>({ maintenance: false, xpBoost: 1 });
+  const [showMockExam, setShowMockExam] = useState(false);
+  const [forceUpdateUrl, setForceUpdateUrl] = useState<string | null>(null);
+  const [currentAppVersion, setCurrentAppVersion] = useState<number>(1.0);
+// MISSING LINE 194
+  useEffect(() => {
+    const fetchNativeVersion = async () => {
+      try {
+        const { App } = await import('@capacitor/app');
+        const info = await App.getInfo();
+        const ver = parseFloat(info.version);
+        if (!isNaN(ver)) {
+          setCurrentAppVersion(ver);
+        }
+      } catch (e) {
+        console.log("Web mode or App plugin not available, using fallback version 1.0");
+      }
+    };
+    fetchNativeVersion();
+  }, []);
+// MISSING LINE 210
+  useEffect(() => {
+    if (systemConfig?.min_app_version && currentAppVersion < systemConfig.min_app_version) {
+      setForceUpdateUrl(systemConfig.download_url || "https://play.google.com");
+    } else {
+      setForceUpdateUrl(null);
+    }
+  }, [systemConfig, currentAppVersion]);
+  const router = useRouter();
+// MISSING LINE 219
+  // Performance optimizations
+  const springConfig = { type: "spring" as const, damping: 30, stiffness: 300, restDelta: 0.001 };
+  const fadeUp = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.3 }
+  };
+// MISSING LINE 227
+  const downloadParentReport = async () => {
+    if (!userData) return;
+    setIsGeneratingReport(true);
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      const element = document.getElementById("parent-report-template");
+      const opt = {
+        margin: 0,
+        filename: `ExamHero_Report_${userData.name.replace(/\s+/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      } as any;
+      await html2pdf().set(opt).from(element).save();
+    } catch (error) {
+      console.error("PDF Export Error:", error);
+      alert("Failed to generate report. Please try again.");
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+// MISSING LINE 249
+  // SECURE AUTH: Listen for state changes
+  useEffect(() => {
+    let userUnsub: any = null;
+    let statsUnsub: any = null; // 🔴 Real-time listener for user_stats XP
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setIsAuth(true);
+        setShowSplash(true);
+        try {
+          // 📈 UPDATE STREAK ON LOGIN
+          await updateStreak();
+          
+          const userRef = doc(db, "users", user.uid);
+          
+          if (userUnsub) userUnsub(); // Clear previous listener if any
+          userUnsub = onSnapshot(userRef, async (userSnap) => {
+            if (userSnap.exists()) {
+              const data = userSnap.data();
+              
+              // Restore and synchronize performance data from Firestore to local storage
+              if (data) {
+                if (data.quizResults) localStorage.setItem("achivox_quiz_results", JSON.stringify(data.quizResults));
+                if (data.mistakes) localStorage.setItem("achivox_mistakes", JSON.stringify(data.mistakes));
+                if (data.studyTimes) localStorage.setItem("achivox_study_times", JSON.stringify(data.studyTimes));
+                if (data.masteredQuestions) localStorage.setItem("achivox_mastered_qs", JSON.stringify(data.masteredQuestions));
+                if (data.streak !== undefined) {
+                  localStorage.setItem("achivox_streak", String(data.streak));
+                }
+                if (data.lastStreakDate) {
+                  localStorage.setItem("achivox_last_streak_date", data.lastStreakDate);
+                }
+        {showRewardShop && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+            <RewardShop userId={userData?.id || auth.currentUser?.uid || "anonymous"} onClose={() => setShowRewardShop(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+// MISSING LINE 287
+      <AnimatePresence>
+        {showReferralCenter && (
+          <ReferralCenter 
+            userData={userData} 
+            onClose={() => setShowReferralCenter(false)} 
+            onSuccess={() => {
+              // Soft refresh user data
+              if (auth.currentUser) {
+                getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
+                  if (snap.exists()) setUserData({ id: auth.currentUser!.uid, ...snap.data() });
+                });
+              }
+            }}
+          />
+        )}
+      </AnimatePresence>
+// MISSING LINE 304
+      <AnimatePresence>
+        {showSavedMCQs && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+            <SavedMCQs onClose={() => setShowSavedMCQs(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+// MISSING LINE 312
+      <AILoadingOverlay 
+        isOpen={showAILoading} 
+        onCancel={() => {
+          setShowAILoading(false);
+          activeAICoreTaskRef.current = null;
+        }} 
+        type={aiLoadingType as any} 
+      />
+    <AnimatePresence>
+      {showMockExam && (
+        <MockExamSimulator 
+          userData={userData} 
+          onClose={() => setShowMockExam(false)} 
+        />
+      )}
+    </AnimatePresence>
+// MISSING LINE 329
+    <AnimatePresence>
+      {showARViewer && (
+        <ARViewer 
+          topic={showARViewer} 
+          onClose={() => setShowARViewer(null)} 
+        />
+      )}
+    </AnimatePresence>
+// MISSING LINE 338
+      <AnimatePresence>
+        {showPrivacy && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white dark:bg-slate-900 rounded-[32px] border border-border shadow-2xl overflow-hidden w-full max-w-lg flex flex-col max-h-[85vh]"
+            >
+              <div className="bg-slate-950 p-6 flex items-center justify-between sticky top-0 z-10 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-black text-white">Terms & Privacy</h2>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">100% Transparent Data Policy</p>
+                  </div>
+                </div>
+                <button onClick={() => setShowPrivacy(false)} className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-6 overflow-y-auto space-y-6 flex-1 text-slate-600 dark:text-slate-300 text-sm">
+                
+                <section>
+                  <h3 className="font-black text-slate-800 dark:text-white text-base mb-2 flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-emerald-500" /> Data Safety & Permissions
+                  </h3>
+                  <p className="mb-3">Your privacy is our priority. We only collect the data necessary to provide you with the best learning experience.</p>
+                  <div className="bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-4 space-y-3 border border-border">
+                    <div>
+                      <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 mb-1">Microphone Access</h4>
+                      <p className="text-xs">Required ONLY when you use the AI Doubt Solver to ask questions via voice. We do not listen in the background.</p>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 mb-1">Device Storage</h4>
+                      <p className="text-xs">Required ONLY to save downloaded PDF notes or offline study material to your device.</p>
+                    </div>
+                  </div>
+                </section>
+// MISSING LINE 384
+                <section>
+                  <h3 className="font-black text-slate-800 dark:text-white text-base mb-2">What Data Do We Collect?</h3>
+                  <ul className="list-disc pl-5 space-y-2 text-xs">
+                    <li><strong>Basic Profile Info:</strong> Name, Email, and chosen Avatar for your account identity.</li>
+                    <li><strong>Study Analytics:</strong> Test scores, time spent, and weak topics to generate your personalized AI study plan.</li>
+                    <li><strong>Subscription Status:</strong> To manage your access to premium features like VVIP notes and AI tools.</li>
+                  </ul>
+                  <p className="text-xs mt-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-xl">
+                    <strong className="block mb-1">Our Promise:</strong> We never sell your personal data or test performance metrics to any third-party advertisers.
+                  </p>
+                </section>
+// MISSING LINE 396
+                <section>
+                  <h3 className="font-black text-slate-800 dark:text-white text-base mb-2">Terms of Service</h3>
+                  <p className="text-xs space-y-2">
+                    By using ExamHero, you agree to use the platform for educational purposes only. Our AI-generated content is designed for practice and learning assistance, but should not completely replace your prescribed syllabus materials.<br/><br/>
+                    Premium subscriptions are auto-revoked upon expiration, and all subscription sales are final as per our standard refund policy. ExamHero operates with absolute transparency and ensures all data complies with global privacy standards.
+                  </p>
+                </section>
+// MISSING LINE 404
+              </div>
+              <div className="p-4 border-t border-border bg-slate-50 dark:bg-slate-800/50 text-center shrink-0">
+                 <button onClick={() => setShowPrivacy(false)} className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-sm hover:scale-[0.98] transition-transform">
+                   I Understand & Agree
+                 </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+// MISSING LINE 418
+      if (notifs.length > notificationsList.length && notificationsList.length > 0) {
+        const newest = notifs[0];
+        if (notificationsEnabled && "Notification" in window && !newest.read) {
+          new Notification(newest.title, { body: newest.message });
+        }
+      }
+      
+      setNotificationsList(notifs);
+    });
+    return () => unsubscribe();
+  }, [userData?.id, notificationsEnabled, notificationsList.length]);
+// MISSING LINE 430
+  useEffect(() => {
+    const prefetch = async () => {
+      await fetchContent("govt", null, "Categories");
+      await fetchContent("school", null, "Boards");
+    };
+    prefetch();
+  }, []);
+// MISSING LINE 438
+  const handleLogout = async () => {
+  ]);
+// MISSING LINE 441
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("subscribed") === "true") {
+      setIsSubscribed(true);
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, []);
+// MISSING LINE 449
+  useEffect(() => {
+    if (!userData?.id) return;
+    const q = query(collection(db, "users", userData.id, "notifications"), orderBy("createdAt", "desc"), limit(20));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const notifs: any[] = [];
+      snapshot.forEach((doc) => {
+        notifs.push({ id: doc.id, ...doc.data() });
+      });
+      
+      // Trigger browser notification if new one arrives
+      if (notifs.length > notificationsList.length && notificationsList.length > 0) {
+        const newest = notifs[0];
+        if (notificationsEnabled && "Notification" in window && !newest.read) {
+          new Notification(newest.title, { body: newest.message });
+        }
+      }
+      
+      setNotificationsList(notifs);
+    });
+    return () => unsubscribe();
+  }, [userData?.id, notificationsEnabled, notificationsList.length]);
+// MISSING LINE 471
+  useEffect(() => {
+    const prefetch = async () => {
+      await fetchContent("govt", null, "Categories");
+      await fetchContent("school", null, "Boards");
+    };
+    prefetch();
+  }, []);
+// MISSING LINE 479
+  const handleDoubtSolverClick = () => {
+    if (userData?.planType === "standard") {
+      alert("👑 AI Doubt Solver is exclusively available in the Achivox Pro Plan. Upgrade now to unlock!");
+      setShowSubscriptionModal(true);
+      return;
+    }
+    setShowDoubtSolver(true);
+  };
+// MISSING LINE 488
+  const handleLogout = async () => {
+    clearLocalAnalytics();
+    await signOut(auth);
+    router.push("/login");
+  };
+// MISSING LINE 494
+  const handleAddProfile = () => {
+    if (!isSubscribed) {
+      setShowSubscriptionModal(true);
+      return;
+    }
+    const name = prompt("Enter sibling's name for new profile:");
+    if (name) {
+      const newProfile = { id: Date.now(), name, icon: User, active: false };
+      setProfiles([...profiles, newProfile]);
+    }
+  };
+// MISSING LINE 506
+// MISSING LINE 507
+  const handleAICoreAction = async (type: "notes" | "test" | "quiz", target: string, parentId?: string, isMastery = false, overrideSubject?: string) => {
+    setAILoadingType(type === "quiz" ? "test" : type);
+    setShowAILoading(true);
+    
+    const taskId = Math.random().toString(36);
+    activeAICoreTaskRef.current = taskId;
+    
+    try {
+      if (type === "notes") {
+        const classRaw = parentId?.match(/classes_class_(\d+)/)?.[1];
+        const clsName = classRaw ? `Class ${classRaw}` : (userData?.cls || "Class 12");
+        const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
+        const subName = overrideSubject || (subRaw ? subRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : "General");
+        const chapRaw = parentId?.match(/chapters_([a-z0-9_]+?)(?:__|$)/)?.[1];
+        const chapName = chapRaw ? chapRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : target;
+// MISSING LINE 523
+        // Instant local storage cache check
+        if (typeof window !== "undefined") {
+          const cacheKey = `achivox_notes_full_${subName || 'gen'}_${chapName || 'none'}_${target || 'none'}_${userData?.id || 'guest'}`.replace(/[^a-zA-Z0-9_]/g, '_');
+          try {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+              const parsed = JSON.parse(cached);
+              if (parsed && parsed.topics) {
+                setShowAILoading(false);
+                setActiveNotes({
+                  title: target,
+                  chapter: chapName,
+                  subjectContext: subName,
+                  classContext: clsName,
+                  mode: "full",
+                  data: parsed
+                });
+                return;
+              }
+            }
+          } catch (e) {
+            console.warn("Local cache check failed:", e);
+          }
+        }
+// MISSING LINE 548
+        if (!userData?.isSubscribed) {
+          const { allowed } = await checkAndIncrementUsage(userData?.id, "Smart Notes", 1, target);
+          if (!allowed) {
+            setShowAILoading(false);
+            setShowSubscriptionModal(true);
+            return;
+          }
+        }
+// MISSING LINE 557
+        const notes = await fetchChapterNotes(target, userData, "dual", subName, chapName);
+        if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
+// MISSING LINE 560
+        if (notes) {
+          setActiveNotes({ 
+            title: target, 
+            chapter: chapName,
+            subjectContext: subName,
+            classContext: clsName,
+            data: notes // Pass fetched data
+          });
+          trackTopicOpen({
+            topicId: target.toLowerCase().replace(/\s+/g, '-'),
+            topicName: target,
+            subject: subName,
+            chapter: chapName,
+            cls: clsName,
+            board: userData?.board || "CBSE"
+          });
+        }
+      } else if (type === "test" || type === "quiz") {
+        // Dashboard Analysis for Test
+        const weakAreas = getWeakAreas();
+        let finalTarget = target;
+        let subjectContext = "";
+// MISSING LINE 583
+        if (target === "Daily Challenge" || !target) {
+          if (weakAreas.length > 0) {
+            finalTarget = weakAreas[0].topic;
+            subjectContext = weakAreas[0].subject;
+          } else {
+            finalTarget = "General Science & Logic"; // Default fallback
+          }
+        } else if (parentId) {
+           // Check if parentId is actually a subject name (from MasteryRoadmap)
+           if (!parentId.includes("_")) {
+             subjectContext = parentId;
+           } else {
+             const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
+             subjectContext = subRaw ? subRaw.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : "General";
+           }
+        }
+// MISSING LINE 600
+        const questions = await fetchQuestions("full", finalTarget, userData, subjectContext);
+        if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
+// MISSING LINE 603
+        if (questions && questions.length > 0) {
+          setActiveTest({ 
+            title: finalTarget, 
+            subTitle: subjectContext ? `Context: ${subjectContext}` : "Practice Test",
+            questions,
+            isMastery,
+            subject: subjectContext || "General",
+            mode: mode
+          });
+        } else {
+          alert("AI core was unable to generate questions for this specific topic. Please try a different topic or board.");
+        }
+      }
+    } catch (err) {
+      console.error("AI Action Error:", err);
+      alert("AI Neural Core connection timeout. Please check your network.");
+    } finally {
+// MISSING LINE 621
+// MISSING LINE 622
+// MISSING LINE 623
+// MISSING LINE 624
+// MISSING LINE 625
+// MISSING LINE 626
+// MISSING LINE 627
+// MISSING LINE 628
+// MISSING LINE 629
+// MISSING LINE 630
+// MISSING LINE 631
+// MISSING LINE 632
+// MISSING LINE 633
+// MISSING LINE 634
+// MISSING LINE 635
+// MISSING LINE 636
+// MISSING LINE 637
+// MISSING LINE 638
+// MISSING LINE 639
+      setActiveTest(null);
+      return;
+    }
+// MISSING LINE 643
+    setTestResult({ score, total, percentage: Math.round((score / total) * 100), results });
+    
+    // 2. Update Firestore
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      // Right answers yield +5 XP, wrong answers deduct -2 XP
+      const pointsEarned = (score * 5) - ((total - score) * 2);
+      
+      const updatePayload: any = {
+        totalSolved: increment(total),
+        correctAnswers: increment(score),
+        testsCompleted: increment(1),
+        attempts: arrayUnion({
+          title: activeTest.title,
+          score: Math.round((score / total) * 100),
+          date: new Date().toISOString()
+        }),
+        overallAccuracy: calculateWeightedAccuracy(userData?.overallAccuracy || 70, score, total)
+      };
+// MISSING LINE 663
+      // 🚀 Advance Mastery Level if this was a mastery test and user passed (e.g. > 60%)
+      if (activeTest.isMastery && (score / total) >= 0.6) {
+        updatePayload.masteryLevel = increment(1);
+        setMasteryLevel(prev => prev + 1);
+      }
+// MISSING LINE 669
+      await updateDoc(userRef, updatePayload);
+      
+      // Award/Deduct XP securely using addXP (clamped at 0 in user_stats, synced to users points)
+      await addXP(auth.currentUser.uid, pointsEarned, `Mock Test: ${activeTest.title}`);
+      
+      setAnalyticsUpdateTrigger(prev => prev + 1);
+      
+      // Update local state to reflect changes immediately.
+      setUserData((prev: any) => ({
+        ...prev,
+        totalSolved: (prev?.totalSolved || 0) + total,
+        correctAnswers: (prev?.correctAnswers || 0) + score,
+        testsCompleted: (prev?.testsCompleted || 0) + 1,
+        points: (prev?.points || 0) + pointsEarned,
+      }));
+// MISSING LINE 685
+      // 3. Check for Badge Unlocks
+      const userStatsSnap = await getDoc(doc(db, "user_stats", auth.currentUser.uid));
+      const stats = userStatsSnap.exists() ? userStatsSnap.data() : { badges: [] };
+      const newlyUnlocked = await checkAndUnlockBadges(auth.currentUser.uid, userData, stats);
+      
+// MISSING LINE 691
+// MISSING LINE 692
+// MISSING LINE 693
+// MISSING LINE 694
+// MISSING LINE 695
+// MISSING LINE 696
+// MISSING LINE 697
+// MISSING LINE 698
+// MISSING LINE 699
+          ai_chat: { name: "AI Whisperer", icon: "🤖" },
+          xp_5000: { name: "Glory Chaser", icon: "👑" },
+          mastery_5: { name: "Concept Conqueror", icon: "🔮" },
+          solver_100: { name: "Super Solver", icon: "🛡️" },
+          streak_15: { name: "Unstoppable", icon: "🔥" },
+          focus_10: { name: "Focus Master", icon: "⏱️" },
+          doubts_25: { name: "Doubt Buster", icon: "🧠" },
+          test_15: { name: "Grand Champion", icon: "🌟" },
+          xp_10000: { name: "Elite Learner", icon: "🌌" }
+        }[badgeId as keyof typeof badgeInfo] || { name: "New Achievement", icon: "🏅" };
+        
+        setUnlockedBadge(badgeInfo);
+      }
+    }
+// MISSING LINE 714
+    setActiveTest(null);
+  };
+// MISSING LINE 717
+  const handleCorrectAnswer = async (questionText: string) => {
+    if (!userData?.id || !activeTest) return;
+    
+    // Fire and forget
+    (async () => {
+      const topicName = activeTest.title.replace('PYQs: ', '');
+      const mode = activeTest.mode || (activeTest.title.includes('PYQs') ? 'pyq' : 'mock');
+      const safeId = getTestBankId(mode, topicName, userData, activeTest.subTitle);
+      const personalTestBankRef = doc(db, "users", userData.id, "test_banks", safeId);
+      
+      try {
+        const newQ = await generateSingleReplacementQuestion(topicName, questionText, userData, activeTest.subTitle);
+        if (newQ) {
+          const oldQObj = activeTest.questions.find((q: any) => q.text === questionText);
+          if (oldQObj) {
+            await updateDoc(personalTestBankRef, {
+              questions: arrayRemove(oldQObj)
+            });
+            await updateDoc(personalTestBankRef, {
+              questions: arrayUnion(newQ)
+            });
+            console.log("Background replaced question:", questionText, "with:", newQ.text);
+          }
+        }
+      } catch (e) {
+        console.error("Background replacement failed", e);
+      }
+    })();
+  };
+// MISSING LINE 747
+  const switchProfile = (id: number) => {
+    setProfiles(profiles.map(p => ({ ...p, active: p.id === id })));
+    alert(`Switched to profile!`);
+  };
+// MISSING LINE 752
+// MISSING LINE 753
+// MISSING LINE 754
+  // Real-time dynamic performance analyzer for Glowing recommended prep cards
+  const getGlowRecommendations = useCallback(() => {
+    const recommends = {
+      revisionVault: false,
+      flashcards: false,
+      timetable: false,
+      quickStudy: false,
+      battle: false,
+      scanSolve: false,
+      roadmap: false,
+    };
+// MISSING LINE 766
+    if (!userData) return recommends;
+// MISSING LINE 768
+    const totalSolved = userData.totalSolved || 0;
+    const correctAnswers = userData.correctAnswers || 0;
+    const accuracy = totalSolved > 0 ? (correctAnswers / totalSolved) * 100 : 100;
+    const attempts = userData.attempts || [];
+// MISSING LINE 773
+    // 1. Low accuracy (< 70%) or high attempts with failures -> review mistakes
+    if (accuracy < 70 || (attempts.length > 0 && attempts.some((a: any) => a.score < 60))) {
+      recommends.revisionVault = true;
+      recommends.flashcards = true;
+    }
+// MISSING LINE 779
+    // 2. Active but weak spots -> Skill roadmap
+    if (totalSolved > 15 && accuracy < 85) {
+      recommends.roadmap = true;
+    }
+// MISSING LINE 784
+    // 3. Low study engagement -> AI Timetable Planner
+    if ((userData.streak || 0) === 0 || (userData.points || 0) < 1500) {
+      recommends.timetable = true;
+    }
+// MISSING LINE 789
+    // 4. Brand new user -> Quick Study Swipe Cards & Battle Quiz
+    if (totalSolved < 5) {
+      recommends.quickStudy = true;
+      recommends.battle = true;
+    }
+// MISSING LINE 795
+    // 5. Hard doubts solver -> Scan Camera
+    if (attempts.length > 8) {
+      recommends.scanSolve = true;
+    }
+// MISSING LINE 800
+    return recommends;
+  }, [userData]);
+// MISSING LINE 803
+  const toggleNotifications = async () => {
+    if (!notificationsEnabled) {
+      if ("Notification" in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          setNotificationsEnabled(true);
+          alert("Success! AI Study Reminders are now active. 🚀");
+        } else {
+          alert("Please enable notifications in your browser settings to stay updated!");
+        }
+      }
+    } else {
+      setNotificationsEnabled(false);
+    }
+  };
+// MISSING LINE 819
+  const sendTestNotification = () => {
+    if (notificationsEnabled && "Notification" in window) {
+      new Notification("🚀 Achivox Study Alert", {
+        body: "Time to crush your goals! Your daily streak is waiting for you.",
+        icon: "/favicon.ico"
+      });
+    } else {
+      alert("Please enable 'Study Reminders' first to test notifications!");
+    }
+  };
+// MISSING LINE 830
+  if (forceUpdateUrl) {
+    return <ForceUpdateModal downloadUrl={forceUpdateUrl} />;
+  }
+// MISSING LINE 834
+  if (isAuth === false) {
+    return <LandingPage onLogin={() => router.push("/login")} />;
+  }
+// MISSING LINE 838
+  if (isAuth === null) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="w-5 h-5 text-primary animate-spin" />
+      </div>
+    );
+  }
+// MISSING LINE 846
+  if (systemConfig?.maintenance) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 text-center space-y-6">
+        <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl animate-pulse">
+           <Wrench className="w-5 h-5 text-primary" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">System Upgrade</h2>
+          <p className="text-slate-400 font-medium max-w-xs mx-auto">{systemConfig?.maintenanceMessage || "We are improving ExamHero. Back in a few minutes!"}</p>
+        </div>
+        <div className="glass-card px-4 py-2 rounded-2xl border border-white/10 text-[10px] font-black text-primary uppercase tracking-widest">
+           Live Update in Progress
+        </div>
+      </div>
+    );
+  }
+// MISSING LINE 863
+  if (showSplash) {
+    return <SplashScreen onDone={() => setShowSplash(false)} />;
+  }
+// MISSING LINE 867
+  const hasGoldenFrame = userData?.redemptions?.some((r: any) => r.itemName === "Golden Topper Frame");
+  const hasMythicAura = userData?.redemptions?.some((r: any) => r.itemName === "Mythic Profile Aura");
+  const hasNeonTheme = userData?.redemptions?.some((r: any) => r.itemName === "Secret App Theme");
+  const hasVVIPFormulas = userData?.redemptions?.some((r: any) => r.itemName === "VVIP Formula Bank");
+// MISSING LINE 872
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className={`mobile-container hide-scrollbar relative ${hasNeonTheme ? 'theme-neon bg-slate-950 text-pink-400' : ''}`}>
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingFlow 
+            onComplete={() => {
+              setShowOnboarding(false);
+              localStorage.setItem("achivox_onboarded", "true");
+            }} 
+          />
+        )}
+      </AnimatePresence>
+// MISSING LINE 885
+      {!isSubscribed && <PremiumBanner onUpgrade={() => setShowSubscriptionModal(true)} />}
+// MISSING LINE 887
+      <header className="px-4 py-2.5 flex justify-between items-center border-b border-border glass-card backdrop-blur-md shrink-0 z-50">
+        <div className="flex items-center gap-2.5">
+          <div className="w-5 h-5 rounded-xl overflow-hidden shadow-lg border border-white/10 shrink-0">
+            <Image src="/achivox-logo.png" alt="Achivox" width={40} height={40} className="object-cover w-full h-full" priority />
+          </div>
+          <div>
+            <h1 className="text-lg font-black tracking-tighter leading-none" style={{background:'linear-gradient(90deg,#60a5fa,#a78bfa)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>ACHIVOX</h1>
+            <p className="text-[9px] font-bold text-primary uppercase tracking-[0.2em]">{mode === 'govt' ? 'Gov Prep' : 'School Core'}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          >
+            <Image src="/achivox-logo.png" alt="Achivox" width={40} height={40} className="object-cover w-full h-full" priority />
+          </motion.div>
+          <div>
+            <h1 className="text-xl font-black tracking-tighter leading-none" style={{background:'linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>ACHIVOX</h1>
+            <p className="text-[9px] font-black uppercase tracking-[0.25em]" style={{color:'#8b5cf6'}}>{mode === 'govt' ? '⚡ Gov Prep' : '🎓 School Core'}</p>
+          </div>
+        </motion.div>
+        
+        <div className="flex items-center gap-2">
+          {/* Streak Badge */}
+          <motion.div 
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl"
+            style={{ background: 'linear-gradient(135deg, rgba(251,146,60,0.15), rgba(249,115,22,0.1))', border: '1px solid rgba(249,115,22,0.25)' }}
+            whileTap={{ scale: 0.95 }}
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+          >
+            <Flame className="w-3.5 h-3.5 text-orange-500" style={{ filter: 'drop-shadow(0 0 4px rgba(249,115,22,0.6))' }} />
+            <span className="text-[10px] font-black text-orange-600 dark:text-orange-400">{userData?.streak || 0}d</span>
+          </motion.div>
+// MISSING LINE 921
+          {/* Notifications */}
+          <motion.div 
+            onClick={() => setShowNotifications(true)}
+            className="relative w-9 h-9 rounded-xl flex items-center justify-center cursor-pointer"
+            style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <Bell className="w-4.5 h-4.5 text-indigo-500 dark:text-indigo-400" />
+            {notificationsList.filter(n => !n.read).length > 0 && (
+              <motion.span 
+                className="absolute -top-1 -right-1 w-4 h-4 text-white text-[8px] font-black rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)' }}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 500 }}
+              >
+                {notificationsList.filter(n => !n.read).length}
+              </motion.span>
+            )}
+          </motion.div>
+// MISSING LINE 943
+          {/* Referral */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowReferralCenter(true)}
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.08))', border: '1px solid rgba(16,185,129,0.2)' }}
+          >
+            <UserPlus className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          </motion.button>
+// MISSING LINE 954
+          {/* Reward Shop */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowRewardShop(true)}
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.08))', border: '1px solid rgba(245,158,11,0.25)' }}
+          >
+            <Gift className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+          </motion.button>
+      {activeTab === "Home" && (
+        <div className="px-4 pt-3 pb-2 shrink-0 z-40">
+          <div className="relative flex gap-1 p-1.5 rounded-2xl" style={{background:'rgba(99,102,241,0.06)', border:'1px solid rgba(99,102,241,0.1)'}}>
+            <motion.div 
+              className="absolute inset-1.5 rounded-xl"
+              style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
+              animate={{ left: mode === 'govt' ? '6px' : '50%', width: mode === 'govt' ? 'calc(50% - 6px)' : 'calc(50% - 6px)' }}
+              transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+            />
+            <button 
+              onClick={() => setMode("govt")}
+              className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "govt" ? "text-white" : "text-slate-500 dark:text-slate-400"}`}
+            >
+              <Building2 className="w-4 h-4" /> Gov Prep <Lock className="w-3 h-3 opacity-60" />
+            </button>
+            <button 
+              onClick={() => setMode("school")}
+              className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "school" ? "text-white" : "text-slate-500 dark:text-slate-400"}`}
+            >
+              <GraduationCap className="w-4 h-4" /> School Prep
+            </button>
+          </div>
+        </div>
+      )}
+// MISSING LINE 989
+      <main className="flex-1 overflow-y-auto">
+        <div className="px-4 py-3 space-y-4 pb-28">
+          {activeTab === "Home" && (
+            <AnimatePresence mode="wait">
+              {mode === "govt" ? (
+                <motion.div 
+                  key="govt-locked"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="flex flex-col items-center justify-center py-20 text-center space-y-6"
+                >
+                  <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl shadow-primary/10">
+                    <Lock className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tighter uppercase italic">Gov Prep Vault</h2>
+                    <p className="text-primary font-black text-xs uppercase tracking-[0.3em]">Launching Very Soon</p>
+                  </div>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm font-medium max-w-[280px] leading-relaxed">
+                    We are currently indexing 50,000+ government exam questions.
+                  </p>
+                  <motion.div 
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="bg-emerald-500/10 text-emerald-500 px-4 py-2.5 rounded-2xl border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest"
+                  >
+                    94% Completed
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="home-content"
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-4 overflow-x-hidden"
+                >
+                  {/* ===== PREMIUM HERO GREETING ===== */}
+                  <motion.div 
+                    className="relative overflow-hidden rounded-[28px] p-5 mb-2"
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.1 }}
+                    style={{
+                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+                      boxShadow: '0 8px 40px rgba(99,102,241,0.4), 0 2px 8px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    {/* Background particles */}
+                    <div className="absolute inset-0 overflow-hidden">
+                      {[...Array(6)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="absolute rounded-full"
+                          style={{
+                            width: Math.random() * 60 + 20,
+                            height: Math.random() * 60 + 20,
+                            top: `${Math.random() * 100}%`,
+                            left: `${Math.random() * 100}%`,
+                            background: 'rgba(255,255,255,0.06)',
+                          }}
+                          animate={{ 
+                            y: [0, -15, 0],
+                            scale: [1, 1.1, 1],
+                            opacity: [0.4, 0.8, 0.4]
+                          }}
+                          transition={{ 
+                            duration: 3 + i * 0.5, 
+                            repeat: Infinity, 
+                            delay: i * 0.4,
+                            ease: 'easeInOut'
+                          }}
+                        />
+                      ))}
+                    </div>
+                    
+                    <div className="relative z-10 flex justify-between items-center">
+                      <div>
+                        <motion.p 
+                          className="text-white/70 text-[11px] font-black uppercase tracking-widest mb-1"
+                          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+                        >
+                          Daily Mastery Session ✨
+                        </motion.p>
+                        <motion.h2 
+                          className="text-2xl font-black text-white leading-tight tracking-tight"
+                          initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+                        >
+                          Hi, {auth.currentUser?.displayName?.split(" ")[0] || "Aspirant"}! 👋
+                        </motion.h2>
+                        
+                        <div className="flex items-center gap-2 mt-3">
+                          <motion.div 
+                            onClick={() => setShowRewardShop(true)} 
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-2xl cursor-pointer"
+                            style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)' }}
+                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.03 }}
+                          >
+                            <Zap className="w-4 h-4 text-yellow-300 fill-yellow-300" style={{ filter: 'drop-shadow(0 0 6px rgba(253,224,71,0.8))' }} />
+                            <span className="text-sm font-black text-white">{(userData?.points || 0).toLocaleString()} XP</span>
+                            <ChevronRight className="w-3 h-3 text-white/60" />
+                          </motion.div>
+                        </div>
+                      </div>
+                      <StudyBuddy points={userData?.points || 0} streak={userData?.streak || 0} />
+                    </div>
+                  </motion.div>
+// MISSING LINE 1099
+                  {/* ===== PREMIUM GOAL + MASTERY CARDS ===== */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Goal Card */}
+                    <motion.div 
+                      className="feature-card p-4 cursor-pointer"
+                      style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(99,102,241,0.15)' }}
+                      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: 0.2 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => setShowGoalSelector(true)}
+                    >
+                      <motion.div 
+                        className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3 icon-3d"
+                        style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
+                        whileHover={{ rotate: 5 }}
+                      >
+                        <Target className="w-5 h-5 text-white" />
+                      </motion.div>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Your Goal</p>
+                      <h2 className="text-xs font-black text-foreground leading-tight">
+                        {userData?.board && userData?.cls ? `${userData.board}` : "Set Goal"}
+                      </h2>
+                      {userData?.cls && <p className="text-[10px] text-indigo-500 font-bold mt-0.5">{userData.cls}</p>}
+                    </motion.div>
+// MISSING LINE 1125
+                    {/* Mastery Progress Card */}
+                    <motion.div 
+                      className="feature-card p-4"
+                      style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.05))', border: '1px solid rgba(16,185,129,0.15)' }}
+                      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <motion.div 
+                          className="w-10 h-10 rounded-2xl flex items-center justify-center icon-3d"
+                          style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}
+                        >
+                          <Trophy className="w-5 h-5 text-white" />
+                        </motion.div>
+                        <div className="relative w-10 h-10 shrink-0">
+                          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                            <circle className="text-slate-100 dark:text-slate-800" strokeWidth="10" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+                            <motion.circle
+                              className="text-emerald-500"
+                              strokeWidth="10"
+                              strokeDasharray={2 * Math.PI * 40}
+                              initial={{ strokeDashoffset: 2 * Math.PI * 40 }}
+                              animate={{ strokeDashoffset: 2 * Math.PI * 40 * (1 - (userData?.totalSolved > 0 ? 0.65 : 0)) }}
+                              transition={{ duration: 1.5, delay: 0.8, ease: 'easeOut' }}
+                              strokeLinecap="round"
+                              stroke="currentColor"
+                              fill="transparent"
+                              r="40" cx="50" cy="50"
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-[9px] font-black text-emerald-600">{userData?.totalSolved > 0 ? "65%" : "0%"}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Weekly</p>
+                      <h3 className="text-xs font-black text-foreground">Mastery 💪</h3>
+                    </motion.div>
+                  </div>
+// MISSING LINE 1166
+                  {/* HOME QUICK ACCESS 3D BAR */}
+                  {(() => {
+                    const recs = getGlowRecommendations();
+                    return (
+                      <div className="flex gap-3 overflow-x-auto py-2 px-1 hide-scrollbar shrink-0">
+                        <motion.button
+                          whileTap={{ scale: 0.95 }}
+                          onClick={handleDoubtSolverClick}
+                          className="flex flex-col items-center gap-1.5 min-w-[72px]"
+                        >
+                          <div className="w-5 h-5 bg-indigo-50 dark:bg-indigo-950/20 rounded-[22px] flex items-center justify-center text-2xl border border-indigo-100 dark:border-indigo-900/40 shadow-sm icon-3d">
+                            🤖
+                          </div>
+                          <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">AI Doubt</span>
+                        </motion.button>
+// MISSING LINE 1182
+                        <motion.button
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setShowQuickStudy(true)}
+                          className="flex flex-col items-center gap-1.5 min-w-[72px]"
+                        >
+                          <div className={`w-5 h-5 bg-amber-50 dark:bg-amber-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.quickStudy ? 'glow-amber animate-pulse border-amber-300' : 'border-amber-100 dark:border-amber-900/40'}`}>
+                            🎴
+                          </div>
+                          <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">Quick Study</span>
+                        </motion.button>
+// MISSING LINE 1193
+                        <motion.button
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setShowTimetable(true)}
+                          className="flex flex-col items-center gap-1.5 min-w-[72px]"
+                        >
+                          <div className={`w-5 h-5 bg-emerald-50 dark:bg-emerald-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.timetable ? 'glow-emerald animate-pulse border-emerald-300' : 'border-emerald-100 dark:border-emerald-900/40'}`}>
+                            🗓️
+                          </div>
+                          <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">AI Planner</span>
+                        </motion.button>
+// MISSING LINE 1204
+                        <motion.button
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setShowScanSolve(true)}
+                          className="flex flex-col items-center gap-1.5 min-w-[72px]"
+                        >
+                          <div className={`w-5 h-5 bg-sky-50 dark:bg-sky-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.scanSolve ? 'glow-primary animate-pulse border-sky-300' : 'border-sky-100 dark:border-sky-900/40'}`}>
+                            📸
+                          </div>
+                          <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">AI Vision</span>
+                        </motion.button>
+                        
+                        <motion.button
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => {
+                            if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+                            setShowRevisionVault(true);
+                          }}
+                          className="flex flex-col items-center gap-1.5 min-w-[72px]"
+                        >
+                          <div className={`w-5 h-5 bg-rose-50 dark:bg-rose-950/20 rounded-[22px] flex items-center justify-center text-2xl border shadow-sm icon-3d ${recs.revisionVault ? 'glow-rose animate-pulse border-rose-300' : 'border-rose-100 dark:border-rose-900/40'}`}>
+                            🧠
+                          </div>
+                          <span className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">Mistakes</span>
+                        </motion.button>
+                      </div>
+                    );
+                  })()}
+// MISSING LINE 1232
+                  {/* 🛣️ MASTERY ROADMAP CARD */}
+                  <motion.button 
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setShowRoadmap(true)}
+                    className="w-full bg-slate-900 dark:bg-slate-800 p-4 rounded-[32px] border border-white/5 shadow-xl flex items-center justify-between group hover:border-primary/50 transition-all text-white relative overflow-hidden glow-primary"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="flex items-center gap-4 relative z-10">
+                      <div className="w-5 h-5 bg-indigo-500/30 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform icon-3d">🛤️</div>
+                      <div className="text-left">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-black text-sm uppercase tracking-tight">Mastery Roadmap</h3>
+                          {!isSubscribed && <div className="bg-amber-400 text-slate-900 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">Trial</div>}
+                        </div>
+                        <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest leading-none">Mixed Subjects • Level {masteryLevel + 1}</p>
+                      </div>
+                    </div>
+                    <div className="w-5 h-5 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                      <ChevronRight className="w-5 h-5" />
+                    </div>
+                  </motion.button>
+// MISSING LINE 1254
+                  <ExploreEngine 
+                    mode={mode} 
+                    isSubscribed={isSubscribed}
+                    userData={userData}
+                    onUpgrade={() => setShowSubscriptionModal(true)}
+                    onFinalSelect={async (item) => {
+                      const isPYQ = item.name.toLowerCase().includes("pyq") || item.name.toLowerCase().includes("previous year");
+                      if (isPYQ) {
+                        if (userData?.planType === "standard") {
+                          alert("👑 TOPPER PYQ Tests are exclusively available in the Achivox Pro Plan. Upgrade now to unlock!");
+                          setShowSubscriptionModal(true);
+                          return;
+                        }
+                        try {
+                          setLoadingQuestions(true);
+                          // Clean parent ID (e.g., topics_laws_of_motion -> Laws Of Motion)
+                          const topicName = item.parentId?.split('_').pop()?.replace(/-/g, ' ') || "this topic";
+                          const formattedTopic = topicName.charAt(0).toUpperCase() + topicName.slice(1);
+                          
+                          const pyqs = await generateAIPYQs(formattedTopic, userData);
+                          if (pyqs && pyqs.length > 0) {
+                            setActiveTest({ title: `PYQs: ${formattedTopic}`, questions: pyqs, mode: "pyq" });
+                          } else {
+                            alert("AI failed to generate PYQs. Please try again.");
+                          }
+                        } catch (e) {
+                          console.error("PYQ Error:", e);
+                          alert("Failed to connect to AI server. Please try again.");
+                        } finally {
+                          setLoadingQuestions(false);
+                        }
+                      } else {
+                        setSelectionModal(item);
+                      }
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
+// MISSING LINE 1295
+// MISSING LINE 1296
+// MISSING LINE 1297
+// MISSING LINE 1298
+// MISSING LINE 1299
+// MISSING LINE 1300
+// MISSING LINE 1301
+// MISSING LINE 1302
+// MISSING LINE 1303
+// MISSING LINE 1304
+// MISSING LINE 1305
+// MISSING LINE 1306
+// MISSING LINE 1307
+// MISSING LINE 1308
+// MISSING LINE 1309
+// MISSING LINE 1310
+// MISSING LINE 1311
+// MISSING LINE 1312
+// MISSING LINE 1313
+// MISSING LINE 1314
+// MISSING LINE 1315
+// MISSING LINE 1316
+// MISSING LINE 1317
+// MISSING LINE 1318
+// MISSING LINE 1319
+// MISSING LINE 1320
+// MISSING LINE 1321
+// MISSING LINE 1322
+// MISSING LINE 1323
+// MISSING LINE 1324
+// MISSING LINE 1325
+// MISSING LINE 1326
+// MISSING LINE 1327
+// MISSING LINE 1328
+// MISSING LINE 1329
+// MISSING LINE 1330
+// MISSING LINE 1331
+// MISSING LINE 1332
+// MISSING LINE 1333
+// MISSING LINE 1334
+// MISSING LINE 1335
+// MISSING LINE 1336
+// MISSING LINE 1337
+// MISSING LINE 1338
+// MISSING LINE 1339
+// MISSING LINE 1340
+// MISSING LINE 1341
+// MISSING LINE 1342
+// MISSING LINE 1343
+// MISSING LINE 1344
+// MISSING LINE 1345
+          {activeTab === "Rank" && (
+            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
+              <Leaderboard userData={userData} />
+            </motion.div>
+          )}
+// MISSING LINE 1351
+          {activeTab === "Tools" && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-black tracking-tight leading-none">AI Tools</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Power features for smarter study</p>
+              </div>
+// MISSING LINE 1358
+              {/* System Flow Banner */}
+          {activeTab === "Rank" && (
+            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
+              <Leaderboard userData={userData} />
+            </motion.div>
+          )}
+// MISSING LINE 1365
+          {activeTab === "Tools" && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-black tracking-tight leading-none">AI Tools</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Power features for smarter study</p>
+              </div>
+// MISSING LINE 1372
+              {/* System Flow Banner */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setShowSystemFlow(true)}
+                className="w-full bg-gradient-to-r from-primary via-violet-600 to-indigo-700 text-white p-5 rounded-[28px] flex items-center justify-between shadow-xl shadow-primary/20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">🔄</div>
+                  <div className="text-left">
+                    <p className="font-black text-sm">How ExamHero AI Works</p>
+                    <p className="text-white/70 text-xs font-semibold">See the 8-step learning loop</p>
+                  </div>
+                </div>
+                <Info className="w-5 h-5 text-white/70" />
+              </motion.button>
+// MISSING LINE 1388
+              {/* 3D ICON GRID OF COMPACTED FEATURES */}
+              {(() => {
+                const recs = getGlowRecommendations();
+                
+                const toolsList = [
+                  {
+                    id: "formula",
+                    title: "Smart Formulas",
+                    subtitle: "Formula Vault",
+                    emoji: "📚",
+                    bgClass: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-950/20",
+                    isGlowing: false,
+                    glowClass: "",
+                    onClick: () => setShowFormulaVault(true)
+                  },
+                  {
+                    id: "revisionVault",
+                    title: "Mistake Bank",
+                    subtitle: "Revision Vault",
+                    emoji: "🧠",
+                    bgClass: "bg-amber-100 text-amber-500 dark:bg-amber-950/20",
+                    isGlowing: recs.revisionVault,
+                    glowClass: "glow-amber",
+                    onClick: () => {
+                      if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+                      setShowRevisionVault(true);
+                    }
+                  },
+                  {
+                    id: "flashcards",
+                    title: "AI Flashcards",
+                    subtitle: "Flashcard Forge",
+                    emoji: "⚡",
+                    bgClass: "bg-orange-100 text-orange-500 dark:bg-orange-950/20",
+                    isGlowing: recs.flashcards,
+                    glowClass: "glow-amber",
+                    onClick: () => setShowFlashcards(true)
+                  },
+                  {
+                    id: "roadmap",
+                    title: "Skill Journey",
+                    subtitle: "Mastery Roadmap",
+                    emoji: "🗺️",
+                    bgClass: "bg-indigo-100 text-indigo-500 dark:bg-indigo-950/20",
+                    isGlowing: recs.roadmap,
+                    glowClass: "glow-primary",
+                    onClick: () => setShowRoadmap(true)
+                  },
+                  {
+                    id: "timetable",
+                    title: "AI Planner",
+                    subtitle: "Smart Timetable",
+                    emoji: "🗓️",
+                    bgClass: "bg-emerald-100 text-emerald-500 dark:bg-emerald-950/20",
+                    isGlowing: recs.timetable,
+                    glowClass: "glow-emerald",
+                    onClick: () => setShowTimetable(true)
+                  },
+                  {
+                    id: "scanSolve",
+                    title: "AI Vision Solver",
+                    subtitle: "Scan & Solve",
+                    emoji: "📸",
+                    bgClass: "bg-sky-100 text-sky-500 dark:bg-sky-950/20",
+                    isGlowing: recs.scanSolve,
+                    glowClass: "glow-primary",
+                    onClick: () => setShowScanSolve(true)
+                  },
+                  {
+                    id: "analysis",
+                    title: "Deep Analysis",
+                    subtitle: "Skill Metrics",
+                    emoji: "📊",
+                    bgClass: "bg-violet-100 text-violet-500 dark:bg-violet-950/20",
+                    isGlowing: false,
+                    glowClass: "",
+                    onClick: () => setShowAnalysis(true)
+                  },
+                  {
+                    id: "quickStudy",
+                    title: "Quick Study",
+                    subtitle: "Flashcard Swipe",
+                    emoji: "🎴",
+                    bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
+                    isGlowing: recs.quickStudy,
+                    glowClass: "glow-amber",
+                    onClick: () => setShowQuickStudy(true)
+                  },
+                  {
+                    id: "quests",
+                    title: "Daily Quests",
+                    subtitle: "XP Loot Box",
+                    emoji: "⚔️",
+                    bgClass: "bg-rose-100 text-rose-500 dark:bg-rose-950/20",
+                    isGlowing: false,
+                    glowClass: "",
+                    onClick: () => setShowQuestLog(true)
+                  },
+                  {
+                    id: "studyPods",
+                    title: "Grind Pods",
+                    subtitle: "Live Study Pods",
+                    emoji: "🧘‍♂️",
+                    bgClass: "bg-teal-100 text-teal-600 dark:bg-teal-950/20",
+                    isGlowing: false,
+                    glowClass: "",
+                    onClick: () => setShowStudyPods(true)
+                  },
+                  {
+                    id: "battle",
+                    title: "Battle Arena",
+                    subtitle: "Multiplayer Quiz",
+                    emoji: "⚔️",
+                    bgClass: "bg-red-100 text-red-500 dark:bg-red-950/20",
+                    isGlowing: recs.battle,
+                    glowClass: "glow-rose",
+                    onClick: () => setShowBattle(true)
+                  },
+                  {
+                    id: "achievements",
+                    title: "Achievements",
+                    subtitle: "XP & Badges",
+                    emoji: "🏆",
+                    bgClass: "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/20",
+                    isGlowing: false,
+                    glowClass: "",
+                    onClick: () => setShowGamification(true)
+                  }
+                ];
+// MISSING LINE 1518
+                return (
+                  <div className="grid grid-cols-2 gap-4">
+                    {toolsList.map((tool) => (
+                      <motion.button
+                        key={tool.id}
+                        whileHover={{ scale: 1.03, y: -2 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={tool.onClick}
+                        className={`relative overflow-hidden rounded-[24px] p-4 bg-white dark:bg-slate-900 border border-border shadow-md flex flex-col items-start gap-3 text-left transition-all ${tool.isGlowing ? `${tool.glowClass} animate-pulse scale-[1.01] border-red-500/40` : 'hover:border-primary/40'}`}
+                      >
+                        {/* 3D Icon Wrapper */}
+                        <div className={`w-5 h-5 rounded-xl flex items-center justify-center text-xl icon-3d ${tool.bgClass}`}>
+                          {tool.emoji}
+                        </div>
+                        {/* Labels */}
+                        <div>
+                          <h4 className="font-black text-xs sm:text-sm text-foreground tracking-tight leading-tight mb-1">{tool.title}</h4>
+                          <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none">{tool.subtitle}</p>
+                        </div>
+                        
+                        {/* Glowing Performance Recommendation tag */}
+                        {tool.isGlowing && (
+                          <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping" />
+                            <span className="text-[7px] font-black uppercase text-rose-500 tracking-wider">Focus</span>
+                          </div>
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
+                );
+              })()}
+// MISSING LINE 1551
+// MISSING LINE 1552
+// MISSING LINE 1553
+              <div className="relative">
+                <PerformanceGraph isSubscribed={isSubscribed} refreshTrigger={analyticsUpdateTrigger} />
+              </div>
+// MISSING LINE 1557
+              <div className="relative">
+                <SpacedRevisionSystem
+                  isSubscribed={isSubscribed}
+// MISSING LINE 1561
+// MISSING LINE 1562
+// MISSING LINE 1563
+// MISSING LINE 1564
+// MISSING LINE 1565
+// MISSING LINE 1566
+// MISSING LINE 1567
+// MISSING LINE 1568
+// MISSING LINE 1569
+// MISSING LINE 1570
+// MISSING LINE 1571
+// MISSING LINE 1572
+// MISSING LINE 1573
+// MISSING LINE 1574
+// MISSING LINE 1575
+// MISSING LINE 1576
+// MISSING LINE 1577
+// MISSING LINE 1578
+// MISSING LINE 1579
+// MISSING LINE 1580
+// MISSING LINE 1581
+// MISSING LINE 1582
+// MISSING LINE 1583
+// MISSING LINE 1584
+// MISSING LINE 1585
+// MISSING LINE 1586
+// MISSING LINE 1587
+// MISSING LINE 1588
+// MISSING LINE 1589
+// MISSING LINE 1590
+// MISSING LINE 1591
+// MISSING LINE 1592
+// MISSING LINE 1593
+// MISSING LINE 1594
+// MISSING LINE 1595
+// MISSING LINE 1596
+// MISSING LINE 1597
+// MISSING LINE 1598
+// MISSING LINE 1599
+// MISSING LINE 1600
+// MISSING LINE 1601
+// MISSING LINE 1602
+// MISSING LINE 1603
+// MISSING LINE 1604
+// MISSING LINE 1605
+// MISSING LINE 1606
+// MISSING LINE 1607
+// MISSING LINE 1608
+// MISSING LINE 1609
+// MISSING LINE 1610
+// MISSING LINE 1611
+// MISSING LINE 1612
+// MISSING LINE 1613
+// MISSING LINE 1614
+// MISSING LINE 1615
+// MISSING LINE 1616
+// MISSING LINE 1617
+// MISSING LINE 1618
+// MISSING LINE 1619
+// MISSING LINE 1620
+// MISSING LINE 1621
+// MISSING LINE 1622
+// MISSING LINE 1623
+// MISSING LINE 1624
+// MISSING LINE 1625
+// MISSING LINE 1626
+// MISSING LINE 1627
+// MISSING LINE 1628
+// MISSING LINE 1629
+// MISSING LINE 1630
+// MISSING LINE 1631
+// MISSING LINE 1632
+// MISSING LINE 1633
+// MISSING LINE 1634
+// MISSING LINE 1635
+// MISSING LINE 1636
+// MISSING LINE 1637
+// MISSING LINE 1638
+// MISSING LINE 1639
+// MISSING LINE 1640
+// MISSING LINE 1641
+// MISSING LINE 1642
+// MISSING LINE 1643
+// MISSING LINE 1644
+// MISSING LINE 1645
+// MISSING LINE 1646
+// MISSING LINE 1647
+// MISSING LINE 1648
+// MISSING LINE 1649
+// MISSING LINE 1650
+// MISSING LINE 1651
+// MISSING LINE 1652
+// MISSING LINE 1653
+// MISSING LINE 1654
+// MISSING LINE 1655
+// MISSING LINE 1656
+// MISSING LINE 1657
+// MISSING LINE 1658
+// MISSING LINE 1659
+// MISSING LINE 1660
+// MISSING LINE 1661
+// MISSING LINE 1662
+// MISSING LINE 1663
+// MISSING LINE 1664
+// MISSING LINE 1665
+// MISSING LINE 1666
+// MISSING LINE 1667
+// MISSING LINE 1668
+// MISSING LINE 1669
+// MISSING LINE 1670
+// MISSING LINE 1671
+// MISSING LINE 1672
+// MISSING LINE 1673
+// MISSING LINE 1674
+// MISSING LINE 1675
+// MISSING LINE 1676
+// MISSING LINE 1677
+// MISSING LINE 1678
+// MISSING LINE 1679
+// MISSING LINE 1680
+// MISSING LINE 1681
+// MISSING LINE 1682
+// MISSING LINE 1683
+// MISSING LINE 1684
+// MISSING LINE 1685
+// MISSING LINE 1686
+// MISSING LINE 1687
+// MISSING LINE 1688
+// MISSING LINE 1689
+// MISSING LINE 1690
+// MISSING LINE 1691
+// MISSING LINE 1692
+// MISSING LINE 1693
+// MISSING LINE 1694
+// MISSING LINE 1695
+// MISSING LINE 1696
+// MISSING LINE 1697
+// MISSING LINE 1698
+// MISSING LINE 1699
+                onClick={() => setSelectionModal(null)} 
+                className="absolute top-6 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-primary transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <h3 className="text-xl font-black mb-6 text-slate-800 dark:text-white">{selectionModal.name}</h3>
+              <div className="grid grid-cols-1 gap-3">
+                 <button 
+                  onClick={() => { handleAICoreAction("notes", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+                  className="bg-indigo-600 text-white p-6 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+                >
+                  Smart Notes
+                </button>
+                <button 
+                  onClick={() => { handleAICoreAction("quiz", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+                  className="bg-slate-900 text-white p-6 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+                >
+                  Live Test
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+// MISSING LINE 1723
+      </AnimatePresence>
+// MISSING LINE 1725
+      {showDoubtSolver && <AIDoubtSolver autoStartMic={autoStartMic} onExit={() => { setShowDoubtSolver(false); setAutoStartMic(false); }} isSubscribed={isSubscribed} />}
+// MISSING LINE 1727
+      {/* New Feature Overlays */}
+      <AnimatePresence>
+        {showSystemFlow && <SystemFlowModal onClose={() => setShowSystemFlow(false)} />}
+      </AnimatePresence>
+// MISSING LINE 1732
+      <AnimatePresence>
+        {showGamification && <GamificationHub userData={userData} onClose={() => setShowGamification(false)} />}
+      </AnimatePresence>
+// MISSING LINE 1736
+      {showQuickRevision && (
+        <QuickRevisionMode
+          topic={quickRevisionTopic || "Current Topic"}
+          onExit={() => setShowQuickRevision(false)}
+        />
+      )}
+// MISSING LINE 1743
+      {showWhyWrong && (
+        <WhyGotWrong
+          wrongQuestions={wrongQuestions}
+          testTitle={testResult?.title || "Recent Test"}
+          onClose={() => setShowWhyWrong(false)}
+          isSubscribed={isSubscribed}
+        />
+      )}
+      <AnimatePresence mode="wait">
+        {activeNotes && (
+          <SmartNotesViewer 
+            key={`notes-${activeNotes.title}`}
+            title={activeNotes.title} 
+            chapterName={activeNotes.chapter || activeNotes.title}
+            subjectContext={activeNotes.subjectContext}
+            classContext={activeNotes.classContext}
+            mode={activeNotes.mode}
+// MISSING LINE 1761
+// MISSING LINE 1762
+// MISSING LINE 1763
+// MISSING LINE 1764
+// MISSING LINE 1765
+// MISSING LINE 1766
+// MISSING LINE 1767
+// MISSING LINE 1768
+// MISSING LINE 1769
+// MISSING LINE 1770
+// MISSING LINE 1771
+// MISSING LINE 1772
+// MISSING LINE 1773
+// MISSING LINE 1774
+// MISSING LINE 1775
+// MISSING LINE 1776
+// MISSING LINE 1777
+// MISSING LINE 1778
+// MISSING LINE 1779
+// MISSING LINE 1780
+// MISSING LINE 1781
+// MISSING LINE 1782
+// MISSING LINE 1783
+// MISSING LINE 1784
+// MISSING LINE 1785
+// MISSING LINE 1786
+// MISSING LINE 1787
+// MISSING LINE 1788
+// MISSING LINE 1789
+// MISSING LINE 1790
+// MISSING LINE 1791
+// MISSING LINE 1792
+// MISSING LINE 1793
+// MISSING LINE 1794
+// MISSING LINE 1795
+// MISSING LINE 1796
+// MISSING LINE 1797
+// MISSING LINE 1798
+// MISSING LINE 1799
+// MISSING LINE 1800
+// MISSING LINE 1801
+// MISSING LINE 1802
+// MISSING LINE 1803
+// MISSING LINE 1804
+// MISSING LINE 1805
+// MISSING LINE 1806
+// MISSING LINE 1807
+// MISSING LINE 1808
+// MISSING LINE 1809
+// MISSING LINE 1810
+// MISSING LINE 1811
+// MISSING LINE 1812
+// MISSING LINE 1813
+// MISSING LINE 1814
+// MISSING LINE 1815
+// MISSING LINE 1816
+// MISSING LINE 1817
+// MISSING LINE 1818
+// MISSING LINE 1819
+                      <p className="text-sm font-black text-foreground">Appearance</p>
+                      <p className="text-[10px] font-bold text-slate-400">Toggle dark mode</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-slate-300" />
+                </button>
+              </div>
+// MISSING LINE 1827
+            </motion.div>
+          )}
+        </div>
+        <AnimatePresence>
+        {isAuth && <StreakCelebration currentStreak={userData?.streak || 0} />}
+      </AnimatePresence>
+      {showSubjective && (
+// MISSING LINE 1835
+      <nav className="glass-card backdrop-blur-xl border-t border-border flex justify-around items-center p-3 z-50 shrink-0 w-full pb-safe">
+        {[
+          { icon: BookOpen, label: "Home" },
+          { icon: FileSpreadsheet, label: "Tests" },
+          { icon: Trophy, label: "Rank" },
+          { icon: Activity, label: "Analysis" },
+          { icon: Wrench, label: "Tools" },
+          { icon: User, label: "Profile" }
+        ].map((item, i) => (
+          <div key={i} onClick={() => setActiveTab(item.label)} className={`flex flex-col items-center gap-1.5 cursor-pointer transition-all ${activeTab === item.label ? "text-primary scale-110" : "text-slate-400"}`}>
+            <item.icon className="w-6 h-6" />
+            <span className="text-[10px] font-black uppercase tracking-tighter">{item.label}</span>
+          </div>
+        ))}
+          { icon: FileSpreadsheet, label: "Tests" },
+          { icon: Trophy, label: "Rank" },
+          { icon: Activity, label: "Analysis" },
+          { icon: Wrench, label: "Tools" },
+          { icon: User, label: "Profile" }
+        ].map((item, i) => {
+          const isActive = activeTab === item.label;
+          return (
+            <motion.div
+              key={i}
+              onClick={() => setActiveTab(item.label)}
+              whileTap={{ scale: 0.92 }}
+              className="flex flex-col items-center gap-1.5 cursor-pointer relative"
+            >
+              <div 
+                className={`menu-icon-3d flex items-center justify-center p-1.5 rounded-[14px] ${
+                  isActive 
+                    ? "active bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-indigo-500 dark:text-indigo-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]" 
+                    : "text-slate-400 hover:text-slate-500 dark:hover:text-slate-300"
+                }`}
+              >
+                <item.icon className="w-5 h-5 drop-shadow-[0_1.5px_3px_rgba(99,102,241,0.15)]" />
+              </div>
+              <span className={`text-[8.5px] font-black uppercase tracking-widest transition-all duration-300 leading-none ${
+                isActive ? "text-indigo-500 dark:text-indigo-400 font-extrabold scale-105" : "text-slate-400/80 dark:text-slate-500 font-bold"
+              }`}>
+                {item.label}
+              </span>
+            </motion.div>
+          );
+        })}
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <h3 className="text-xl font-black mb-6 text-slate-800 dark:text-white">{selectionModal.name}</h3>
+              <div className="grid grid-cols-1 gap-3">
+                 <button 
+                  onClick={() => { handleAICoreAction("notes", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+                  className="bg-indigo-600 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+                >
+                  Smart Notes
+                </button>
+                <button 
+                  onClick={() => { handleAICoreAction("quiz", selectionModal.name, selectionModal.parentId); setSelectionModal(null); }} 
+                  className="bg-slate-900 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform"
+                >
+                  Live Test
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+// MISSING LINE 1902
+      </AnimatePresence>
+// MISSING LINE 1904
+      {showDoubtSolver && <AIDoubtSolver autoStartMic={autoStartMic} onExit={() => { setShowDoubtSolver(false); setAutoStartMic(false); }} isSubscribed={isSubscribed} />}
+// MISSING LINE 1906
+      {/* New Feature Overlays */}
+      <AnimatePresence>
+        {showSystemFlow && <SystemFlowModal onClose={() => setShowSystemFlow(false)} />}
+      </AnimatePresence>
+// MISSING LINE 1911
+// MISSING LINE 1912
+// MISSING LINE 1913
+// MISSING LINE 1914
+// MISSING LINE 1915
+// MISSING LINE 1916
+// MISSING LINE 1917
+// MISSING LINE 1918
+// MISSING LINE 1919
+// MISSING LINE 1920
+// MISSING LINE 1921
+// MISSING LINE 1922
+// MISSING LINE 1923
+// MISSING LINE 1924
+// MISSING LINE 1925
+// MISSING LINE 1926
+// MISSING LINE 1927
+// MISSING LINE 1928
+// MISSING LINE 1929
+// MISSING LINE 1930
+// MISSING LINE 1931
+// MISSING LINE 1932
+// MISSING LINE 1933
+// MISSING LINE 1934
+// MISSING LINE 1935
+// MISSING LINE 1936
+// MISSING LINE 1937
+// MISSING LINE 1938
+// MISSING LINE 1939
+// MISSING LINE 1940
+// MISSING LINE 1941
+// MISSING LINE 1942
+// MISSING LINE 1943
+// MISSING LINE 1944
+// MISSING LINE 1945
+// MISSING LINE 1946
+// MISSING LINE 1947
+// MISSING LINE 1948
+// MISSING LINE 1949
+// MISSING LINE 1950
+// MISSING LINE 1951
+// MISSING LINE 1952
+// MISSING LINE 1953
+// MISSING LINE 1954
+// MISSING LINE 1955
+// MISSING LINE 1956
+// MISSING LINE 1957
+// MISSING LINE 1958
+// MISSING LINE 1959
+// MISSING LINE 1960
+// MISSING LINE 1961
+// MISSING LINE 1962
+// MISSING LINE 1963
+// MISSING LINE 1964
+// MISSING LINE 1965
+// MISSING LINE 1966
+// MISSING LINE 1967
+// MISSING LINE 1968
+// MISSING LINE 1969
+// MISSING LINE 1970
+// MISSING LINE 1971
+// MISSING LINE 1972
+// MISSING LINE 1973
+// MISSING LINE 1974
+// MISSING LINE 1975
+// MISSING LINE 1976
+// MISSING LINE 1977
+// MISSING LINE 1978
+// MISSING LINE 1979
+// MISSING LINE 1980
+// MISSING LINE 1981
+// MISSING LINE 1982
+// MISSING LINE 1983
+// MISSING LINE 1984
+// MISSING LINE 1985
+// MISSING LINE 1986
+// MISSING LINE 1987
+// MISSING LINE 1988
+// MISSING LINE 1989
+// MISSING LINE 1990
+// MISSING LINE 1991
+// MISSING LINE 1992
+// MISSING LINE 1993
+// MISSING LINE 1994
+// MISSING LINE 1995
+// MISSING LINE 1996
+// MISSING LINE 1997
+// MISSING LINE 1998
+// MISSING LINE 1999
+// MISSING LINE 2000
+// MISSING LINE 2001
+// MISSING LINE 2002
+// MISSING LINE 2003
+// MISSING LINE 2004
+// MISSING LINE 2005
+// MISSING LINE 2006
+// MISSING LINE 2007
+// MISSING LINE 2008
+// MISSING LINE 2009
+// MISSING LINE 2010
+// MISSING LINE 2011
+// MISSING LINE 2012
+// MISSING LINE 2013
+// MISSING LINE 2014
+// MISSING LINE 2015
+// MISSING LINE 2016
+// MISSING LINE 2017
+// MISSING LINE 2018
+// MISSING LINE 2019
+// MISSING LINE 2020
+// MISSING LINE 2021
+// MISSING LINE 2022
+// MISSING LINE 2023
+// MISSING LINE 2024
+// MISSING LINE 2025
+// MISSING LINE 2026
+// MISSING LINE 2027
+// MISSING LINE 2028
+// MISSING LINE 2029
+// MISSING LINE 2030
+// MISSING LINE 2031
+// MISSING LINE 2032
+// MISSING LINE 2033
+// MISSING LINE 2034
+// MISSING LINE 2035
+// MISSING LINE 2036
+// MISSING LINE 2037
+// MISSING LINE 2038
+// MISSING LINE 2039
+// MISSING LINE 2040
+// MISSING LINE 2041
+// MISSING LINE 2042
+// MISSING LINE 2043
+// MISSING LINE 2044
+// MISSING LINE 2045
+// MISSING LINE 2046
+// MISSING LINE 2047
+// MISSING LINE 2048
+// MISSING LINE 2049
+// MISSING LINE 2050
+// MISSING LINE 2051
+// MISSING LINE 2052
+// MISSING LINE 2053
+// MISSING LINE 2054
+// MISSING LINE 2055
+// MISSING LINE 2056
+// MISSING LINE 2057
+// MISSING LINE 2058
+// MISSING LINE 2059
+// MISSING LINE 2060
+// MISSING LINE 2061
+// MISSING LINE 2062
+// MISSING LINE 2063
+// MISSING LINE 2064
+// MISSING LINE 2065
+// MISSING LINE 2066
+// MISSING LINE 2067
+// MISSING LINE 2068
+// MISSING LINE 2069
+// MISSING LINE 2070
+// MISSING LINE 2071
+// MISSING LINE 2072
+// MISSING LINE 2073
+// MISSING LINE 2074
+// MISSING LINE 2075
+// MISSING LINE 2076
+// MISSING LINE 2077
+// MISSING LINE 2078
+// MISSING LINE 2079
+// MISSING LINE 2080
+// MISSING LINE 2081
+// MISSING LINE 2082
+// MISSING LINE 2083
+// MISSING LINE 2084
+// MISSING LINE 2085
+// MISSING LINE 2086
+// MISSING LINE 2087
+// MISSING LINE 2088
+// MISSING LINE 2089
+// MISSING LINE 2090
+// MISSING LINE 2091
+// MISSING LINE 2092
+// MISSING LINE 2093
+// MISSING LINE 2094
+// MISSING LINE 2095
+// MISSING LINE 2096
+// MISSING LINE 2097
+// MISSING LINE 2098
+// MISSING LINE 2099
+// MISSING LINE 2100
+// MISSING LINE 2101
+// MISSING LINE 2102
+// MISSING LINE 2103
+// MISSING LINE 2104
+// MISSING LINE 2105
+// MISSING LINE 2106
+// MISSING LINE 2107
+// MISSING LINE 2108
+// MISSING LINE 2109
+// MISSING LINE 2110
+// MISSING LINE 2111
+// MISSING LINE 2112
+// MISSING LINE 2113
+// MISSING LINE 2114
+// MISSING LINE 2115
+// MISSING LINE 2116
+// MISSING LINE 2117
+// MISSING LINE 2118
+// MISSING LINE 2119
+// MISSING LINE 2120
+// MISSING LINE 2121
+// MISSING LINE 2122
+// MISSING LINE 2123
+// MISSING LINE 2124
+// MISSING LINE 2125
+// MISSING LINE 2126
+// MISSING LINE 2127
+// MISSING LINE 2128
+// MISSING LINE 2129
+// MISSING LINE 2130
+// MISSING LINE 2131
+// MISSING LINE 2132
+// MISSING LINE 2133
+// MISSING LINE 2134
+// MISSING LINE 2135
+// MISSING LINE 2136
+// MISSING LINE 2137
+// MISSING LINE 2138
+// MISSING LINE 2139
+// MISSING LINE 2140
+// MISSING LINE 2141
+// MISSING LINE 2142
+// MISSING LINE 2143
+// MISSING LINE 2144
+// MISSING LINE 2145
+// MISSING LINE 2146
+// MISSING LINE 2147
+// MISSING LINE 2148
+// MISSING LINE 2149
+// MISSING LINE 2150
+// MISSING LINE 2151
+// MISSING LINE 2152
+// MISSING LINE 2153
+// MISSING LINE 2154
+// MISSING LINE 2155
+// MISSING LINE 2156
+// MISSING LINE 2157
+// MISSING LINE 2158
+// MISSING LINE 2159
+// MISSING LINE 2160
+// MISSING LINE 2161
+// MISSING LINE 2162
+// MISSING LINE 2163
+// MISSING LINE 2164
+// MISSING LINE 2165
+// MISSING LINE 2166
+// MISSING LINE 2167
+// MISSING LINE 2168
+// MISSING LINE 2169
+// MISSING LINE 2170
+// MISSING LINE 2171
+// MISSING LINE 2172
+// MISSING LINE 2173
+// MISSING LINE 2174
+// MISSING LINE 2175
+// MISSING LINE 2176
+// MISSING LINE 2177
+// MISSING LINE 2178
+// MISSING LINE 2179
+// MISSING LINE 2180
+// MISSING LINE 2181
+// MISSING LINE 2182
+// MISSING LINE 2183
+// MISSING LINE 2184
+// MISSING LINE 2185
+// MISSING LINE 2186
+// MISSING LINE 2187
+// MISSING LINE 2188
+// MISSING LINE 2189
+// MISSING LINE 2190
+// MISSING LINE 2191
+// MISSING LINE 2192
+// MISSING LINE 2193
+// MISSING LINE 2194
+// MISSING LINE 2195
+// MISSING LINE 2196
+// MISSING LINE 2197
+// MISSING LINE 2198
+// MISSING LINE 2199
+// MISSING LINE 2200
+// MISSING LINE 2201
+// MISSING LINE 2202
+// MISSING LINE 2203
+// MISSING LINE 2204
+// MISSING LINE 2205
+// MISSING LINE 2206
+// MISSING LINE 2207
+// MISSING LINE 2208
+// MISSING LINE 2209
+// MISSING LINE 2210
+// MISSING LINE 2211
+// MISSING LINE 2212
+// MISSING LINE 2213
+// MISSING LINE 2214
+// MISSING LINE 2215
+// MISSING LINE 2216
+// MISSING LINE 2217
+// MISSING LINE 2218
+// MISSING LINE 2219
+// MISSING LINE 2220
+// MISSING LINE 2221
+// MISSING LINE 2222
+// MISSING LINE 2223
+// MISSING LINE 2224
+// MISSING LINE 2225
+// MISSING LINE 2226
+// MISSING LINE 2227
+// MISSING LINE 2228
+// MISSING LINE 2229
+// MISSING LINE 2230
+// MISSING LINE 2231
+// MISSING LINE 2232
+// MISSING LINE 2233
+// MISSING LINE 2234
+// MISSING LINE 2235
+// MISSING LINE 2236
+// MISSING LINE 2237
+// MISSING LINE 2238
+// MISSING LINE 2239
+// MISSING LINE 2240
+// MISSING LINE 2241
+// MISSING LINE 2242
+// MISSING LINE 2243
+// MISSING LINE 2244
+// MISSING LINE 2245
+// MISSING LINE 2246
+// MISSING LINE 2247
+// MISSING LINE 2248
+// MISSING LINE 2249
+// MISSING LINE 2250
+// MISSING LINE 2251
+// MISSING LINE 2252
+// MISSING LINE 2253
+// MISSING LINE 2254
+// MISSING LINE 2255
+// MISSING LINE 2256
+// MISSING LINE 2257
+// MISSING LINE 2258
+// MISSING LINE 2259
+// MISSING LINE 2260
+// MISSING LINE 2261
+// MISSING LINE 2262
+// MISSING LINE 2263
+// MISSING LINE 2264
+// MISSING LINE 2265
+// MISSING LINE 2266
+// MISSING LINE 2267
+// MISSING LINE 2268
+// MISSING LINE 2269
+// MISSING LINE 2270
+// MISSING LINE 2271
+// MISSING LINE 2272
+// MISSING LINE 2273
+// MISSING LINE 2274
+// MISSING LINE 2275
+// MISSING LINE 2276
+// MISSING LINE 2277
+// MISSING LINE 2278
+// MISSING LINE 2279
+// MISSING LINE 2280
+// MISSING LINE 2281
+// MISSING LINE 2282
+// MISSING LINE 2283
+// MISSING LINE 2284
+// MISSING LINE 2285
+// MISSING LINE 2286
+// MISSING LINE 2287
+// MISSING LINE 2288
+// MISSING LINE 2289
+// MISSING LINE 2290
+// MISSING LINE 2291
+// MISSING LINE 2292
+// MISSING LINE 2293
+// MISSING LINE 2294
+// MISSING LINE 2295
+// MISSING LINE 2296
+// MISSING LINE 2297
+// MISSING LINE 2298
+// MISSING LINE 2299
+            <SmartTimetable userData={userData} weaknesses={getWeakAreas().map((w: any) => w.topic)} onClose={() => setShowTimetable(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+// MISSING LINE 2304
+      <AnimatePresence>
+        {showFormulaVault && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+             <FormulaVault userData={userData} onClose={() => setShowFormulaVault(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+// MISSING LINE 2312
+      <AnimatePresence>
+        {showRewardShop && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">
+            <RewardShop userId={userData?.id || auth.currentUser?.uid || "anonymous"} onClose={() => setShowRewardShop(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+// MISSING LINE 2320
+      <AnimatePresence>
+        {showReferralCenter && (
+          <ReferralCenter 
+            userData={userData} 
+            onClose={() => setShowReferralCenter(false)} 
+            onSuccess={() => {
+              // Soft refresh user data
+              if (auth.currentUser) {
+                getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
+                  if (snap.exists()) setUserData({ id: auth.currentUser!.uid, ...snap.data() });
+                });
+              }
+            }}
+          />
+        )}
+      </AnimatePresence>
+// MISSING LINE 2337
+      <AnimatePresence>
+        {showSavedMCQs && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[180]">

@@ -1,0 +1,189 @@
+Created At: 2026-06-18T19:37:18Z
+Completed At: 2026-06-18T19:37:19Z
+File Path: `file:///C:/Users/Admin/S2Dent/ExamHero-Next/app/page.tsx`
+Total Lines: 2356
+Total Bytes: 122470
+Showing lines 820 to 1000
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+820:   const sendTestNotification = () => {
+821:     if (notificationsEnabled && "Notification" in window) {
+822:       new Notification("🚀 Achivox Study Alert", {
+823:         body: "Time to crush your goals! Your daily streak is waiting for you.",
+824:         icon: "/favicon.ico"
+825:       });
+826:     } else {
+827:       alert("Please enable 'Study Reminders' first to test notifications!");
+828:     }
+829:   };
+830: 
+831:   if (forceUpdateUrl) {
+832:     return <ForceUpdateModal downloadUrl={forceUpdateUrl} />;
+833:   }
+834: 
+835:   if (isAuth === false) {
+836:     return <LandingPage onLogin={() => router.push("/login")} />;
+837:   }
+838: 
+839:   if (isAuth === null) {
+840:     return (
+841:       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+842:         <Loader2 className="w-5 h-5 text-primary animate-spin" />
+843:       </div>
+844:     );
+845:   }
+846: 
+847:   if (systemConfig?.maintenance) {
+848:     return (
+849:       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 text-center space-y-6">
+850:         <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl animate-pulse">
+851:            <Wrench className="w-5 h-5 text-primary" />
+852:         </div>
+853:         <div className="space-y-2">
+854:           <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">System Upgrade</h2>
+855:           <p className="text-slate-400 font-medium max-w-xs mx-auto">{systemConfig?.maintenanceMessage || "We are improving ExamHero. Back in a few minutes!"}</p>
+856:         </div>
+857:         <div className="glass-card px-4 py-2 rounded-2xl border border-white/10 text-[10px] font-black text-primary uppercase tracking-widest">
+858:            Live Update in Progress
+859:         </div>
+860:       </div>
+861:     );
+862:   }
+863: 
+864:   if (showSplash) {
+865:     return <SplashScreen onDone={() => setShowSplash(false)} />;
+866:   }
+867: 
+868:   const hasGoldenFrame = userData?.redemptions?.some((r: any) => r.itemName === "Golden Topper Frame");
+869:   const hasMythicAura = userData?.redemptions?.some((r: any) => r.itemName === "Mythic Profile Aura");
+870:   const hasNeonTheme = userData?.redemptions?.some((r: any) => r.itemName === "Secret App Theme");
+871:   const hasVVIPFormulas = userData?.redemptions?.some((r: any) => r.itemName === "VVIP Formula Bank");
+872: 
+873:   return (
+874:     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className={`mobile-container hide-scrollbar relative ${hasNeonTheme ? 'theme-neon bg-slate-950 text-pink-400' : ''}`}>
+875:       <AnimatePresence>
+876:         {showOnboarding && (
+877:           <OnboardingFlow 
+878:             onComplete={() => {
+879:               setShowOnboarding(false);
+880:               localStorage.setItem("achivox_onboarded", "true");
+881:             }} 
+882:           />
+883:         )}
+884:       </AnimatePresence>
+885: 
+886:       {!isSubscribed && <PremiumBanner onUpgrade={() => setShowSubscriptionModal(true)} />}
+887: 
+888:       <header className="px-4 py-2.5 flex justify-between items-center border-b border-border glass-card backdrop-blur-md shrink-0 z-50">
+889:         <div className="flex items-center gap-2.5">
+890:           <div className="w-5 h-5 rounded-xl overflow-hidden shadow-lg border border-white/10 shrink-0">
+891:             <Image src="/achivox-logo.png" alt="Achivox" width={40} height={40} className="object-cover w-full h-full" priority />
+892:           </div>
+893:           <div>
+894:             <h1 className="text-lg font-black tracking-tighter leading-none" style={{background:'linear-gradient(90deg,#60a5fa,#a78bfa)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>ACHIVOX</h1>
+895:             <p className="text-[9px] font-bold text-primary uppercase tracking-[0.2em]">{mode === 'govt' ? 'Gov Prep' : 'School Core'}</p>
+896:           </div>
+897:         </div>
+898:         
+899:         <div className="flex items-center gap-2">
+900:           <div 
+901:             onClick={() => setShowNotifications(true)}
+902:             className="relative w-5 h-5 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+903:           >
+904:             <Bell className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+905:             {notificationsList.filter(n => !n.read).length > 0 && (
+906:               <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-[8px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800">
+907:                 {notificationsList.filter(n => !n.read).length}
+908:               </span>
+909:             )}
+910:           </div>
+911:           <div className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 px-2.5 py-1 rounded-full border border-orange-200 dark:border-orange-800/50">
+912:             <Flame className="w-3.5 h-3.5 text-orange-500" />
+913:             <span className="text-[9px] font-black text-orange-600 dark:text-orange-400 whitespace-nowrap">{userData?.streak || 0}🔥</span>
+914:           </div>
+915:           <motion.button
+916:             whileTap={tapEffect}
+917:             onClick={() => setShowReferralCenter(true)}
+918:             className="p-2.5 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors bg-emerald-100 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/30 shadow-inner mr-1"
+919:           >
+920:             <UserPlus className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+921:           </motion.button>
+922:           <motion.button
+923:             whileTap={tapEffect}
+924:             onClick={() => setShowRewardShop(true)}
+925:             className="p-2.5 rounded-full hover:bg-yellow-50 dark:hover:bg-yellow-950/30 transition-colors bg-yellow-100 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800/30 shadow-inner"
+926:           >
+927:             <Gift className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+928:           </motion.button>
+929: 
+930: 
+931:         </div>
+932:       </header>
+933: 
+934:       {activeTab === "Home" && (
+935:         <div className="glass-card backdrop-blur-sm px-5 py-3 border-b border-border shadow-sm z-40 shrink-0">
+936:           <div className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl flex gap-1 shadow-inner">
+937:             <button 
+938:               onClick={() => setMode("govt")}
+939:               className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ${mode === "govt" ? "bg-white dark:bg-slate-700 shadow-md text-primary scale-[1.02]" : "text-slate-500"}`}
+940:             >
+941:               <Building2 className="w-5 h-5" /> Gov Prep <Lock className="w-3 h-3 opacity-50" />
+942:             </button>
+943:             <button 
+944:               onClick={() => setMode("school")}
+945:               className={`flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ${mode === "school" ? "bg-white dark:bg-slate-700 shadow-md text-primary scale-[1.02]" : "text-slate-500"}`}
+946:             >
+947:               <GraduationCap className="w-5 h-5" /> School Prep
+948:             </button>
+949:           </div>
+950:         </div>
+951:       )}
+952: 
+953:       <main className="flex-1 overflow-y-auto">
+954:         <div className="px-4 py-3 space-y-4 pb-28">
+955:           {activeTab === "Home" && (
+956:             <AnimatePresence mode="wait">
+957:               {mode === "govt" ? (
+958:                 <motion.div 
+959:                   key="govt-locked"
+960:                   initial={{ opacity: 0, y: 20 }}
+961:                   animate={{ opacity: 1, y: 0 }}
+962:                   exit={{ opacity: 0, y: -20 }}
+963:                   className="flex flex-col items-center justify-center py-20 text-center space-y-6"
+964:                 >
+965:                   <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl shadow-primary/10">
+966:                     <Lock className="w-5 h-5 text-primary" />
+967:                   </div>
+968:                   <div className="space-y-2">
+969:                     <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tighter uppercase italic">Gov Prep Vault</h2>
+970:                     <p className="text-primary font-black text-xs uppercase tracking-[0.3em]">Launching Very Soon</p>
+971:                   </div>
+972:                   <p className="text-slate-500 dark:text-slate-400 text-sm font-medium max-w-[280px] leading-relaxed">
+973:                     We are currently indexing 50,000+ government exam questions.
+974:                   </p>
+975:                   <motion.div 
+976:                     animate={{ scale: [1, 1.1, 1] }}
+977:                     transition={{ duration: 2, repeat: Infinity }}
+978:                     className="bg-emerald-500/10 text-emerald-500 px-4 py-2.5 rounded-2xl border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest"
+979:                   >
+980:                     94% Completed
+981:                   </motion.div>
+982:                 </motion.div>
+983:               ) : (
+984:                 <motion.div 
+985:                   key="home-content"
+986:                   initial={{ opacity: 0 }} 
+987:                   animate={{ opacity: 1 }}
+988:                   exit={{ opacity: 0 }}
+989:                   className="space-y-4 overflow-x-hidden"
+990:                 >
+991: 
+992:                   <div className="flex justify-between items-end mb-4">
+993:                     <div className="space-y-1">
+994:                       <h2 className="text-2xl font-black tracking-tighter leading-none">Hi, {auth.currentUser?.displayName?.split(" ")[0] || "Aspirant"}! 👋</h2>
+995:                       <p className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest mt-1">Daily Mastery Session</p>
+996:                       
+997:                       <div className="flex items-center gap-2 mt-4">
+998:                         <div onClick={() => setShowRewardShop(true)} className="glass-card px-4 py-2 rounded-2xl flex items-center gap-2 cursor-pointer border border-border hover:border-primary/50 transition-all shadow-sm">
+999:                           <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+1000:                           <span className="text-sm font-black tracking-tight">{(userData?.points || 0).toLocaleString()} XP</span>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

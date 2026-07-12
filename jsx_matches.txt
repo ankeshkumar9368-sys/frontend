@@ -1,0 +1,14 @@
+Line 738:                                     notificationsList.filter((n)=>!n.read).length > 0 && /*#__PURE__*/ _jsx(motion.span, {
+Line 795:             activeTab === "Home" && /*#__PURE__*/ _jsx("div", {
+Line 852:                             activeTab === "Home" && /*#__PURE__*/ _jsx(AnimatePresence, {
+Line 854:                                 children: mode === "govt" ? /*#__PURE__*/ _jsxs(motion.div, {
+Line 947:                                                     ].map((_, i)=>/*#__PURE__*/ _jsx(motion.div, {
+Line 1408:                             activeTab === "Tests" && /*#__PURE__*/ _jsxs(motion.div, {
+Line 1434:                                     mode === "school" ? /*#__PURE__*/ _jsxs("div", {
+Line 1521:                             activeTab === "Rank" && /*#__PURE__*/ _jsx(motion.div, {
+Line 1534:                             activeTab === "Tools" && /*#__PURE__*/ _jsxs(motion.div, {
+Line 1721:                                             children: toolsList.map((tool)=>/*#__PURE__*/ _jsxs(motion.button, {
+Line 1781:                             activeTab === "Analysis" && /*#__PURE__*/ _jsxs(motion.div, {
+Line 1873:                             activeTab === "Profile" && /*#__PURE__*/ _jsxs(motion.div, {
+Line 2306:                                                                 children: theme === "dark" ? /*#__PURE__*/ _jsx(Sun, {
+Line 2379:                 ].map((item, i)=>/*#__PURE__*/ _jsxs("div", {
