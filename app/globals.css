@@ -51,20 +51,8 @@
 
 @layer components {
   .mobile-container {
-    @apply w-full max-w-[480px] mx-auto bg-background relative flex flex-col shadow-2xl transition-colors duration-300 overflow-hidden;
+    @apply w-full mx-auto bg-background relative flex flex-col transition-colors duration-300 min-h-screen;
     height: 100%;
-  }
-  
-  @media (min-width: 481px) {
-    .mobile-container {
-      @apply h-[92vh] rounded-[36px] border-[8px] border-card my-auto;
-      height: 92vh;
-      min-height: unset;
-      box-shadow: 0 40px 120px rgba(99,102,241,0.15), 0 0 0 1px rgba(255,255,255,0.05);
-    }
-    .dark .mobile-container {
-      box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(129,140,248,0.1);
-    }
   }
 
   .hide-scrollbar {

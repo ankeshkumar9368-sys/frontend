@@ -133,7 +133,7 @@ export default function Login() {
         initial={{ opacity: 0, scale: 0.95 }} 
         animate={{ opacity: 1, scale: 1 }} 
         transition={{ type: "spring", stiffness: 90, damping: 18, delay: 0.1 }} 
-        className="backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] rounded-[45px] p-7 shadow-[0_25px_55px_rgba(0,0,0,0.45)] w-[calc(100%-1rem)] mx-2 z-10 relative flex flex-col items-center flex-grow justify-center py-8 my-auto transform-gpu"
+        className="backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] rounded-[45px] p-7 shadow-[0_25px_55px_rgba(0,0,0,0.45)] w-[calc(100%-1rem)] max-w-[420px] mx-2 z-10 relative flex flex-col items-center flex-grow justify-center py-8 my-auto transform-gpu"
         style={{
           boxShadow: "inset 0 1px 1px rgba(255,255,255,0.1), 0 25px 55px rgba(0,0,0,0.4)"
         }}
