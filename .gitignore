@@ -16,3 +16,5 @@ set_api_key.js
 scratch/
 scripts/test-*.js
 scripts/test-*.ts
+.vercel
+.env*

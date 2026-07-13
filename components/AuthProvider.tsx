@@ -21,29 +21,33 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log("[AuthProvider] onAuthStateChanged fired. User:", user?.email ?? "null", "UID:", user?.uid ?? "null");
       if (!user) {
-        // Not logged in — redirect to login ONLY if on a protected page
-        // (do NOT redirect /login → / here; login page handles that itself)
+        console.log("[AuthProvider] No user detected. Pathname:", pathnameRef.current);
         if (pathnameRef.current !== "/login") {
+          console.log("[AuthProvider] Protected page detected. Redirecting to /login");
           router.push("/login");
+        } else {
+          console.log("[AuthProvider] Already on /login page, no redirect needed.");
         }
         setLoading(false);
       } else {
-        // Logged in — check if account is blocked
+        console.log("[AuthProvider] User detected. Checking block status in Firestore...");
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
+          console.log("[AuthProvider] Firestore user doc read successful. Exists:", userDoc.exists());
           if (userDoc.exists() && userDoc.data().isBlocked === true) {
+            console.warn("[AuthProvider] User is blocked! Signing out and redirecting...");
             setIsBlocked(true);
             clearLocalAnalytics();
             await signOut(auth);
             setLoading(false);
             return;
           }
-        } catch (e) {
-          // Firestore check failed — still let the user through
-          console.error("Failed to check block status", e);
+        } catch (e: any) {
+          console.error("[AuthProvider] Failed to check block status in Firestore:", e.message, e);
         }
-        // Do NOT push to "/" here — login page handles that redirect itself.
+        console.log("[AuthProvider] User is not blocked. Allowing access, setting loading to false.");
         setLoading(false);
       }
     });
