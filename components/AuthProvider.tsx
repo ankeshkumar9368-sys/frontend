@@ -24,11 +24,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       console.log("[AuthProvider] onAuthStateChanged fired. User:", user?.email ?? "null", "UID:", user?.uid ?? "null");
       if (!user) {
         console.log("[AuthProvider] No user detected. Pathname:", pathnameRef.current);
-        if (pathnameRef.current !== "/login") {
+        if (pathnameRef.current !== "/login" && !pathnameRef.current.startsWith("/__/")) {
           console.log("[AuthProvider] Protected page detected. Redirecting to /login");
           router.push("/login");
         } else {
-          console.log("[AuthProvider] Already on /login page, no redirect needed.");
+          console.log("[AuthProvider] System path or login page. No redirect needed.");
         }
         setLoading(false);
       } else {
@@ -54,7 +54,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // runs ONCE only
+  }, []);
 
   if (loading) {
     return (
