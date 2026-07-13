@@ -98,7 +98,7 @@ export default function Login() {
   return (
     <div 
       ref={containerRef} 
-      className="w-full relative overflow-y-auto flex flex-col lg:flex-row min-h-screen bg-[#070518] text-white"
+      className="w-full relative h-[100dvh] overflow-y-auto flex flex-col lg:flex-row bg-[#070518] text-white"
       style={{
         backgroundImage: "radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%)"
       }}
@@ -249,7 +249,7 @@ export default function Login() {
       </div>
 
       {/* RIGHT PANEL: Login Action Panel (Responsive: full width on mobile, 42% on desktop) */}
-      <div className="flex flex-col justify-center items-center p-6 w-full lg:w-[42%] xl:w-[38%] min-h-screen relative z-10 order-1 lg:order-2 lg:border-l lg:border-white/5 bg-white/[0.01] backdrop-blur-3xl">
+      <div className="flex flex-col justify-center items-center p-6 w-full lg:w-[42%] xl:w-[38%] relative z-10 order-1 lg:order-2 lg:border-l lg:border-white/5 bg-white/[0.01] backdrop-blur-3xl py-12 lg:py-0 lg:min-h-screen">
         {/* Floating Animated Orbs */}
         <div className="absolute top-[10%] right-[15%] w-12 h-12 rounded-full bg-gradient-to-br from-[#818CF8] to-[#C084FC] opacity-40 shadow-[0_0_20px_rgba(129,140,248,0.4)] pointer-events-none" />
         <div className="absolute bottom-[10%] left-[10%] w-8 h-8 rounded-full bg-gradient-to-tr from-[#F472B6] to-[#FB7185] opacity-30 shadow-[0_0_15px_rgba(244,114,182,0.3)] pointer-events-none" />
@@ -287,6 +287,20 @@ export default function Login() {
           <p className="text-slate-400 text-xs mt-1 text-center font-semibold select-text">
             Start your learning journey today
           </p>
+
+          {/* Welcome/Sign-in Reward Callout */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="w-full mt-6 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-2.5 shadow-[0_0_15px_rgba(16,185,129,0.05)] select-none text-left"
+          >
+            <Sparkles className="w-5 h-5 text-emerald-400 shrink-0 animate-pulse" />
+            <div>
+              <p className="text-[11px] font-black text-emerald-300 uppercase tracking-wider leading-none">FREE SIGN-IN BONUS</p>
+              <p className="text-[10px] text-slate-300 font-bold mt-1.5 leading-tight">Get 500 Coins + 3D summaries instantly on login!</p>
+            </div>
+          </motion.div>
 
           {/* Visible Error Box */}
           {errorMsg && (
