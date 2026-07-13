@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { db } from "../../../lib/firebase";
+import { db } from "../../../../lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 // Read API keys from env (server-side only)
