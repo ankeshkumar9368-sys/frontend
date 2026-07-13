@@ -688,18 +688,19 @@ export const updateStreak = async () => {
     let streak = getLocalData<number>("achivox_streak", 0);
 
     if (lastStreakDate !== today) {
-      if (lastStreakDate) {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = getLocalDateString(yesterday);
-        if (lastStreakDate === yesterdayStr) {
-          streak += 1;
-          setLocalData("achivox_show_streak_celebration", true); // Flag to show celebration UI
-        } else {
-          streak = 0;
-        }
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = getLocalDateString(yesterday);
+      
+      let isBroken = false;
+      if (lastStreakDate === yesterdayStr) {
+        streak += 1;
+        setLocalData("achivox_show_streak_celebration", true); // Flag to show celebration UI
       } else {
-        streak = 0;
+        if (lastStreakDate !== "") {
+          isBroken = true;
+        }
+        streak = 1;
       }
       setLocalData("achivox_streak", streak);
       setLocalData("achivox_last_streak_date", today);
@@ -734,9 +735,7 @@ export const updateStreak = async () => {
                 `You maintained your streak and won ${winAmount} Coins!`,
                 "success"
               );
-            } else if (streak === 1 && !lastStreakDate) {
-               // First day, do nothing to wager.
-            } else if (streak === 0) {
+            } else if (isBroken) {
               // Streak broke, lost the wager
               await updateDoc(statsRef, {
                 activeWager: null,
@@ -752,6 +751,7 @@ export const updateStreak = async () => {
         }
       }
     }
+
   } catch (error) {
     console.error("Streak Update Error:", error);
   }
