@@ -107,40 +107,64 @@ export default function Login() {
       <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] rounded-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] opacity-25 blur-[100px] pointer-events-none animate-pulse" />
       <div className="absolute bottom-1/4 right-1/4 w-[280px] h-[280px] rounded-full bg-gradient-to-tr from-[#3B82F6] to-[#7C3AED] opacity-20 blur-[80px] pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
 
-      {/* LEFT PANEL: App Features Showcase (Responsive: full width on mobile, 58% on desktop) */}
+      {/* LEFT PANEL: App Features Showcase & Reviews (Responsive: full width on mobile, 58% on desktop) */}
       <div className="flex flex-col justify-center items-center lg:items-start p-8 lg:p-16 w-full lg:w-[58%] xl:w-[62%] relative z-10 space-y-8 select-none order-2 lg:order-1">
+        {/* Style injection for Testimonials Marquee animation */}
+        <style>{`
+          @keyframes marqueeUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+          }
+          .animate-marquee-up {
+            animation: marqueeUp 20s linear infinite;
+          }
+          .animate-marquee-up:hover {
+            animation-play-state: paused;
+          }
+        `}</style>
+
+        {/* India's #1 App Badge */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-2 inline-flex items-center gap-2 border border-cyan-400/20 bg-cyan-400/10 px-3 py-1.5 rounded-full text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200 backdrop-blur"
+          className="mb-2 inline-flex items-center gap-2 border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 rounded-full text-[12px] font-black uppercase tracking-[0.18em] text-yellow-200 backdrop-blur shadow-[0_0_15px_rgba(234,179,8,0.15)] animate-pulse"
         >
-          <Sparkles className="h-4.5 w-4.5 text-yellow-300 animate-spin" style={{ animationDuration: '6s' }} />
-          Achivox Study Cockpit
+          <Trophy className="h-4.5 w-4.5 text-yellow-400" />
+          🏆 INDIA'S #1 AI STUDY APP FOR BOARDS
         </motion.div>
 
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.05] text-center lg:text-left tracking-tight"
-        >
-          Study Smart. <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">
-            Score 2x Faster.
-          </span>
-        </motion.h2>
+        {/* Hero Title & Ratings */}
+        <div className="space-y-4 text-center lg:text-left">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.05] tracking-tight"
+          >
+            Study Smart. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">
+              Score 2x Faster.
+            </span>
+          </motion.h2>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-slate-300 text-base lg:text-lg max-w-lg text-center lg:text-left leading-relaxed font-medium"
-        >
-          India's first AI-powered study partner. Chapter summaries, doubts, and mock tests that adapt to your speed.
-        </motion.p>
+          {/* Rating Stars Info */}
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-2 text-slate-300 font-bold text-[14px] mt-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-2 w-fit mx-auto lg:mx-0 backdrop-blur-md"
+          >
+            <div className="flex text-yellow-400">
+              {"⭐⭐⭐⭐⭐".split("").map((s, idx) => <span key={idx}>{s}</span>)}
+            </div>
+            <span className="text-white font-extrabold">4.9/5</span>
+            <span className="text-slate-400">|</span>
+            <span className="text-cyan-300">50,000+ Students trust us</span>
+          </motion.div>
+        </div>
 
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-2xl mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5 w-full max-w-2xl mt-2">
           {[
             {
               icon: BookOpen,
@@ -171,12 +195,12 @@ export default function Login() {
               key={feat.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.08 }}
+              transition={{ delay: 0.2 + i * 0.08 }}
               whileHover={{ scale: 1.03, y: -4 }}
-              className={`p-5 rounded-[28px] border bg-gradient-to-br ${feat.color} shadow-lg backdrop-blur-md flex gap-4 transition-all duration-300`}
+              className={`p-4.5 rounded-[28px] border bg-gradient-to-br ${feat.color} shadow-lg backdrop-blur-md flex gap-4 transition-all duration-300`}
             >
               <div className="p-3 bg-white/5 rounded-2xl h-fit shrink-0">
-                <feat.icon className="w-6 h-6" />
+                <feat.icon className="w-5.5 h-5.5" />
               </div>
               <div className="space-y-1">
                 <h4 className="font-extrabold text-[15px] text-white tracking-wide">{feat.title}</h4>
@@ -184,6 +208,43 @@ export default function Login() {
               </div>
             </motion.div>
           ))}
+        </div>
+
+        {/* Live Student Comments Marquee section */}
+        <div className="w-full max-w-2xl mt-4 space-y-3">
+          <h4 className="text-[12px] font-black text-slate-500 tracking-widest uppercase flex items-center gap-2 select-text">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            Live Student Feedbacks
+          </h4>
+          
+          <div className="relative h-[110px] w-full overflow-hidden bg-white/[0.02] border border-white/5 rounded-[24px] backdrop-blur p-4">
+            <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-[#070518] to-transparent z-20 pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#070518] to-transparent z-20 pointer-events-none" />
+            
+            <div className="flex flex-col space-y-3 animate-marquee-up">
+              {[
+                { name: "Aarav Sharma", cls: "Class 10 (CBSE)", comment: "Bhai voice coach sach me kamaal hai! Pure math ke doubts instant clear ho gaye. 🔥" },
+                { name: "Sneha Patel", cls: "Class 10 (ICSE)", comment: "Weakness heatmap check karke read kiya. Biology me 98 marks aaye, thank you Achivox!" },
+                { name: "Priyanshu Roy", cls: "Class 12 (CBSE)", comment: "Iske 3D Smart Notes se chapter revision fast ho jata hai. Highly recommended!" },
+                { name: "Dev Adhikari", cls: "Class 11 (State Board)", comment: "Study wagers game ki tarah hai. Dosto ke sath study streak maintain karne me maza aata hai." },
+                { name: "Riya Verma", cls: "Class 12 (Boards)", comment: "No. 1 studying tool! Spaced revision signals se pta rehta hai kab kya padhna hai." },
+                // Duplicates for looping
+                { name: "Aarav Sharma", cls: "Class 10 (CBSE)", comment: "Bhai voice coach sach me kamaal hai! Pure math ke doubts instant clear ho gaye. 🔥" },
+                { name: "Sneha Patel", cls: "Class 10 (ICSE)", comment: "Weakness heatmap check karke read kiya. Biology me 98 marks aaye, thank you Achivox!" },
+                { name: "Priyanshu Roy", cls: "Class 12 (CBSE)", comment: "Iske 3D Smart Notes se chapter revision fast ho jata hai. Revision signals best hain!" },
+                { name: "Dev Adhikari", cls: "Class 11 (State Board)", comment: "Study wagers game ki tarah hai. Dosto ke sath study streak maintain karne me maza aata hai." },
+                { name: "Riya Verma", cls: "Class 12 (Boards)", comment: "No. 1 studying tool! Spaced revision signals se pta rehta hai kab kya padhna hai." }
+              ].map((t, idx) => (
+                <div key={idx} className="flex flex-col space-y-0.5 bg-white/[0.03] border border-white/5 rounded-2xl p-3 shrink-0 select-text">
+                  <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                    <span className="text-white font-extrabold">{t.name}</span>
+                    <span className="text-indigo-400">{t.cls}</span>
+                  </div>
+                  <p className="text-slate-300 text-xs font-semibold leading-normal">{t.comment}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
