@@ -98,7 +98,7 @@ export default function Login() {
   return (
     <div 
       ref={containerRef} 
-      className="relative overflow-y-auto flex flex-col lg:flex-row min-h-screen bg-[#070518] text-white"
+      className="w-full relative overflow-y-auto flex flex-col lg:flex-row min-h-screen bg-[#070518] text-white"
       style={{
         backgroundImage: "radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%)"
       }}
