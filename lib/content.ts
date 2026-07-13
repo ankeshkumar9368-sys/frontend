@@ -263,8 +263,8 @@ export const fetchChapterNotes = async (topicName: string, userData?: any, lang:
     return compatibleData;
   } catch (e: any) {
     console.error("fetchChapterNotes error:", e);
-    await logToTerminal(`fetchChapterNotes ERROR for ${topicName}: ${e.message}`, "error");
-    return null as any;
+    try { logToTerminal(`fetchChapterNotes ERROR for ${topicName}: ${e?.message}`, "error"); } catch (_) {}
+    throw e; // Re-throw so UI shows real error
   }
 };
 

@@ -74,8 +74,29 @@ export async function pollJob(jobId: string, intervalMs = 2000, timeoutMs = 6000
   });
 }
 
+// Wait for Firebase Auth to initialize (avoids 401 on page load race condition)
+function waitForAuth(timeoutMs = 5000): Promise<import("firebase/auth").User | null> {
+  return new Promise((resolve) => {
+    if (auth.currentUser !== undefined) {
+      resolve(auth.currentUser);
+      return;
+    }
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      unsubscribe();
+      resolve(user);
+    });
+    setTimeout(() => {
+      unsubscribe();
+      resolve(auth.currentUser);
+    }, timeoutMs);
+  });
+}
+
 export async function fetchAI(url: string, body: any) {
-  const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : "";
+  // Wait for auth to be ready (fixes race condition on page load)
+  const user = await waitForAuth(5000);
+  const idToken = user ? await user.getIdToken() : "";
+  
   const headers: any = { 
     "Content-Type": "application/json",
     "Bypass-Tunnel-Reminder": "true"
