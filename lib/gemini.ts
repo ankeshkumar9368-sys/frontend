@@ -76,9 +76,8 @@ export function logToTerminal(message: string, type: 'info' | 'error' = 'info', 
       if (typeof window !== 'undefined') {
         fetch(getApiUrl('/api/log/'), {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'Bypass-Tunnel-Reminder': 'true'
           },
           body: JSON.stringify({ type, message, details })
         }).catch(() => {});
