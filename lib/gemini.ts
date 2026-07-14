@@ -39,7 +39,7 @@ const createDirectModel = (isJsonMode = false) => {
   return {
     generateContent: async (prompt: any) => {
       try {
-        const data = await fetchAI("/api/ai/proxy", { prompt, isJsonMode });
+        const data = await fetchAI("/api/ai/proxy/", { prompt, isJsonMode });
         return {
           response: {
             text: () => data.text,

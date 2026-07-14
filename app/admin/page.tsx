@@ -1745,8 +1745,8 @@ export default function AdminDashboard() {
                         const startTime = Date.now();
                         try {
                           const url = diagEndpointType === "frontend" 
-                            ? "/api/ai/proxy" 
-                            : `${diagBackendUrl.replace(/\/$/, '')}/api/ai/proxy`;
+                            ? "/api/ai/proxy/" 
+                            : `${diagBackendUrl.replace(/\/$/, '')}/api/ai/proxy/`;
                           
                           let idToken = "";
                           if (!diagBypassAuth && auth.currentUser) {
