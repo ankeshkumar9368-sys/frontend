@@ -316,10 +316,10 @@ ${remedialExtra}
 STRICT RULES — FOLLOW EXACTLY:
 1. Output ONLY valid JSON. Zero text outside JSON. No markdown. No code blocks.
 2. Every fact, formula, date, name, and definition MUST be verified against NCERT/${boardName} textbooks.
-3. EVERY array must have AT LEAST the minimum number of items shown. Empty arrays are FORBIDDEN.
-4. ALL key fields must be bilingual (English + ${lang}).
-5. Questions must match actual ${boardName} board exam paper pattern and difficulty.
-6. ${isLanguageSubject ? 'For language subject: replace formulas with literary/grammar rules.' : isMaths ? 'Show complete mathematical expressions and step-by-step solutions.' : 'Include relevant scientific/social science formulas or key equations where applicable.'}
+3. Every array must have exactly 2-3 high-quality items. Empty arrays are FORBIDDEN.
+4. Keep all content descriptions concise (2-3 sentences max) to ensure fast rendering.
+5. ALL key fields must be bilingual (English + ${lang}).
+6. Questions must match actual ${boardName} board exam paper pattern and difficulty.
 7. Short questions = 2-3 marks, Long questions = 5-6 marks. Model answers must be complete.
 8. LATEX EQUATION RULE: All mathematical expressions, equations, chemical equations, and formulas MUST be written in clean, standard LaTeX math format (e.g. use \\\\frac{a}{b} for fractions, \\\\cdot for multiplication, ^ for superscript, _ for subscript). Example: \\\\frac{G \\\\cdot m_1 \\\\cdot m_2}{r^2}. Do NOT write plain text equations like 'a/b' or use '*' for multiplication.
 ${mode === 'revision' ? '9. REVISION MODE: Extra concise, only essentials.' : ''}
@@ -334,21 +334,21 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
     "studentLevel": "${level}",
     "mode": "${mode}",
     "accuracy": ${acc},
-    "wikiSearchTerm": "Exact title of a Wikipedia article that has a highly relevant educational diagram/image for this topic. Example: for 'Reflection of Light' use 'Reflection (physics)', for 'Bohr Atom' use 'Bohr model'. Set to 'None' if no specific diagram article exists."
+    "wikiSearchTerm": "Exact title of a Wikipedia article that has a highly relevant educational diagram/image for this topic. Example: for 'Reflection of Light' use 'Reflection (physics)'. Set to 'None' if no specific diagram article exists."
   },
-  "intro": "3-4 line engaging introduction: what is this topic, why it matters, and how it appears in exams — in English",
+  "intro": "3-4 line engaging introduction in English",
   "introHindi": "Same introduction in ${lang}",
   "topics": [
     {
       "title": "Sub-topic name in English (use official NCERT terminology)",
       "titleHindi": "Name in ${lang}",
-      "content": "Clear detailed explanation in English (4-5 sentences, exam-focused, include real-world context)",
+      "content": "Clear detailed explanation in English (2-3 sentences)",
       "contentHindi": "Same explanation in ${lang}",
       "definition": "Precise textbook definition in English",
       "definitionHindi": "Definition in ${lang}",
       "examLine": "One powerful exam-ready sentence that guarantees marks if written in answers",
       "formula": "${formulaLabel}. Write 'None' ONLY if truly no formula exists.",
-      "subPoints": ["Key point 1 (exam relevant)", "Key point 2 (with example)", "Key point 3 (fact/figure)"]
+      "subPoints": ["Key point 1", "Key point 2"]
     }
   ],
   "formulas": [
@@ -360,7 +360,7 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
   ],
   "memoryTricks": [
     {
-      "trick": "Creative mnemonic, acronym or memory shortcut in English — must be memorable",
+      "trick": "Creative mnemonic or memory shortcut in English",
       "trickHindi": "Same trick in ${lang}"
     }
   ],
@@ -368,7 +368,7 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
     {
       "q": "2-3 mark question exactly as asked in ${boardName} board exams",
       "qHindi": "Same question in ${lang}",
-      "a": "Complete model answer (2-3 points, exam-scoring format)",
+      "a": "Complete model answer (2-3 points)",
       "aHindi": "Model answer in ${lang}",
       "marks": 3,
       "tip": "Quick tip: how to write this answer to score full marks"
@@ -378,10 +378,10 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
     {
       "q": "5-6 mark long question as asked in ${boardName} board exams",
       "qHindi": "Same question in ${lang}",
-      "a": "Detailed model answer with all key points (minimum 5 points, include diagrams hints if needed)",
+      "a": "Detailed model answer with all key points (minimum 5 points)",
       "aHindi": "Model answer in ${lang}",
       "marks": 5,
-      "keyPoints": ["Essential point 1 to mention in answer", "Essential point 2", "Essential point 3"],
+      "keyPoints": ["Essential point 1", "Essential point 2"],
       "tip": "Strategy: how to structure this answer to get 5/5"
     }
   ],
@@ -390,7 +390,7 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
       "q": "Full board exam style question",
       "a": "Complete model answer with all key points",
       "easyWay": "Simple shortcut or tip to write this answer",
-      "solutionSteps": ["Step 1: ...", "Step 2: ...", "Step 3: ...", "Conclusion: ..."],
+      "solutionSteps": ["Step 1", "Step 2"],
       "weightage": 5
     }
   ],
@@ -399,7 +399,7 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
       "q": "MCQ question exactly matching board exam pattern",
       "options": ["Option A", "Option B", "Option C", "Option D"],
       "correct": 0,
-      "explanation": "Detailed explanation of why the correct option is right and why others are wrong"
+      "explanation": "Detailed explanation of why the correct option is right"
     }
   ],
   "quickRevision": [
@@ -408,47 +408,44 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
   "importancePoints": [
     { "en": "Critical exam fact in English", "hi": "In ${lang}" }
   ],
-  "summary": ["Key takeaway 1", "Key takeaway 2", "Key takeaway 3", "Key takeaway 4", "Key takeaway 5"],
+  "summary": ["Key takeaway 1", "Key takeaway 2"],
   "finalCheatSheet": [
-    "🔥 MUST REMEMBER: [Most important fact/formula/date for this topic]",
-    "📌 EXAM TRICK: [A trick that helps in MCQs/short answers]",
-    "⚡ 1-LINER: [One sentence that captures the entire topic]",
-    "🎯 LIKELY QUESTION TYPE: [What kind of question to expect]",
-    "💡 COMMON MISTAKE: [What most students get wrong]"
+    "🔥 MUST REMEMBER: [Most important fact]",
+    "📌 EXAM TRICK: [A trick that helps in MCQs]"
   ],
   "examBooster": {
-    "highProbabilityTopics": ["Sub-topic 1 most likely in exam", "Sub-topic 2", "Sub-topic 3"],
-    "boardFrequency": "Analysis: how often does this topic appear in ${boardName} exams, in which sections (MCQ/Short/Long), and recent trends",
-    "predictedQuestion": "The most likely question to appear in the next ${boardName} board exam on this topic"
+    "highProbabilityTopics": ["Sub-topic 1", "Sub-topic 2"],
+    "boardFrequency": "Analysis: how often does this topic appear in ${boardName} exams",
+    "predictedQuestion": "The most likely question to appear in the next board exam"
   },
   "solvedExample": {
-    "question": "A realistic, exam-style solved problem or case study for this topic",
-    "solution": ["Step 1: ...", "Step 2: ...", "Step 3: ...", "Final Answer: ..."]
+    "question": "A realistic, exam-style solved problem",
+    "solution": ["Step 1", "Step 2"]
   },
   "masterNotes": {
-    "snapshotConcepts": "Complete 4-5 sentence overview paragraph covering the entire topic in English. ${lang} mein: same paragraph in ${lang}.",
-    "definitions": [{"term": "Key term name", "definition": "Precise definition in English + ${lang}"}],
-    "formulaSheet": [{"formula": "Expression", "meaning": "What it means", "symbols": "Symbol definitions", "siUnits": "Unit if applicable", "conditions": "When to use", "mistake": "Common mistake to avoid"}],
-    "shortTricks": ["Memory trick or mnemonic 1", "Memory trick 2"],
+    "snapshotConcepts": "Complete 2-3 sentence overview paragraph. ${lang} mein: same paragraph in ${lang}.",
+    "definitions": [{"term": "Key term", "definition": "Precise definition"}],
+    "formulaSheet": [{"formula": "Expression", "meaning": "What it means", "symbols": "Symbols", "siUnits": "Units", "conditions": "When to use", "mistake": "Mistake to avoid"}],
+    "shortTricks": ["Memory trick 1"],
     "commonMistakes": [{"mistake": "What students commonly do wrong", "correction": "The correct approach"}],
-    "solvedExample": {"question": "Board-style sample problem", "stepByStepSolution": ["Step 1: ...", "Step 2: ...", "Answer: ..."]},
-    "pyqPoint": "Types of questions that have appeared in ${boardName} board exams for this topic in the last 5 years",
-    "faqs": [{"q": "Most common student doubt about this topic", "a": "Clear, simple, accurate answer"}],
-    "memoryTricks": ["Best mnemonic for this topic"],
-    "revisionSummary": "One complete paragraph: everything a student needs to know 1 hour before exam — English + ${lang}",
-    "fiveOneLinePoints": ["One-liner 1", "One-liner 2", "One-liner 3", "One-liner 4", "One-liner 5"]
+    "solvedExample": {"question": "Sample problem", "stepByStepSolution": ["Step 1", "Step 2"]},
+    "pyqPoint": "Types of questions that have appeared in the last 5 years",
+    "faqs": [{"q": "Most common doubt", "a": "Clear answer"}],
+    "memoryTricks": ["Best mnemonic"],
+    "revisionSummary": "One complete paragraph: everything a student needs to know — English + ${lang}",
+    "fiveOneLinePoints": ["One-liner 1", "One-liner 2"]
   },
   "improvementPlanNew": {
-    "weakAreas": ["Area students typically struggle with in this topic", "Another weak area"],
-    "practicePlan": ["Day 1: Read intro + definitions + key concepts (30 min)", "Day 2: Practice MCQs + short questions (45 min)", "Day 3: Write long answers + revise cheat sheet (60 min)"]
+    "weakAreas": ["Area students struggle with"],
+    "practicePlan": ["Day 1: Read concepts (15 min)", "Day 2: Practice MCQs (20 min)"]
   },
   "adaptiveLearningNew": {
-    "currentLevelAnalysis": "Honest assessment of topic difficulty for a ${level}-level student and what they should focus on",
-    "difficultyAdjustment": "${level === 'weak' ? 'Increase difficulty gradually' : level === 'strong' ? 'Maintain or Increase' : 'Maintain current level'}"
+    "currentLevelAnalysis": "Assessment of difficulty and what to focus on",
+    "difficultyAdjustment": "${level === 'weak' ? 'Increase difficulty gradually' : 'Maintain level'}"
   },
   "diagramSuggestions": [
     {
-      "label": "Detailed caption describing the diagram, explaining each labeled part, and listing all mandatory labels/arrows needed for exam-readiness.",
+      "label": "Detailed caption describing the diagram",
       "wikiTitle": "Exact title of a Wikipedia article showing this diagram.",
       "section": "snapshot",
       "insertAfterConcept": "Name of concept"
