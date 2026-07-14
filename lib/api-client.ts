@@ -1,9 +1,8 @@
 import { auth } from './firebase';
 
 // ─── PRODUCTION BACKEND URL ────────────────────────────────────────────────
-// This is the single source of truth for the backend URL.
-// Priority: NEXT_PUBLIC_API_URL env var > Render production URL
-const PRODUCTION_BACKEND = 'https://examhero-backend.onrender.com';
+// Render dashboard URL: https://achivox-online.onrender.com
+const PRODUCTION_BACKEND = 'https://achivox-online.onrender.com';
 
 /**
  * Resolves an API path to a full backend URL.
