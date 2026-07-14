@@ -2,6 +2,7 @@ import { auth } from './firebase';
 
 // ─── PRODUCTION BACKEND URL ────────────────────────────────────────────────
 // Render dashboard URL: https://achivox-online.onrender.com
+// Build trigger timestamp: 2026-07-15T01:07:00
 const PRODUCTION_BACKEND = 'https://achivox-online.onrender.com';
 
 /**
