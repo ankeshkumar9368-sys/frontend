@@ -13,10 +13,9 @@ const PRODUCTION_BACKEND = 'https://achivox-online.onrender.com';
  *    so Next.js rewrites/API routes handle it, unless NEXT_PUBLIC_API_URL is set.
  */
 export const getApiUrl = (path: string): string => {
-  // Always strip trailing slash from path base and normalize
   const normalizedPath = '/' + path.replace(/^\//, '');
 
-  // Server-side rendering: return relative path (SSR doesn't need full URL for internal calls)
+  // Server-side rendering: return relative path
   if (typeof window === 'undefined') {
     return normalizedPath;
   }
@@ -25,23 +24,32 @@ export const getApiUrl = (path: string): string => {
   const isLocalDev =
     hostname === 'localhost' ||
     hostname === '127.0.0.1' ||
-    /^\d+\.\d+\.\d+\.\d+$/.test(hostname); // bare IP address
+    /^\d+\.\d+\.\d+\.\d+$/.test(hostname);
 
-  // Check for Capacitor (native mobile app)
   const isCapacitor = !!(window as any).Capacitor?.isNativePlatform?.();
 
-  // If NEXT_PUBLIC_API_URL is explicitly set, always honor it
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    const base = process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '');
-    return `${base}${normalizedPath}`;
-  }
-
-  // Local development without env override: use relative path (Next.js dev server)
+  // Local development (no Capacitor): use relative path — Next.js dev server handles it
   if (isLocalDev && !isCapacitor) {
     return normalizedPath;
   }
 
-  // Production (Vercel, Capacitor, or any other non-local host): use Render backend
+  // Production (Vercel, Capacitor, any non-localhost):
+  // Always use the Render backend. NEXT_PUBLIC_API_URL can override only if it is
+  // explicitly set AND does NOT point to a dead tunnel (mule.page, loca.lt, etc.)
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  const isTunnel = envUrl && (
+    envUrl.includes('mule.page') ||
+    envUrl.includes('loca.lt') ||
+    envUrl.includes('ngrok') ||
+    envUrl.includes('localtunnel') ||
+    envUrl.includes('trycloudflare')
+  );
+
+  if (envUrl && !isTunnel) {
+    return `${envUrl.replace(/\/$/, '')}${normalizedPath}`;
+  }
+
+  // Hardcoded production backend — always correct
   return `${PRODUCTION_BACKEND}${normalizedPath}`;
 };
 
