@@ -98,6 +98,14 @@ export default function AdminDashboard() {
   const [isResolving, setIsResolving] = useState(false);
 
   // SMART CAMPAIGNS STATES
+  const [diagEndpointType, setDiagEndpointType] = useState<"frontend" | "backend">("frontend");
+  const [diagBackendUrl, setDiagBackendUrl] = useState("https://examhero-backend.onrender.com");
+  const [diagPrompt, setDiagPrompt] = useState("Say 'Diagnostics OK!' in one line.");
+  const [diagBypassAuth, setDiagBypassAuth] = useState(false);
+  const [diagLoading, setDiagLoading] = useState(false);
+  const [diagResult, setDiagResult] = useState<any>(null);
+  const [diagError, setDiagError] = useState("");
+  const [diagTime, setDiagTime] = useState(0);
   const [smartCampBoard, setSmartCampBoard] = useState("All");
   const [smartCampClass, setSmartCampClass] = useState("All");
   const [smartCampPlan, setSmartCampPlan] = useState("All");
@@ -769,6 +777,7 @@ export default function AdminDashboard() {
             { id: "User Activity", icon: Activity, color: "text-emerald-600" },
             { id: "Feature Performance", icon: BarChart3, color: "text-violet-600" },
             { id: "AI Usage & Costs", icon: Cpu, color: "text-amber-600" },
+            { id: "API Diagnostics", icon: Cpu, color: "text-indigo-500" },
             { id: "Smart Campaigns", icon: Send, color: "text-sky-500" },
             { id: "Broadcasts", icon: MessageSquare, color: "text-sky-600" },
             { id: "Lucky Rewards", icon: Gift, color: "text-pink-500" },
@@ -1640,6 +1649,197 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                       ))
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === "API Diagnostics" && (
+              <motion.div key="api-diag" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-10">
+                <div className="bg-slate-900 border border-slate-800 rounded-[56px] p-12 shadow-2xl relative overflow-hidden">
+                  <div className="absolute -right-20 -top-20 opacity-10">
+                    <Cpu className="w-96 h-96 text-indigo-500" />
+                  </div>
+                  
+                  <div className="relative z-10 space-y-10">
+                    <div>
+                      <h3 className="text-3xl font-black text-white uppercase italic leading-none mb-4 flex items-center gap-4">
+                        <Cpu className="w-8 h-8 text-indigo-500" /> API Diagnostics & Tester
+                      </h3>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Test live AI generation endpoints and troubleshoot connections</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-8 text-left">
+                      <div className="space-y-4">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">1. Select Endpoint Type</label>
+                        <div className="flex gap-4">
+                          <button 
+                            type="button"
+                            onClick={() => setDiagEndpointType("frontend")} 
+                            className={`flex-1 p-5 rounded-2xl border font-bold text-xs uppercase transition-all ${diagEndpointType === "frontend" ? "bg-indigo-600 border-indigo-500 text-white" : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"}`}
+                          >
+                            Frontend Proxy (Vercel)
+                          </button>
+                          <button 
+                            type="button"
+                            onClick={() => setDiagEndpointType("backend")} 
+                            className={`flex-1 p-5 rounded-2xl border font-bold text-xs uppercase transition-all ${diagEndpointType === "backend" ? "bg-indigo-600 border-indigo-500 text-white" : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"}`}
+                          >
+                            Backend API (Render)
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">2. API Credentials & Authentication</label>
+                        <div className="flex gap-4">
+                          <button 
+                            type="button"
+                            onClick={() => setDiagBypassAuth(false)} 
+                            className={`flex-1 p-5 rounded-2xl border font-bold text-[10px] uppercase transition-all ${!diagBypassAuth ? "bg-emerald-600 border-emerald-500 text-white" : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"}`}
+                          >
+                            Send User Token (Secure)
+                          </button>
+                          <button 
+                            type="button"
+                            onClick={() => setDiagBypassAuth(true)} 
+                            className={`flex-1 p-5 rounded-2xl border font-bold text-[10px] uppercase transition-all ${diagBypassAuth ? "bg-amber-600 border-amber-500 text-white" : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"}`}
+                          >
+                            Bypass Auth (Test Key Only)
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {diagEndpointType === "backend" && (
+                      <div className="space-y-3 text-left">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Backend Base URL (Render)</label>
+                        <input 
+                          type="text" 
+                          value={diagBackendUrl} 
+                          onChange={(e) => setDiagBackendUrl(e.target.value)} 
+                          placeholder="e.g. https://examhero-backend.onrender.com" 
+                          className="w-full p-5 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white outline-none focus:border-indigo-500 transition-all"
+                        />
+                      </div>
+                    )}
+
+                    <div className="space-y-3 text-left">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Test Prompt</label>
+                      <textarea 
+                        value={diagPrompt} 
+                        onChange={(e) => setDiagPrompt(e.target.value)} 
+                        rows={2} 
+                        className="w-full p-5 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white outline-none focus:border-indigo-500 transition-all resize-none"
+                      />
+                    </div>
+
+                    <button 
+                      type="button"
+                      disabled={diagLoading}
+                      onClick={async () => {
+                        setDiagLoading(true);
+                        setDiagError("");
+                        setDiagResult(null);
+                        const startTime = Date.now();
+                        try {
+                          const url = diagEndpointType === "frontend" 
+                            ? "/api/ai/proxy" 
+                            : `${diagBackendUrl.replace(/\/$/, '')}/api/ai/proxy`;
+                          
+                          let idToken = "";
+                          if (!diagBypassAuth && auth.currentUser) {
+                            idToken = await auth.currentUser.getIdToken();
+                          }
+                          
+                          const headers: any = {
+                            "Content-Type": "application/json"
+                          };
+                          if (idToken) {
+                            headers["Authorization"] = `Bearer ${idToken}`;
+                          }
+                          if (diagBypassAuth && diagEndpointType === "backend") {
+                            headers["x-test-bypass"] = "examhero-test-secret";
+                          }
+
+                          const res = await fetch(url, {
+                            method: "POST",
+                            headers,
+                            body: JSON.stringify({
+                              prompt: diagPrompt,
+                              isJsonMode: false
+                            })
+                          });
+
+                          const duration = Date.now() - startTime;
+                          setDiagTime(duration);
+                          
+                          const status = res.status;
+                          const responseText = await res.text();
+                          let parsedJson = null;
+                          try {
+                            parsedJson = JSON.parse(responseText);
+                          } catch (_) {}
+
+                          setDiagResult({
+                            statusCode: status,
+                            responseTimeMs: duration,
+                            rawBody: responseText,
+                            json: parsedJson
+                          });
+
+                          if (!res.ok) {
+                            throw new Error(`HTTP Error ${status}: ${responseText}`);
+                          }
+                        } catch (err: any) {
+                          setDiagError(err.message || "Failed to execute call");
+                        } finally {
+                          setDiagLoading(false);
+                        }
+                      }}
+                      className="w-full py-5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                    >
+                      {diagLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" /> RUNNING TEST...
+                        </>
+                      ) : (
+                        "EXECUTE DIAGNOSTIC TEST"
+                      )}
+                    </button>
+
+                    {(diagResult || diagError) && (
+                      <div className="space-y-6 text-left border-t border-white/10 pt-8 mt-6">
+                        <div className="flex gap-8">
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">HTTP Status</p>
+                            <p className={`text-2xl font-black ${diagResult?.statusCode === 200 ? "text-emerald-400" : "text-rose-400"}`}>
+                              {diagResult?.statusCode || "FAILED"}
+                            </p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Response Time</p>
+                            <p className="text-2xl font-black text-indigo-400">{diagTime}ms</p>
+                          </div>
+                        </div>
+
+                        {diagError && (
+                          <div className="p-5 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-xs font-bold text-rose-300">
+                            <p className="font-black uppercase mb-1">Error Message:</p>
+                            {diagError}
+                          </div>
+                        )}
+
+                        {diagResult && (
+                          <div className="space-y-3">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Server Response Payload</p>
+                            <pre className="p-6 bg-black/40 border border-white/5 rounded-2xl text-xs font-mono text-indigo-300 overflow-x-auto max-h-80 select-all">
+                              {JSON.stringify(diagResult.json || diagResult.rawBody, null, 2)}
+                            </pre>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
