@@ -39,7 +39,7 @@ const createDirectModel = (isJsonMode = false) => {
   return {
     generateContent: async (prompt: any) => {
       try {
-        const data = await fetchAI("/api/ai/proxy/", { prompt, isJsonMode });
+        const data = await fetchAI("/api/ai/proxy", { prompt, isJsonMode });
         return {
           response: {
             text: () => data.text,
@@ -74,7 +74,7 @@ export function logToTerminal(message: string, type: 'info' | 'error' = 'info', 
   Promise.resolve().then(async () => {
     try {
       if (typeof window !== 'undefined') {
-        fetch(getApiUrl('/api/log/'), {
+        fetch(getApiUrl('/api/log'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
