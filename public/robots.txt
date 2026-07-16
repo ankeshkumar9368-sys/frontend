@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /parent
+Disallow: /profiles
+
+Sitemap: https://www.achivox.online/sitemap.xml

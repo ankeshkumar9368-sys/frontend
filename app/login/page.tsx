@@ -350,7 +350,7 @@ export default function Login() {
 
           {/* Footer Info */}
           <div className="text-slate-500 text-[10px] text-center mt-6 leading-relaxed font-bold select-text uppercase tracking-widest">
-            Secure Login &bull; Powered by Firebase
+            Secure Login &bull; Achivox Secure Student Portal
           </div>
         </motion.div>
       </div>

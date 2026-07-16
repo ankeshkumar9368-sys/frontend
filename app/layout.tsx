@@ -17,8 +17,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Achivox - Padho kam, score zyada',
-  description: 'A premium platform to prepare for Govt Exams and School Academics.',
+  title: 'Achivox - Padho kam, score zyada | CBSE, BSEB Class 9-12 Topper Notes & Mock Tests',
+  description: 'Achivox is the #1 study app for Class 9-12 (CBSE, Bihar Board) and competitive exams. Get toppers handwritten notes, mock tests, subject syllabus, and live AI doubt solver.',
+  keywords: [
+    'topper notes', 'CBSE Class 10 notes', 'Bihar board Class 12 notes', 
+    'free school mock tests', 'Govt exam preparation', 'previous year questions PYQs', 
+    'class 9 to 12 study app', 'Achivox study portal', 'padho kam score zyada'
+  ],
   appleWebApp: { title: 'Achivox' },
   icons: {
     icon: '/achivox-logo.png',
