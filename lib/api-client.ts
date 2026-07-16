@@ -58,18 +58,17 @@ export const getApiUrl = (path: string): string => {
 /** Wait for Firebase Auth to initialize (avoids 401 on page-load race condition) */
 function waitForAuth(timeoutMs = 5000): Promise<import('firebase/auth').User | null> {
   return new Promise((resolve) => {
-    // Already initialized
-    if (auth.currentUser !== undefined) {
-      resolve(auth.currentUser);
-      return;
-    }
+    let resolved = false;
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      resolved = true;
       unsubscribe();
       resolve(user);
     });
     setTimeout(() => {
-      unsubscribe();
-      resolve(auth.currentUser);
+      if (!resolved) {
+        unsubscribe();
+        resolve(auth.currentUser);
+      }
     }, timeoutMs);
   });
 }
