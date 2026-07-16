@@ -629,12 +629,27 @@ export async function generateAIQuestions(topic: string, userData: any, subjectC
     try {
       questions = JSON.parse(text);
     } catch (e) {
-      const cleanedText = text.replace(/```json|```/g, "").trim();
-      const jsonMatch = cleanedText.match(/\[[\s\S]*\]/);
-      questions = JSON.parse(jsonMatch ? jsonMatch[0] : cleanedText);
+      try {
+        const cleanedText = text.replace(/```json|```/g, "").trim();
+        const jsonMatch = cleanedText.match(/\[[\s\S]*\]/);
+        questions = JSON.parse(jsonMatch ? jsonMatch[0] : cleanedText);
+      } catch (innerErr) {
+        throw new Error("Failed to parse JSON questions: " + (e as Error).message);
+      }
+    }
+    
+    if (questions && !Array.isArray(questions) && typeof questions === 'object') {
+      if (Array.isArray((questions as any).questions)) {
+        questions = (questions as any).questions;
+      } else {
+        const possibleArray = Object.values(questions).find(val => Array.isArray(val));
+        if (possibleArray) {
+          questions = possibleArray;
+        }
+      }
     }
 
-    const formatted = questions.map((q: any, idx: number) => {
+    const formatted = (Array.isArray(questions) ? questions : []).map((q: any, idx: number) => {
       let parsedCorrect = 0;
       const rawAns = q.correctAnswer !== undefined ? q.correctAnswer : q.correct;
       
