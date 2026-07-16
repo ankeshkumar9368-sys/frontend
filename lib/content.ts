@@ -310,7 +310,7 @@ export const fetchQuestions = async (mode: string, topicName: string, userData?:
     }
 
     // Call AI directly on frontend
-    rawData = await generateAIQuestions(fullTopic, userData, mode, String(mistakes.length));
+    rawData = await generateAIQuestions(fullTopic, userData, undefined, mode);
 
     // Recycle mistake questions back for student reinforcement
     if (mistakes.length > 0 && mode !== 'exam' && mode !== 'pyq') {
