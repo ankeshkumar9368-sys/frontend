@@ -1812,184 +1812,223 @@ export default function Home() {
                                     }),
                                     (()=>{
                                         const recs = getGlowRecommendations();
-                                        const toolsList = [
+                                        const groups = [
                                             {
-                                                id: "formula",
-                                                title: "Smart Formulas",
-                                                subtitle: "Formula Vault",
-                                                emoji: "\uD83D\uDCDA",
-                                                bgClass: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-950/20",
-                                                isGlowing: false,
-                                                glowClass: "",
-                                                onClick: ()=>setShowFormulaVault(true)
+                                                title: "Smart Study & Notes",
+                                                emoji: "📚",
+                                                tools: [
+                                                    {
+                                                        id: "topperNotes",
+                                                        title: "Topper Notes",
+                                                        subtitle: "5-Min Revision Sheets",
+                                                        emoji: "✍️",
+                                                        bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
+                                                        isGlowing: true,
+                                                        glowClass: "glow-amber",
+                                                        onClick: ()=>setShowTopperNotes(true)
+                                                    },
+                                                    {
+                                                        id: "flashcards",
+                                                        title: "AI Flashcards",
+                                                        subtitle: "Flashcard Forge",
+                                                        emoji: "⚡",
+                                                        bgClass: "bg-orange-100 text-orange-500 dark:bg-orange-950/20",
+                                                        isGlowing: recs.flashcards,
+                                                        glowClass: "glow-amber",
+                                                        onClick: ()=>setShowFlashcards(true)
+                                                    },
+                                                    {
+                                                        id: "formula",
+                                                        title: "Smart Formulas",
+                                                        subtitle: "Formula Vault",
+                                                        emoji: "📓",
+                                                        bgClass: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-950/20",
+                                                        isGlowing: false,
+                                                        glowClass: "",
+                                                        onClick: ()=>setShowFormulaVault(true)
+                                                    },
+                                                    {
+                                                        id: "scanSolve",
+                                                        title: "AI Vision Solver",
+                                                        subtitle: "Scan & Solve",
+                                                        emoji: "📸",
+                                                        bgClass: "bg-sky-100 text-sky-500 dark:bg-sky-950/20",
+                                                        isGlowing: recs.scanSolve,
+                                                        glowClass: "glow-primary",
+                                                        onClick: ()=>setShowScanSolve(true)
+                                                    }
+                                                ]
                                             },
                                             {
-                                                id: "revisionVault",
-                                                title: "Mistake Bank",
-                                                subtitle: "Revision Vault",
-                                                emoji: "\uD83E\uDDE0",
-                                                bgClass: "bg-amber-100 text-amber-500 dark:bg-amber-950/20",
-                                                isGlowing: recs.revisionVault,
-                                                glowClass: "glow-amber",
-                                                onClick: ()=>{
-                                                    if (!isSubscribed) return alert("\uD83D\uDD12 Revision Vault is a Premium feature!");
-                                                    setShowRevisionVault(true);
-                                                }
+                                                title: "Practice & Revision",
+                                                emoji: "🎯",
+                                                tools: [
+                                                    {
+                                                        id: "revisionVault",
+                                                        title: "Mistake Bank",
+                                                        subtitle: "Revision Vault",
+                                                        emoji: "🧠",
+                                                        bgClass: "bg-amber-100 text-amber-500 dark:bg-amber-950/20",
+                                                        isGlowing: recs.revisionVault,
+                                                        glowClass: "glow-amber",
+                                                        onClick: ()=>{
+                                                            if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+                                                            setShowRevisionVault(true);
+                                                        }
+                                                    },
+                                                    {
+                                                        id: "quickStudy",
+                                                        title: "Quick Study",
+                                                        subtitle: "Flashcard Swipe",
+                                                        emoji: "🎴",
+                                                        bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
+                                                        isGlowing: recs.quickStudy,
+                                                        glowClass: "glow-amber",
+                                                        onClick: ()=>setShowQuickStudy(true)
+                                                    },
+                                                    {
+                                                        id: "battle",
+                                                        title: "Battle Arena",
+                                                        subtitle: "Multiplayer Quiz",
+                                                        emoji: "⚔️",
+                                                        bgClass: "bg-red-100 text-red-500 dark:bg-red-950/20",
+                                                        isGlowing: recs.battle,
+                                                        glowClass: "glow-rose",
+                                                        onClick: ()=>setShowBattle(true)
+                                                    },
+                                                    {
+                                                        id: "roadmap",
+                                                        title: "Skill Journey",
+                                                        subtitle: "Mastery Roadmap",
+                                                        emoji: "🗺️",
+                                                        bgClass: "bg-indigo-100 text-indigo-500 dark:bg-indigo-950/20",
+                                                        isGlowing: recs.roadmap,
+                                                        glowClass: "glow-primary",
+                                                        onClick: ()=>setShowRoadmap(true)
+                                                    }
+                                                ]
                                             },
                                             {
-                                                id: "flashcards",
-                                                title: "AI Flashcards",
-                                                subtitle: "Flashcard Forge",
-                                                emoji: "⚡",
-                                                bgClass: "bg-orange-100 text-orange-500 dark:bg-orange-950/20",
-                                                isGlowing: recs.flashcards,
-                                                glowClass: "glow-amber",
-                                                onClick: ()=>setShowFlashcards(true)
-                                            },
-                                            {
-                                                id: "topperNotes",
-                                                title: "Topper Notes",
-                                                subtitle: "5-Min Revision Sheets",
-                                                emoji: "✍️",
-                                                bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
-                                                isGlowing: true,
-                                                glowClass: "glow-amber",
-                                                onClick: ()=>setShowTopperNotes(true)
-                                            },
-                                            {
-                                                id: "roadmap",
-                                                title: "Skill Journey",
-                                                subtitle: "Mastery Roadmap",
-                                                emoji: "\uD83D\uDDFA️",
-                                                bgClass: "bg-indigo-100 text-indigo-500 dark:bg-indigo-950/20",
-                                                isGlowing: recs.roadmap,
-                                                glowClass: "glow-primary",
-                                                onClick: ()=>setShowRoadmap(true)
-                                            },
-                                            {
-                                                id: "timetable",
-                                                title: "AI Planner",
-                                                subtitle: "Smart Timetable",
-                                                emoji: "\uD83D\uDDD3️",
-                                                bgClass: "bg-emerald-100 text-emerald-500 dark:bg-emerald-950/20",
-                                                isGlowing: recs.timetable,
-                                                glowClass: "glow-emerald",
-                                                onClick: ()=>setShowTimetable(true)
-                                            },
-                                            {
-                                                id: "scanSolve",
-                                                title: "AI Vision Solver",
-                                                subtitle: "Scan & Solve",
-                                                emoji: "\uD83D\uDCF8",
-                                                bgClass: "bg-sky-100 text-sky-500 dark:bg-sky-950/20",
-                                                isGlowing: recs.scanSolve,
-                                                glowClass: "glow-primary",
-                                                onClick: ()=>setShowScanSolve(true)
-                                            },
-                                            {
-                                                id: "analysis",
-                                                title: "Deep Analysis",
-                                                subtitle: "Skill Metrics",
-                                                emoji: "\uD83D\uDCCA",
-                                                bgClass: "bg-violet-100 text-violet-500 dark:bg-violet-950/20",
-                                                isGlowing: false,
-                                                glowClass: "",
-                                                onClick: ()=>setShowAnalysis(true)
-                                            },
-                                            {
-                                                id: "quickStudy",
-                                                title: "Quick Study",
-                                                subtitle: "Flashcard Swipe",
-                                                emoji: "\uD83C\uDFB4",
-                                                bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
-                                                isGlowing: recs.quickStudy,
-                                                glowClass: "glow-amber",
-                                                onClick: ()=>setShowQuickStudy(true)
-                                            },
-                                            {
-                                                id: "quests",
-                                                title: "Daily Quests",
-                                                subtitle: "XP Loot Box",
-                                                emoji: "⚔️",
-                                                bgClass: "bg-rose-100 text-rose-500 dark:bg-rose-950/20",
-                                                isGlowing: false,
-                                                glowClass: "",
-                                                onClick: ()=>setShowQuestLog(true)
-                                            },
-                                            {
-                                                id: "studyPods",
-                                                title: "Grind Pods",
-                                                subtitle: "Live Study Pods",
-                                                emoji: "\uD83E\uDDD8‍♂️",
-                                                bgClass: "bg-teal-100 text-teal-600 dark:bg-teal-950/20",
-                                                isGlowing: false,
-                                                glowClass: "",
-                                                onClick: ()=>setShowStudyPods(true)
-                                            },
-                                            {
-                                                id: "battle",
-                                                title: "Battle Arena",
-                                                subtitle: "Multiplayer Quiz",
-                                                emoji: "⚔️",
-                                                bgClass: "bg-red-100 text-red-500 dark:bg-red-950/20",
-                                                isGlowing: recs.battle,
-                                                glowClass: "glow-rose",
-                                                onClick: ()=>setShowBattle(true)
-                                            },
-                                            {
-                                                id: "achievements",
-                                                title: "Achievements",
-                                                subtitle: "XP & Badges",
-                                                emoji: "\uD83C\uDFC6",
-                                                bgClass: "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/20",
-                                                isGlowing: false,
-                                                glowClass: "",
-                                                onClick: ()=>setShowGamification(true)
+                                                title: "Plan & Progress",
+                                                emoji: "📅",
+                                                tools: [
+                                                    {
+                                                        id: "timetable",
+                                                        title: "AI Planner",
+                                                        subtitle: "Smart Timetable",
+                                                        emoji: "🗓️",
+                                                        bgClass: "bg-emerald-100 text-emerald-500 dark:bg-emerald-950/20",
+                                                        isGlowing: recs.timetable,
+                                                        glowClass: "glow-emerald",
+                                                        onClick: ()=>setShowTimetable(true)
+                                                    },
+                                                    {
+                                                        id: "quests",
+                                                        title: "Daily Quests",
+                                                        subtitle: "XP Loot Box",
+                                                        emoji: "🎁",
+                                                        bgClass: "bg-rose-100 text-rose-500 dark:bg-rose-950/20",
+                                                        isGlowing: false,
+                                                        glowClass: "",
+                                                        onClick: ()=>setShowQuestLog(true)
+                                                    },
+                                                    {
+                                                        id: "studyPods",
+                                                        title: "Grind Pods",
+                                                        subtitle: "Live Study Pods",
+                                                        emoji: "🧘‍♂️",
+                                                        bgClass: "bg-teal-100 text-teal-600 dark:bg-teal-950/20",
+                                                        isGlowing: false,
+                                                        glowClass: "",
+                                                        onClick: ()=>setShowStudyPods(true)
+                                                    },
+                                                    {
+                                                        id: "achievements",
+                                                        title: "Achievements",
+                                                        subtitle: "XP & Badges",
+                                                        emoji: "🏆",
+                                                        bgClass: "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/20",
+                                                        isGlowing: false,
+                                                        glowClass: "",
+                                                        onClick: ()=>setShowGamification(true)
+                                                    },
+                                                    {
+                                                        id: "analysis",
+                                                        title: "Deep Analysis",
+                                                        subtitle: "Skill Metrics",
+                                                        emoji: "📊",
+                                                        bgClass: "bg-violet-100 text-violet-500 dark:bg-violet-950/20",
+                                                        isGlowing: false,
+                                                        glowClass: "",
+                                                        onClick: ()=>setShowAnalysis(true)
+                                                    }
+                                                ]
                                             }
                                         ];
                                         return /*#__PURE__*/ _jsx("div", {
-                                            className: "grid grid-cols-2 gap-4",
-                                            children: toolsList.map((tool)=>/*#__PURE__*/ _jsxs(motion.button, {
-                                                    whileHover: {
-                                                        scale: 1.03,
-                                                        y: -2
-                                                    },
-                                                    whileTap: {
-                                                        scale: 0.97
-                                                    },
-                                                    onClick: tool.onClick,
-                                                    className: `relative overflow-hidden rounded-[24px] p-4 bg-white dark:bg-slate-900 border border-border shadow-md flex flex-col items-start gap-3 text-left transition-all ${tool.isGlowing ? `${tool.glowClass} animate-pulse scale-[1.01] border-red-500/40` : "hover:border-primary/40"}`,
-                                                    children: [
-                                                        /*#__PURE__*/ _jsx("div", {
-                                                            className: `w-5 h-5 rounded-xl flex items-center justify-center text-xl icon-3d ${tool.bgClass}`,
-                                                            children: tool.emoji
-                                                        }),
-                                                        /*#__PURE__*/ _jsxs("div", {
-                                                            children: [
-                                                                /*#__PURE__*/ _jsx("h4", {
-                                                                    className: "font-black text-xs sm:text-sm text-foreground tracking-tight leading-tight mb-1",
-                                                                    children: tool.title
-                                                                }),
-                                                                /*#__PURE__*/ _jsx("p", {
-                                                                    className: "text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none",
-                                                                    children: tool.subtitle
-                                                                })
-                                                            ]
-                                                        }),
-                                                        tool.isGlowing && /*#__PURE__*/ _jsxs("div", {
-                                                            className: "absolute top-2.5 right-2.5 flex items-center gap-1",
-                                                            children: [
-                                                                /*#__PURE__*/ _jsx("span", {
-                                                                    className: "h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping"
-                                                                }),
-                                                                /*#__PURE__*/ _jsx("span", {
-                                                                    className: "text-[7px] font-black uppercase text-rose-500 tracking-wider",
-                                                                    children: "Focus"
-                                                                })
-                                                            ]
-                                                        })
-                                                    ]
-                                                }, tool.id))
+                                            className: "space-y-8",
+                                            children: groups.map((group)=>/*#__PURE__*/ _jsxs("div", {
+                                                className: "space-y-4",
+                                                children: [
+                                                    /*#__PURE__*/ _jsxs("div", {
+                                                        className: "flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800/80",
+                                                        children: [
+                                                            /*#__PURE__*/ _jsx("span", {
+                                                                className: "text-base font-black",
+                                                                children: group.emoji
+                                                            }),
+                                                            /*#__PURE__*/ _jsx("h3", {
+                                                                className: "text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]",
+                                                                children: group.title
+                                                            })
+                                                        ]
+                                                    }),
+                                                    /*#__PURE__*/ _jsx("div", {
+                                                        className: "grid grid-cols-2 gap-4",
+                                                        children: group.tools.map((tool)=>/*#__PURE__*/ _jsxs(motion.button, {
+                                                                whileHover: {
+                                                                    scale: 1.03,
+                                                                    y: -2
+                                                                },
+                                                                whileTap: {
+                                                                    scale: 0.97
+                                                                },
+                                                                onClick: tool.onClick,
+                                                                className: `relative overflow-hidden rounded-[24px] p-4 bg-white dark:bg-slate-900 border border-border shadow-md flex flex-col items-start gap-3 text-left transition-all ${tool.isGlowing ? `${tool.glowClass} animate-pulse scale-[1.01] border-red-500/40` : "hover:border-primary/40"}`,
+                                                                children: [
+                                                                    /*#__PURE__*/ _jsx("div", {
+                                                                        className: `w-8 h-8 rounded-xl flex items-center justify-center text-xl icon-3d ${tool.bgClass}`,
+                                                                        children: tool.emoji
+                                                                    }),
+                                                                    /*#__PURE__*/ _jsxs("div", {
+                                                                        children: [
+                                                                            /*#__PURE__*/ _jsx("h4", {
+                                                                                className: "font-black text-xs sm:text-sm text-foreground tracking-tight leading-tight mb-1",
+                                                                                children: tool.title
+                                                                            }),
+                                                                            /*#__PURE__*/ _jsx("p", {
+                                                                                className: "text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none",
+                                                                                children: tool.subtitle
+                                                                            })
+                                                                        ]
+                                                                    }),
+                                                                    tool.isGlowing && /*#__PURE__*/ _jsxs("div", {
+                                                                        className: "absolute top-2.5 right-2.5 flex items-center gap-1",
+                                                                        children: [
+                                                                            /*#__PURE__*/ _jsx("span", {
+                                                                                className: "h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping"
+                                                                            }),
+                                                                            /*#__PURE__*/ _jsx("span", {
+                                                                                className: "text-[7px] font-black uppercase text-rose-500 tracking-wider",
+                                                                                children: "Focus"
+                                                                            })
+                                                                        ]
+                                                                    })
+                                                                ]
+                                                            }, tool.id))
+                                                    })
+                                                ]
+                                            }, group.title))
                                         });
                                     })(),
                                     /*#__PURE__*/ _jsx("div", {
