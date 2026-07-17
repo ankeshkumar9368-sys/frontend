@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Medal, Crown, TrendingUp, User as UserIcon, Loader2 } from "lucide-react";
 import { db } from "../lib/firebase";
-import { collection, query, orderBy, limit, onSnapshot, where } from "firebase/firestore";
+import { collection, query, orderBy, limit, onSnapshot, where, getCountFromServer } from "firebase/firestore";
 import SmartAvatar from "./SmartAvatar";
 
 interface Leader {
@@ -84,7 +84,6 @@ export default function Leaderboard({ userData }: { userData: any }) {
       } else {
         // Find accurate rank by counting users with more points
         try {
-          const { getCountFromServer } = require("firebase/firestore");
           let countQuery;
           if (category === "Gold") {
             countQuery = query(collection(db, "users"), where("points", ">", userData?.points || 0));

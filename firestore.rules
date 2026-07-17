@@ -24,7 +24,8 @@ service cloud.firestore {
     
     // User Profiles & Nested Subcollections (notifications, saved_mcqs)
     match /users/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) || isAdmin();
       
       match /{document=**} {
         allow read, write: if isOwner(userId) || isAdmin();
