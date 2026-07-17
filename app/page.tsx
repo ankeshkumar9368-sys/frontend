@@ -2277,6 +2277,21 @@ export default function Home() {
                                                                 ]
                                                             })
                                                         ]
+                                                    }),
+                                                    auth.currentUser?.email && [
+                                                        "ankeshkumar9368@gmail.com",
+                                                        "ankeshkumar0506@gmail.com",
+                                                        "nitishkumarbzp29@gmail.com",
+                                                        "abhijeet01512@gmail.com"
+                                                    ].includes(auth.currentUser.email) && /*#__PURE__*/ _jsxs("button", {
+                                                        onClick: ()=>router.push("/admin"),
+                                                        className: "mt-4 w-full max-w-xs flex justify-center items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-600 to-red-700 px-4 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-rose-600/30 transition-all hover:scale-[1.02] border border-white/10",
+                                                        children: [
+                                                            /*#__PURE__*/ _jsx(ShieldCheck, {
+                                                                className: "h-4 w-4"
+                                                            }),
+                                                            " Admin Dashboard"
+                                                        ]
                                                     })
                                                 ]
                                             })
