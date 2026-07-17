@@ -330,6 +330,17 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
+    // Restrict Admin Dashboard to localhost only
+    if (typeof window !== "undefined") {
+      const hostname = window.location.hostname;
+      if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+        setIsAdmin(false);
+        router.replace("/");
+        setLoading(false);
+        return;
+      }
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
