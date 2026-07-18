@@ -167,6 +167,27 @@ export default function TopperNotes({
         setActiveNotebookTab("snapshot");
         setSelectedMcqAnswers({});
         setRevealedAnswers({});
+
+        // Save to localStorage for unlimited free re-viewing anytime
+        if (typeof window !== "undefined") {
+          try {
+            const userKey = userData?.id || "guest";
+            const saveKey = `achivox_saved_topper_${userKey}`;
+            const existing = JSON.parse(localStorage.getItem(saveKey) || "[]");
+            const entry = {
+              id: Date.now().toString(),
+              topic: finalTopic,
+              subject: targetSubject,
+              cls,
+              board,
+              date: new Date().toLocaleDateString(),
+              data
+            };
+            const filtered = existing.filter((e: any) => e.topic.toLowerCase() !== finalTopic.toLowerCase());
+            localStorage.setItem(saveKey, JSON.stringify([entry, ...filtered]));
+          } catch(e) {}
+        }
+
         // Fetch Wikipedia diagrams in background after notes load
         if (data.diagramSuggestions && data.diagramSuggestions.length > 0) {
           setDiagramsLoading(true);
@@ -495,6 +516,45 @@ export default function TopperNotes({
               <PenTool className="w-4 h-4" />
               Generate Topper Notes
             </button>
+
+            {/* Previously Generated Notes List (Free Unlimited Re-viewing) */}
+            {(() => {
+              if (typeof window === "undefined") return null;
+              const userKey = userData?.id || "guest";
+              const saveKey = `achivox_saved_topper_${userKey}`;
+              let saved: any[] = [];
+              try {
+                saved = JSON.parse(localStorage.getItem(saveKey) || "[]");
+              } catch(e) {}
+              if (saved.length === 0) return null;
+
+              return (
+                <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-6 text-left">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">📚 Generated Notes (Click to View Free)</h4>
+                    <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">{saved.length} Saved</span>
+                  </div>
+                  <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
+                    {saved.map((item: any) => (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          setNotes(item.data);
+                          setTopic(item.topic);
+                          setSubject(item.subject);
+                          setActiveNotebookTab("snapshot");
+                        }}
+                        className="bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 p-3 rounded-2xl text-left min-w-[160px] max-w-[200px] shrink-0 transition-all group active:scale-95"
+                      >
+                        <p className="text-[9px] font-black uppercase text-amber-600 truncate">{item.subject || "General"}</p>
+                        <h5 className="text-xs font-black text-slate-800 dark:text-white truncate mt-0.5">{item.topic}</h5>
+                        <span className="text-[9px] font-bold text-emerald-500 mt-1 block">✨ Open Free</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </motion.div>
       </div>

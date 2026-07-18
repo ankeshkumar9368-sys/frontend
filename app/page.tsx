@@ -501,6 +501,39 @@ export default function Home() {
         }
     };
     const handleAICoreAction = async (type: any, target: any, parentId: any = undefined, isMastery: any = false, overrideSubject: any = undefined)=>{
+        const classRaw = parentId?.match(/classes_class_(\d+)/)?.[1];
+        const clsName = classRaw ? `Class ${classRaw}` : userData?.cls || "Class 12";
+        const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
+        const subName = overrideSubject || (subRaw ? subRaw.split("_").map((w)=>w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "General");
+        const chapRaw = parentId?.match(/chapters_([a-z0-9_]+?)(?:__|$)/)?.[1];
+        const chapName = chapRaw ? chapRaw.split("_").map((w)=>w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : target;
+
+        // 1. Instant local storage cache check for previously generated notes
+        if (typeof window !== "undefined" && type === "notes") {
+            const cacheKey = `achivox_notes_full_${subName || "gen"}_${chapName || "none"}_${target || "none"}_${userData?.id || "guest"}`.replace(/[^a-zA-Z0-9_]/g, "_");
+            try {
+                const cached = localStorage.getItem(cacheKey);
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (parsed && parsed.topics) {
+                        // Open cached note immediately for free!
+                        setActiveNotes({
+                            title: target,
+                            chapter: chapName,
+                            subjectContext: subName,
+                            classContext: clsName,
+                            mode: "full",
+                            data: parsed
+                        });
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn("Local cache check failed:", e);
+            }
+        }
+
+        // 2. Free quota check ONLY for NEW generations
         if (!isSubscribed) {
             const now = Date.now();
             const userKey = userData?.id || "guest";
@@ -540,36 +573,6 @@ export default function Home() {
         activeAICoreTaskRef.current = taskId;
         try {
             if (type === "notes") {
-                const classRaw = parentId?.match(/classes_class_(\d+)/)?.[1];
-                const clsName = classRaw ? `Class ${classRaw}` : userData?.cls || "Class 12";
-                const subRaw = parentId?.match(/subjects_([a-z0-9_]+?)(?:__|$)/)?.[1];
-                const subName = overrideSubject || (subRaw ? subRaw.split("_").map((w)=>w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "General");
-                const chapRaw = parentId?.match(/chapters_([a-z0-9_]+?)(?:__|$)/)?.[1];
-                const chapName = chapRaw ? chapRaw.split("_").map((w)=>w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : target;
-                // Instant local storage cache check
-                if ("undefined" !== "undefined") {
-                    const cacheKey = `achivox_notes_full_${subName || "gen"}_${chapName || "none"}_${target || "none"}_${userData?.id || "guest"}`.replace(/[^a-zA-Z0-9_]/g, "_");
-                    try {
-                        const cached = localStorage.getItem(cacheKey);
-                        if (cached) {
-                            const parsed = JSON.parse(cached);
-                            if (parsed && parsed.topics) {
-                                setShowAILoading(false);
-                                setActiveNotes({
-                                    title: target,
-                                    chapter: chapName,
-                                    subjectContext: subName,
-                                    classContext: clsName,
-                                    mode: "full",
-                                    data: parsed
-                                });
-                                return;
-                            }
-                        }
-                    } catch (e) {
-                        console.warn("Local cache check failed:", e);
-                    }
-                }
                 const notes = await fetchChapterNotes(target, userData, "dual", subName, chapName);
                 if (activeAICoreTaskRef.current !== taskId) return; // Task was cancelled
                 if (notes) {
