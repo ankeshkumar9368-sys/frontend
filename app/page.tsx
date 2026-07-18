@@ -181,8 +181,72 @@ export default function Home() {
     const [isGeneratingReport, setIsGeneratingReport] = useState(false);
     const [showAILoading, setShowAILoading] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);
-    const activeAICoreTaskRef = useRef(null);
     const [aiLoadingType, setAILoadingType] = useState("analysis");
+    // 24-Hour Daily Free Quota States
+    const [noteQuota, setNoteQuota] = useState<{ used: number; resetTime: number }>({ used: 0, resetTime: 0 });
+    const [testQuota, setTestQuota] = useState<{ used: number; resetTime: number }>({ used: 0, resetTime: 0 });
+    const [timeToResetNote, setTimeToResetNote] = useState<string>("");
+    const [timeToResetTest, setTimeToResetTest] = useState<string>("");
+
+    useEffect(() => {
+        if (isSubscribed) return;
+
+        const updateQuotas = () => {
+            const now = Date.now();
+            const userKey = userData?.id || "guest";
+
+            // Note Quota check & timer update
+            const rawNote = localStorage.getItem(`achivox_quota_notes_${userKey}`);
+            if (rawNote) {
+                try {
+                    const parsed = JSON.parse(rawNote);
+                    if (now >= parsed.resetTime) {
+                        setNoteQuota({ used: 0, resetTime: 0 });
+                        setTimeToResetNote("");
+                        localStorage.removeItem(`achivox_quota_notes_${userKey}`);
+                    } else {
+                        setNoteQuota(parsed);
+                        const rem = Math.max(0, parsed.resetTime - now);
+                        const h = Math.floor(rem / (1000 * 60 * 60));
+                        const m = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((rem % (1000 * 60)) / 1000);
+                        setTimeToResetNote(`${h}h ${m}m ${s}s`);
+                    }
+                } catch (e) {}
+            } else {
+                setNoteQuota({ used: 0, resetTime: 0 });
+                setTimeToResetNote("");
+            }
+
+            // Test Quota check & timer update
+            const rawTest = localStorage.getItem(`achivox_quota_tests_${userKey}`);
+            if (rawTest) {
+                try {
+                    const parsed = JSON.parse(rawTest);
+                    if (now >= parsed.resetTime) {
+                        setTestQuota({ used: 0, resetTime: 0 });
+                        setTimeToResetTest("");
+                        localStorage.removeItem(`achivox_quota_tests_${userKey}`);
+                    } else {
+                        setTestQuota(parsed);
+                        const rem = Math.max(0, parsed.resetTime - now);
+                        const h = Math.floor(rem / (1000 * 60 * 60));
+                        const m = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((rem % (1000 * 60)) / 1000);
+                        setTimeToResetTest(`${h}h ${m}m ${s}s`);
+                    }
+                } catch (e) {}
+            } else {
+                setTestQuota({ used: 0, resetTime: 0 });
+                setTimeToResetTest("");
+            }
+        };
+
+        updateQuotas();
+        const interval = setInterval(updateQuotas, 1000);
+        return () => clearInterval(interval);
+    }, [isSubscribed, userData?.id]);
+    const activeAICoreTaskRef = useRef(null);
     const [systemConfig, setSystemConfig] = useState<any>({
         maintenance: false,
         xpBoost: 1
@@ -440,24 +504,36 @@ export default function Home() {
     };
     const handleAICoreAction = async (type: any, target: any, parentId: any = undefined, isMastery: any = false, overrideSubject: any = undefined)=>{
         if (!isSubscribed) {
-            const today = new Date().toISOString().slice(0, 10);
+            const now = Date.now();
             const userKey = userData?.id || "guest";
+            const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
             if (type === "notes") {
-                const noteLimitKey = `achivox_daily_notes_${today}_${userKey}`;
-                const used = parseInt(localStorage.getItem(noteLimitKey) || "0", 10);
-                if (used >= 1) {
+                const raw = localStorage.getItem(`achivox_quota_notes_${userKey}`);
+                let quota = raw ? JSON.parse(raw) : { used: 0, resetTime: 0 };
+                if (quota.resetTime && now < quota.resetTime && quota.used >= 1) {
                     router.push("/subscription");
                     return;
                 }
-                localStorage.setItem(noteLimitKey, (used + 1).toString());
+                const newQuota = {
+                    used: 1,
+                    resetTime: quota.resetTime && now < quota.resetTime ? quota.resetTime : now + TWENTY_FOUR_HOURS
+                };
+                localStorage.setItem(`achivox_quota_notes_${userKey}`, JSON.stringify(newQuota));
+                setNoteQuota(newQuota);
             } else if (type === "test" || type === "quiz") {
-                const testLimitKey = `achivox_daily_tests_${today}_${userKey}`;
-                const used = parseInt(localStorage.getItem(testLimitKey) || "0", 10);
-                if (used >= 1) {
+                const raw = localStorage.getItem(`achivox_quota_tests_${userKey}`);
+                let quota = raw ? JSON.parse(raw) : { used: 0, resetTime: 0 };
+                if (quota.resetTime && now < quota.resetTime && quota.used >= 1) {
                     router.push("/subscription");
                     return;
                 }
-                localStorage.setItem(testLimitKey, (used + 1).toString());
+                const newQuota = {
+                    used: 1,
+                    resetTime: quota.resetTime && now < quota.resetTime ? quota.resetTime : now + TWENTY_FOUR_HOURS
+                };
+                localStorage.setItem(`achivox_quota_tests_${userKey}`, JSON.stringify(newQuota));
+                setTestQuota(newQuota);
             }
         }
         setAILoadingType(type === "quiz" ? "test" : type);
@@ -2794,21 +2870,55 @@ export default function Home() {
                             /*#__PURE__*/ _jsxs("div", {
                                 className: "grid grid-cols-1 gap-3",
                                 children: [
-                                    /*#__PURE__*/ _jsx("button", {
+                                    /*#__PURE__*/ _jsxs("button", {
                                         onClick: ()=>{
+                                            if (!isSubscribed && noteQuota.used >= 1) {
+                                                router.push("/subscription");
+                                                setSelectionModal(null);
+                                                return;
+                                            }
                                             handleAICoreAction("notes", selectionModal.name, selectionModal.parentId);
                                             setSelectionModal(null);
                                         },
-                                        className: "bg-indigo-600 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform",
-                                        children: "Smart Notes"
+                                        className: `p-4 rounded-[28px] font-black uppercase tracking-tight flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform ${!isSubscribed && noteQuota.used >= 1 ? "bg-amber-500 text-slate-950 shadow-lg" : "bg-indigo-600 text-white"}`,
+                                        children: [
+                                            /*#__PURE__*/ _jsxs("div", {
+                                                className: "flex items-center gap-2 text-sm",
+                                                children: [
+                                                    !isSubscribed && noteQuota.used >= 1 ? "🔒 Smart Notes" : "Smart Notes",
+                                                    !isSubscribed && noteQuota.used === 0 && /*#__PURE__*/ _jsx("span", { className: "bg-white/20 text-[9px] px-2 py-0.5 rounded-full font-bold", children: "1 FREE TODAY" })
+                                                ]
+                                            }),
+                                            !isSubscribed && noteQuota.used >= 1 && /*#__PURE__*/ _jsx("span", {
+                                                className: "text-[10px] font-bold opacity-90 lowercase",
+                                                children: `Unlocks in ${timeToResetNote}`
+                                            })
+                                        ]
                                     }),
-                                    /*#__PURE__*/ _jsx("button", {
+                                    /*#__PURE__*/ _jsxs("button", {
                                         onClick: ()=>{
+                                            if (!isSubscribed && testQuota.used >= 1) {
+                                                router.push("/subscription");
+                                                setSelectionModal(null);
+                                                return;
+                                            }
                                             handleAICoreAction("quiz", selectionModal.name, selectionModal.parentId);
                                             setSelectionModal(null);
                                         },
-                                        className: "bg-slate-900 text-white p-4 rounded-[28px] font-black uppercase tracking-tight flex items-center justify-center gap-3 active:scale-95 transition-transform",
-                                        children: "Live Test"
+                                        className: `p-4 rounded-[28px] font-black uppercase tracking-tight flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform ${!isSubscribed && testQuota.used >= 1 ? "bg-amber-500 text-slate-950 shadow-lg" : "bg-slate-900 text-white"}`,
+                                        children: [
+                                            /*#__PURE__*/ _jsxs("div", {
+                                                className: "flex items-center gap-2 text-sm",
+                                                children: [
+                                                    !isSubscribed && testQuota.used >= 1 ? "🔒 Live Test" : "Live Test",
+                                                    !isSubscribed && testQuota.used === 0 && /*#__PURE__*/ _jsx("span", { className: "bg-emerald-500/30 text-emerald-300 text-[9px] px-2 py-0.5 rounded-full font-bold", children: "10 FREE MCQs" })
+                                                ]
+                                            }),
+                                            !isSubscribed && testQuota.used >= 1 && /*#__PURE__*/ _jsx("span", {
+                                                className: "text-[10px] font-bold opacity-90 lowercase",
+                                                children: `Unlocks in ${timeToResetTest}`
+                                            })
+                                        ]
                                     })
                                 ]
                             })
