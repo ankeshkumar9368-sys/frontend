@@ -439,6 +439,27 @@ export default function Home() {
         }
     };
     const handleAICoreAction = async (type: any, target: any, parentId: any = undefined, isMastery: any = false, overrideSubject: any = undefined)=>{
+        if (!isSubscribed) {
+            const today = new Date().toISOString().slice(0, 10);
+            const userKey = userData?.id || "guest";
+            if (type === "notes") {
+                const noteLimitKey = `achivox_daily_notes_${today}_${userKey}`;
+                const used = parseInt(localStorage.getItem(noteLimitKey) || "0", 10);
+                if (used >= 1) {
+                    router.push("/subscription");
+                    return;
+                }
+                localStorage.setItem(noteLimitKey, (used + 1).toString());
+            } else if (type === "test" || type === "quiz") {
+                const testLimitKey = `achivox_daily_tests_${today}_${userKey}`;
+                const used = parseInt(localStorage.getItem(testLimitKey) || "0", 10);
+                if (used >= 1) {
+                    router.push("/subscription");
+                    return;
+                }
+                localStorage.setItem(testLimitKey, (used + 1).toString());
+            }
+        }
         setAILoadingType(type === "quiz" ? "test" : type);
         setShowAILoading(true);
         const taskId = Math.random().toString(36);
@@ -1520,7 +1541,7 @@ export default function Home() {
                                                             scale: 0.95
                                                         },
                                                         onClick: ()=>{
-                                                            if (!isSubscribed) return alert("\uD83D\uDD12 Revision Vault is a Premium feature!");
+                                                            if (!isSubscribed) return router.push("/subscription");
                                                             setShowRevisionVault(true);
                                                         },
                                                         className: "flex flex-col items-center gap-1.5 min-w-[72px]",
@@ -1825,7 +1846,10 @@ export default function Home() {
                                                         bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
                                                         isGlowing: true,
                                                         glowClass: "glow-amber",
-                                                        onClick: ()=>setShowTopperNotes(true)
+                                                        onClick: ()=>{
+                                                            if (!isSubscribed) return router.push("/subscription");
+                                                            setShowTopperNotes(true);
+                                                        }
                                                     },
                                                     {
                                                         id: "flashcards",
@@ -1835,7 +1859,10 @@ export default function Home() {
                                                         bgClass: "bg-orange-100 text-orange-500 dark:bg-orange-950/20",
                                                         isGlowing: recs.flashcards,
                                                         glowClass: "glow-amber",
-                                                        onClick: ()=>setShowFlashcards(true)
+                                                        onClick: ()=>{
+                                                            if (!isSubscribed) return router.push("/subscription");
+                                                            setShowFlashcards(true);
+                                                        }
                                                     },
                                                     {
                                                         id: "formula",
@@ -1845,7 +1872,10 @@ export default function Home() {
                                                         bgClass: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-950/20",
                                                         isGlowing: false,
                                                         glowClass: "",
-                                                        onClick: ()=>setShowFormulaVault(true)
+                                                        onClick: ()=>{
+                                                            if (!isSubscribed) return router.push("/subscription");
+                                                            setShowFormulaVault(true);
+                                                        }
                                                     },
                                                     {
                                                         id: "scanSolve",
@@ -1855,7 +1885,10 @@ export default function Home() {
                                                         bgClass: "bg-sky-100 text-sky-500 dark:bg-sky-950/20",
                                                         isGlowing: recs.scanSolve,
                                                         glowClass: "glow-primary",
-                                                        onClick: ()=>setShowScanSolve(true)
+                                                        onClick: ()=>{
+                                                            if (!isSubscribed) return router.push("/subscription");
+                                                            setShowScanSolve(true);
+                                                        }
                                                     }
                                                 ]
                                             },
@@ -1872,7 +1905,7 @@ export default function Home() {
                                                         isGlowing: recs.revisionVault,
                                                         glowClass: "glow-amber",
                                                         onClick: ()=>{
-                                                            if (!isSubscribed) return alert("🔒 Revision Vault is a Premium feature!");
+                                                            if (!isSubscribed) return router.push("/subscription");
                                                             setShowRevisionVault(true);
                                                         }
                                                     },
