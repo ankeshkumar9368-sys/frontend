@@ -136,9 +136,9 @@ export default function SubscriptionPage() {
           throw new Error("Cashfree SDK is loading. Please tap again.");
         }
 
-        const isProd = window.location.hostname === "www.achivox.online" || window.location.hostname === "achivox.online";
+        const cfMode = process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox";
         const cashfree = (window as any).Cashfree({
-          mode: isProd ? "production" : "sandbox"
+          mode: cfMode === "production" ? "production" : "sandbox"
         });
 
         cashfree.checkout({

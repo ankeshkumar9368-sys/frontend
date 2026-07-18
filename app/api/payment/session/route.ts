@@ -3,7 +3,8 @@ import axios from "axios";
 
 export async function POST(req: Request) {
   try {
-    const { userId, customerName, customerEmail, customerPhone } = await req.json();
+    const body = await req.json();
+    const { userId, customerName, customerEmail, customerPhone, amount, planName } = body;
 
     if (!userId) {
       return NextResponse.json({ error: "Missing required parameter: userId" }, { status: 400 });
@@ -11,11 +12,11 @@ export async function POST(req: Request) {
 
     const appId = process.env.CASHFREE_APP_ID;
     const secretKey = process.env.CASHFREE_SECRET_KEY;
-    const mode = process.env.CASHFREE_MODE || "sandbox"; // fallback to sandbox
+    const mode = process.env.CASHFREE_MODE || "sandbox"; // fallback to sandbox for test keys
 
     if (!appId || !secretKey) {
       console.error("Cashfree credentials are missing in process.env");
-      return NextResponse.json({ error: "Billing setup is incomplete. Contact support." }, { status: 500 });
+      return NextResponse.json({ error: "Billing setup is incomplete. CASHFREE_APP_ID or CASHFREE_SECRET_KEY missing in environment." }, { status: 500 });
     }
 
     // Set endpoints based on mode
@@ -23,8 +24,9 @@ export async function POST(req: Request) {
       ? "https://api.cashfree.com/pg"
       : "https://sandbox.cashfree.com/pg";
 
-    // Generate unique order ID (order_sub_<userId>_<timestamp>)
-    const orderId = `order_sub_${userId.substring(0, 10)}_${Date.now()}`;
+    const orderAmount = typeof amount === "number" && amount > 0 ? amount : 399.00;
+    const sanitizedUserId = userId ? userId.replace(/[^a-zA-Z0-9]/g, "").substring(0, 16) : "guest";
+    const orderId = `ord_${sanitizedUserId}_${Date.now()}`;
 
     // Get origin from request headers to formulate return URL
     const origin = req.headers.get("origin") || "https://www.achivox.online";
@@ -32,14 +34,15 @@ export async function POST(req: Request) {
 
     const payload = {
       customer_details: {
-        customer_id: userId,
-        customer_email: customerEmail || "student@examhero.ai",
+        customer_id: sanitizedUserId,
+        customer_email: customerEmail || "student@achivox.online",
         customer_phone: customerPhone || "9999999999",
-        customer_name: customerName || "Student"
+        customer_name: customerName || "Academic Achiever"
       },
-      order_amount: 499.00,
+      order_amount: orderAmount,
       order_currency: "INR",
       order_id: orderId,
+      order_note: `Achivox Subscription: ${planName || "Pro Plan"}`,
       order_meta: {
         return_url: returnUrl
       }
