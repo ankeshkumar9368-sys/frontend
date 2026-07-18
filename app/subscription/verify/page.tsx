@@ -56,7 +56,7 @@ export default function VerifyPaymentPage() {
   }, [orderId]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 relative overflow-hidden select-none">
+    <div className="fixed inset-0 z-[100] w-full h-full overflow-y-auto bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 relative select-none">
       {/* Background radial glow */}
       <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[140%] bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.08),rgba(0,0,0,0))] pointer-events-none" />
 

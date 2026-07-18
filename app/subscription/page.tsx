@@ -164,7 +164,7 @@ export default function SubscriptionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans select-none pb-28 md:pb-32 w-full overflow-x-hidden">
+    <div className="fixed inset-0 z-[100] w-full h-full overflow-y-auto bg-slate-50 text-slate-900 font-sans select-none pb-28 md:pb-32 overflow-x-hidden">
       
       {/* 1. TOP ANNOUNCEMENT BANNER */}
       <div className="bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-700 text-white text-xs py-2.5 px-3 sm:px-6 sticky top-0 z-50 shadow-md">
