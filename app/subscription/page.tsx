@@ -50,17 +50,7 @@ export default function SubscriptionPage() {
       setLoading(false);
     });
 
-    const script = document.createElement("script");
-    script.src = "https://sdk.cashfree.com/js/v3/2.0.0/cashfree.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      unsubscribe();
-      try {
-        document.body.removeChild(script);
-      } catch (e) {}
-    };
+    return () => unsubscribe();
   }, []);
 
   // Countdown Timer
@@ -106,6 +96,33 @@ export default function SubscriptionPage() {
     }
   };
 
+  const loadCashfreeSdk = async (): Promise<any> => {
+    if (typeof window === "undefined") return null;
+    if ((window as any).Cashfree) return (window as any).Cashfree;
+
+    return new Promise((resolve, reject) => {
+      let script = document.querySelector('script[src*="cashfree.js"]') as HTMLScriptElement;
+      if (!script) {
+        script = document.createElement("script");
+        script.src = "https://sdk.cashfree.com/js/v3/2.0.0/cashfree.js";
+        script.async = true;
+        document.head.appendChild(script);
+      }
+
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        if ((window as any).Cashfree) {
+          clearInterval(interval);
+          resolve((window as any).Cashfree);
+        } else if (attempts > 50) {
+          clearInterval(interval);
+          reject(new Error("Cashfree SDK failed to initialize. Please try again."));
+        }
+      }, 100);
+    });
+  };
+
   const handleCheckout = async (planName: string, baseAmount: number) => {
     setPayingPlan(planName);
     setErrorMsg("");
@@ -119,15 +136,9 @@ export default function SubscriptionPage() {
       : baseAmount;
 
     try {
-      // Auto-load Cashfree JS SDK if not loaded yet
-      if (typeof window !== "undefined" && !(window as any).Cashfree) {
-        await new Promise((resolve, reject) => {
-          const s = document.createElement("script");
-          s.src = "https://sdk.cashfree.com/js/v3/2.0.0/cashfree.js";
-          s.onload = () => resolve(true);
-          s.onerror = () => reject(new Error("Cashfree SDK loading failed. Please check connection."));
-          document.body.appendChild(s);
-        });
+      const CashfreeSDK = await loadCashfreeSdk();
+      if (!CashfreeSDK) {
+        throw new Error("Payment SDK unavailable. Please check internet connection.");
       }
 
       const response = await axios.post("/api/payment/session", {
@@ -142,12 +153,8 @@ export default function SubscriptionPage() {
       if (response.data && response.data.payment_session_id) {
         const { payment_session_id } = response.data;
 
-        if (typeof window === "undefined" || !(window as any).Cashfree) {
-          throw new Error("Cashfree SDK failed to initialize. Please try again.");
-        }
-
         const cfMode = process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox";
-        const cashfree = (window as any).Cashfree({
+        const cashfree = CashfreeSDK({
           mode: cfMode === "production" ? "production" : "sandbox"
         });
 
@@ -156,7 +163,7 @@ export default function SubscriptionPage() {
           redirectTarget: "_self"
         });
       } else {
-        throw new Error("Invalid response from payment gateway.");
+        throw new Error("Invalid response from payment gateway server.");
       }
     } catch (error: any) {
       console.error("Payment error:", error);
