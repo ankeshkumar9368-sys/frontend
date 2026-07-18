@@ -2277,6 +2277,47 @@ export default function Home() {
                                                                 ]
                                                             })
                                                         ]
+                                                    }),
+                                                    /*#__PURE__*/ _jsxs("button", {
+                                                        onClick: ()=>router.push("/subscription"),
+                                                        className: "mt-4 w-full max-w-xs overflow-hidden rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 p-[1.5px] shadow-xl shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]",
+                                                        children: [
+                                                            /*#__PURE__*/ _jsxs("div", {
+                                                                className: "flex items-center justify-between gap-3 rounded-[15px] bg-slate-950 px-4 py-3 text-left text-white",
+                                                                children: [
+                                                                    /*#__PURE__*/ _jsxs("div", {
+                                                                        className: "space-y-0.5",
+                                                                        children: [
+                                                                            /*#__PURE__*/ _jsxs("div", {
+                                                                                className: "flex items-center gap-1.5",
+                                                                                children: [
+                                                                                    /*#__PURE__*/ _jsx(Flame, {
+                                                                                        className: "h-4 w-4 text-amber-400 fill-amber-400 animate-pulse"
+                                                                                    }),
+                                                                                    /*#__PURE__*/ _jsx("span", {
+                                                                                        className: "text-[10px] font-black uppercase tracking-wider text-amber-400",
+                                                                                        children: "LAUNCH OFFER • SAVE 60%"
+                                                                                    })
+                                                                                ]
+                                                                            }),
+                                                                            /*#__PURE__*/ _jsx("p", {
+                                                                                className: "text-xs font-black text-white",
+                                                                                children: isSubscribed ? "Manage Premium Subscription" : "Upgrade to Achivox Pro"
+                                                                            })
+                                                                        ]
+                                                                    }),
+                                                                    /*#__PURE__*/ _jsxs("div", {
+                                                                        className: "flex items-center gap-1 rounded-xl bg-amber-400 px-3 py-1.5 text-xs font-black text-slate-950 shadow-md shrink-0",
+                                                                        children: [
+                                                                            isSubscribed ? "PRO" : "₹399",
+                                                                            /*#__PURE__*/ _jsx(Sparkles, {
+                                                                                className: "h-3.5 h-3.5 fill-slate-950"
+                                                                            })
+                                                                        ]
+                                                                    })
+                                                                ]
+                                                            })
+                                                        ]
                                                     })
                                                 ]
                                             })
