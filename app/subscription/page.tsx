@@ -107,24 +107,34 @@ export default function SubscriptionPage() {
   };
 
   const handleCheckout = async (planName: string, baseAmount: number) => {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
     setPayingPlan(planName);
     setErrorMsg("");
+
+    const targetUserId = user?.uid || `guest_${Date.now()}`;
+    const customerName = user?.displayName || "Academic Achiever";
+    const customerEmail = user?.email || "student@achivox.online";
 
     const finalPrice = discountPercent > 0 
       ? Math.round(baseAmount * (1 - discountPercent / 100))
       : baseAmount;
 
     try {
+      // Auto-load Cashfree JS SDK if not loaded yet
+      if (typeof window !== "undefined" && !(window as any).Cashfree) {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = "https://sdk.cashfree.com/js/v3/2.0.0/cashfree.js";
+          s.onload = () => resolve(true);
+          s.onerror = () => reject(new Error("Cashfree SDK loading failed. Please check connection."));
+          document.body.appendChild(s);
+        });
+      }
+
       const response = await axios.post("/api/payment/session", {
-        userId: user.uid,
-        customerName: user.displayName || "Academic Achiever",
-        customerEmail: user.email || "student@examhero.ai",
-        customerPhone: "",
+        userId: targetUserId,
+        customerName,
+        customerEmail,
+        customerPhone: "9999999999",
         amount: finalPrice,
         planName
       });
@@ -133,7 +143,7 @@ export default function SubscriptionPage() {
         const { payment_session_id } = response.data;
 
         if (typeof window === "undefined" || !(window as any).Cashfree) {
-          throw new Error("Cashfree SDK is loading. Please tap again.");
+          throw new Error("Cashfree SDK failed to initialize. Please try again.");
         }
 
         const cfMode = process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox";
@@ -238,6 +248,15 @@ export default function SubscriptionPage() {
           <span>🔥 <b>8,742 students</b> upgraded their plan this month</span>
         </div>
       </section>
+
+      {errorMsg && (
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 mb-4">
+          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 p-4 rounded-2xl text-xs font-black flex items-center justify-between gap-2 shadow-sm">
+            <span>⚠️ {errorMsg}</span>
+            <button onClick={() => setErrorMsg("")} className="text-slate-400 hover:text-slate-700">✕</button>
+          </div>
+        </section>
+      )}
 
       {/* 3. LIMITED TIME LAUNCH OFFER (GLOWING FIRE CARD) */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 mb-8 sm:mb-10">
