@@ -185,8 +185,13 @@ export default function Home() {
     // 24-Hour Daily Free Quota States
     const [noteQuota, setNoteQuota] = useState<{ used: number; resetTime: number }>({ used: 0, resetTime: 0 });
     const [testQuota, setTestQuota] = useState<{ used: number; resetTime: number }>({ used: 0, resetTime: 0 });
+    const [topperQuota, setTopperQuota] = useState<{ used: number; resetTime: number }>({ used: 0, resetTime: 0 });
+    const [quickStudyQuota, setQuickStudyQuota] = useState<{ cardsStudied: number; resetTime: number }>({ cardsStudied: 0, resetTime: 0 });
+
     const [timeToResetNote, setTimeToResetNote] = useState<string>("");
     const [timeToResetTest, setTimeToResetTest] = useState<string>("");
+    const [timeToResetTopper, setTimeToResetTopper] = useState<string>("");
+    const [timeToResetQuickStudy, setTimeToResetQuickStudy] = useState<string>("");
 
     useEffect(() => {
         if (isSubscribed) return;
@@ -195,51 +200,34 @@ export default function Home() {
             const now = Date.now();
             const userKey = userData?.id || "guest";
 
-            // Note Quota check & timer update
-            const rawNote = localStorage.getItem(`achivox_quota_notes_${userKey}`);
-            if (rawNote) {
-                try {
-                    const parsed = JSON.parse(rawNote);
-                    if (now >= parsed.resetTime) {
-                        setNoteQuota({ used: 0, resetTime: 0 });
-                        setTimeToResetNote("");
-                        localStorage.removeItem(`achivox_quota_notes_${userKey}`);
-                    } else {
-                        setNoteQuota(parsed);
-                        const rem = Math.max(0, parsed.resetTime - now);
-                        const h = Math.floor(rem / (1000 * 60 * 60));
-                        const m = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
-                        const s = Math.floor((rem % (1000 * 60)) / 1000);
-                        setTimeToResetNote(`${h}h ${m}m ${s}s`);
-                    }
-                } catch (e) {}
-            } else {
-                setNoteQuota({ used: 0, resetTime: 0 });
-                setTimeToResetNote("");
-            }
+            const checkSingleQuota = (key: string, setQuota: any, setTimer: any, isCards = false) => {
+                const raw = localStorage.getItem(key);
+                if (raw) {
+                    try {
+                        const parsed = JSON.parse(raw);
+                        if (now >= parsed.resetTime) {
+                            setQuota(isCards ? { cardsStudied: 0, resetTime: 0 } : { used: 0, resetTime: 0 });
+                            setTimer("");
+                            localStorage.removeItem(key);
+                        } else {
+                            setQuota(parsed);
+                            const rem = Math.max(0, parsed.resetTime - now);
+                            const h = Math.floor(rem / (1000 * 60 * 60));
+                            const m = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
+                            const s = Math.floor((rem % (1000 * 60)) / 1000);
+                            setTimer(`${h}h ${m}m ${s}s`);
+                        }
+                    } catch (e) {}
+                } else {
+                    setQuota(isCards ? { cardsStudied: 0, resetTime: 0 } : { used: 0, resetTime: 0 });
+                    setTimer("");
+                }
+            };
 
-            // Test Quota check & timer update
-            const rawTest = localStorage.getItem(`achivox_quota_tests_${userKey}`);
-            if (rawTest) {
-                try {
-                    const parsed = JSON.parse(rawTest);
-                    if (now >= parsed.resetTime) {
-                        setTestQuota({ used: 0, resetTime: 0 });
-                        setTimeToResetTest("");
-                        localStorage.removeItem(`achivox_quota_tests_${userKey}`);
-                    } else {
-                        setTestQuota(parsed);
-                        const rem = Math.max(0, parsed.resetTime - now);
-                        const h = Math.floor(rem / (1000 * 60 * 60));
-                        const m = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
-                        const s = Math.floor((rem % (1000 * 60)) / 1000);
-                        setTimeToResetTest(`${h}h ${m}m ${s}s`);
-                    }
-                } catch (e) {}
-            } else {
-                setTestQuota({ used: 0, resetTime: 0 });
-                setTimeToResetTest("");
-            }
+            checkSingleQuota(`achivox_quota_notes_${userKey}`, setNoteQuota, setTimeToResetNote);
+            checkSingleQuota(`achivox_quota_tests_${userKey}`, setTestQuota, setTimeToResetTest);
+            checkSingleQuota(`achivox_quota_topper_${userKey}`, setTopperQuota, setTimeToResetTopper);
+            checkSingleQuota(`achivox_quota_quickstudy_${userKey}`, setQuickStudyQuota, setTimeToResetQuickStudy, true);
         };
 
         updateQuotas();
@@ -1926,14 +1914,25 @@ export default function Home() {
                                                 tools: [
                                                     {
                                                         id: "topperNotes",
-                                                        title: "Topper Notes",
-                                                        subtitle: "5-Min Revision Sheets",
+                                                        title: !isSubscribed && topperQuota.used >= 1 ? "🔒 Topper Notes" : "Topper Notes",
+                                                        subtitle: !isSubscribed && topperQuota.used >= 1 ? `Unlocks in ${timeToResetTopper}` : "1 Free Sheet Today",
                                                         emoji: "✍️",
                                                         bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
                                                         isGlowing: true,
                                                         glowClass: "glow-amber",
                                                         onClick: ()=>{
-                                                            if (!isSubscribed) return router.push("/subscription");
+                                                            if (!isSubscribed) {
+                                                                const userKey = userData?.id || "guest";
+                                                                const now = Date.now();
+                                                                const raw = localStorage.getItem(`achivox_quota_topper_${userKey}`);
+                                                                const q = raw ? JSON.parse(raw) : { used: 0, resetTime: 0 };
+                                                                if (q.resetTime && now < q.resetTime && q.used >= 1) {
+                                                                    return router.push("/subscription");
+                                                                }
+                                                                const newQ = { used: 1, resetTime: q.resetTime && now < q.resetTime ? q.resetTime : now + 24 * 3600 * 1000 };
+                                                                localStorage.setItem(`achivox_quota_topper_${userKey}`, JSON.stringify(newQ));
+                                                                setTopperQuota(newQ);
+                                                            }
                                                             setShowTopperNotes(true);
                                                         }
                                                     },
@@ -1997,13 +1996,24 @@ export default function Home() {
                                                     },
                                                     {
                                                         id: "quickStudy",
-                                                        title: "Quick Study",
-                                                        subtitle: "Flashcard Swipe",
+                                                        title: !isSubscribed && quickStudyQuota.cardsStudied >= 10 ? "🔒 Quick Study" : "Quick Study",
+                                                        subtitle: !isSubscribed && quickStudyQuota.cardsStudied >= 10 ? `Unlocks in ${timeToResetQuickStudy}` : "10 Free Cards Today",
                                                         emoji: "🎴",
                                                         bgClass: "bg-amber-100 text-amber-600 dark:bg-amber-950/20",
                                                         isGlowing: recs.quickStudy,
                                                         glowClass: "glow-amber",
-                                                        onClick: ()=>setShowQuickStudy(true)
+                                                        onClick: ()=>{
+                                                            if (!isSubscribed) {
+                                                                const userKey = userData?.id || "guest";
+                                                                const now = Date.now();
+                                                                const raw = localStorage.getItem(`achivox_quota_quickstudy_${userKey}`);
+                                                                const q = raw ? JSON.parse(raw) : { cardsStudied: 0, resetTime: 0 };
+                                                                if (q.resetTime && now < q.resetTime && q.cardsStudied >= 10) {
+                                                                    return router.push("/subscription");
+                                                                }
+                                                            }
+                                                            setShowQuickStudy(true);
+                                                        }
                                                     },
                                                     {
                                                         id: "battle",
