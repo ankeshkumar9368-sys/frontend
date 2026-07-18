@@ -106,7 +106,8 @@ export default function Home() {
     // ... existing states ...
     const [mode, setMode] = useState("govt");
     const [activeTab, setActiveTab] = useState("Home");
-    const isSubscribed = true;
+    const [realUserData, setRealUserData] = useState(null);
+    const isSubscribed = realUserData?.isSubscribed || false;
     const [loadingQuestions, setLoadingQuestions] = useState(false);
     const [loadingNotes, setLoadingNotes] = useState(false);
     const [profiles, setProfiles] = useState([
@@ -122,20 +123,19 @@ export default function Home() {
     const [activeNotes, setActiveNotes] = useState(null);
     const [selectionModal, setSelectionModal] = useState(null);
     const [testResult, setTestResult] = useState(null);
-    const [realUserData, setRealUserData] = useState(null);
     const setUserData = (val: any) => {
         if (val === null) {
             setRealUserData(null);
         } else if (typeof val === 'function') {
             setRealUserData((prev) => {
                 const res = val(prev);
-                return res ? { ...res, isSubscribed: true, planType: "premium", plan: "Premium" } : null;
+                return res;
             });
         } else {
-            setRealUserData({ ...val, isSubscribed: true, planType: "premium", plan: "Premium" });
+            setRealUserData(val);
         }
     };
-    const userData = realUserData ? { ...realUserData, isSubscribed: true, planType: "premium", plan: "Premium" } : null;
+    const userData = realUserData;
     const [showDoubtSolver, setShowDoubtSolver] = useState(false);
     const [autoStartMic, setAutoStartMic] = useState(false);
     const [showWelcome, setShowWelcome] = useState(false);
