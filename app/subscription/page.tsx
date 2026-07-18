@@ -10,6 +10,7 @@ import {
   Lock, CheckCircle2
 } from "lucide-react";
 import axios from "axios";
+import { load } from "@cashfreepayments/cashfree-js";
 
 export default function SubscriptionPage() {
   const router = useRouter();
@@ -96,33 +97,6 @@ export default function SubscriptionPage() {
     }
   };
 
-  const loadCashfreeSdk = async (): Promise<any> => {
-    if (typeof window === "undefined") return null;
-    if ((window as any).Cashfree) return (window as any).Cashfree;
-
-    return new Promise((resolve, reject) => {
-      let script = document.querySelector('script[src*="cashfree.js"]') as HTMLScriptElement;
-      if (!script) {
-        script = document.createElement("script");
-        script.src = "https://sdk.cashfree.com/js/v3/2.0.0/cashfree.js";
-        script.async = true;
-        document.head.appendChild(script);
-      }
-
-      let attempts = 0;
-      const interval = setInterval(() => {
-        attempts++;
-        if ((window as any).Cashfree) {
-          clearInterval(interval);
-          resolve((window as any).Cashfree);
-        } else if (attempts > 50) {
-          clearInterval(interval);
-          reject(new Error("Cashfree SDK failed to initialize. Please try again."));
-        }
-      }, 100);
-    });
-  };
-
   const handleCheckout = async (planName: string, baseAmount: number) => {
     setPayingPlan(planName);
     setErrorMsg("");
@@ -136,11 +110,6 @@ export default function SubscriptionPage() {
       : baseAmount;
 
     try {
-      const CashfreeSDK = await loadCashfreeSdk();
-      if (!CashfreeSDK) {
-        throw new Error("Payment SDK unavailable. Please check internet connection.");
-      }
-
       const response = await axios.post("/api/payment/session", {
         userId: targetUserId,
         customerName,
@@ -154,7 +123,7 @@ export default function SubscriptionPage() {
         const { payment_session_id } = response.data;
 
         const cfMode = process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox";
-        const cashfree = CashfreeSDK({
+        const cashfree = await load({
           mode: cfMode === "production" ? "production" : "sandbox"
         });
 

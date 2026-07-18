@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "vercel --prod --yes --force && vercel alias set $(vercel --prod --yes 2>/dev/null | tail -1) achivox.online || npx vercel alias ls 2>&1"
   },
   "dependencies": {
     "@capacitor-firebase/authentication": "^8.2.0",
@@ -20,6 +21,7 @@
     "@capacitor/push-notifications": "^8.1.1",
     "@capacitor/share": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2",
+    "@cashfreepayments/cashfree-js": "^1.0.7",
     "@google/generative-ai": "^0.24.1",
     "@google/model-viewer": "^4.3.1",
     "@types/three": "^0.185.0",

@@ -43,10 +43,6 @@ export default function RootLayout({
           src="https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js" 
           strategy="beforeInteractive"
         />
-        <Script 
-          src="https://sdk.cashfree.com/js/v3/2.0.0/cashfree.js" 
-          strategy="beforeInteractive"
-        />
       </head>
       <body className="bg-slate-200 h-[100dvh] overflow-hidden flex items-center justify-center select-none">
         <ThemeProvider
