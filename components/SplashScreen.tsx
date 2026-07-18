@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -10,12 +10,22 @@ import Image from "next/image";
  */
 export default function SplashScreen({ onDone }: { onDone: () => void }) {
   const [out, setOut] = useState(false);
+  const onDoneRef = useRef(onDone);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setOut(true), 1500);
-    const t2 = setTimeout(() => onDone(), 1900);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    onDoneRef.current = onDone;
   }, [onDone]);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setOut(true), 1200);
+    const t2 = setTimeout(() => {
+      if (onDoneRef.current) onDoneRef.current();
+    }, 1500);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
 
   return (
     <AnimatePresence>

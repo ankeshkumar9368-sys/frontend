@@ -246,6 +246,16 @@ export default function Home() {
         const interval = setInterval(updateQuotas, 1000);
         return () => clearInterval(interval);
     }, [isSubscribed, userData?.id]);
+
+    // Safety fallback: Ensure splash screen automatically closes after max 2.0s
+    useEffect(() => {
+        if (showSplash) {
+            const timer = setTimeout(() => {
+                setShowSplash(false);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [showSplash]);
     const activeAICoreTaskRef = useRef(null);
     const [systemConfig, setSystemConfig] = useState<any>({
         maintenance: false,
