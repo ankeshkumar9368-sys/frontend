@@ -110,6 +110,15 @@ export default function SubscriptionPage() {
       : baseAmount;
 
     try {
+      const cfMode = process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox";
+      const cashfree = await load({
+        mode: cfMode === "production" ? "production" : "sandbox",
+      });
+
+      if (!cashfree) {
+        throw new Error("Payment SDK unavailable. Please check internet connection.");
+      }
+
       const response = await axios.post("/api/payment/session", {
         userId: targetUserId,
         customerName,
@@ -121,12 +130,6 @@ export default function SubscriptionPage() {
 
       if (response.data && response.data.payment_session_id) {
         const { payment_session_id } = response.data;
-
-        const cfMode = process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox";
-        const cashfree = await load({
-          mode: cfMode === "production" ? "production" : "sandbox"
-        });
-
         cashfree.checkout({
           paymentSessionId: payment_session_id,
           redirectTarget: "_self"
