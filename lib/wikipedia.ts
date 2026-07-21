@@ -67,9 +67,40 @@ function isPhotoOrPortrait(url: string): boolean {
     "stamp", "coin", "medal", "plaque", "face", "person", "man", "woman",
     "philosopher", "scientist", "physicist", "mathematician", "discoverer",
     "historical", "history", "biography", "birthplace", "house", "museum",
-    "godfrey", "portraiture", "autograph"
+    "godfrey", "portraiture", "autograph",
+    // Extended blacklist for school context
+    "president", "prime_minister", "minister", "politician", "leader",
+    "celebrity", "actor", "actress", "singer", "player", "athlete",
+    "temple", "mosque", "church", "fort", "palace", "building", "bridge",
+    "flag", "map_of", "location", "geography_of",
+    "author", "writer", "poet", "nobel", "award", "prize",
+    "headshot", "selfie", "profile_pic", "_cropped",
+    "800px-", "1200px-" // Wikipedia person profile images often these sizes
   ];
   return PHOTO_BLACKLIST.some(term => lowercaseUrl.includes(term));
+}
+
+/**
+ * Checks if the image URL contains at least one science/educational keyword,
+ * indicating it's likely an academic diagram rather than a random photo.
+ */
+function isDiagramOrScientificImage(url: string): boolean {
+  const lowercaseUrl = url.toLowerCase();
+  const DIAGRAM_KEYWORDS = [
+    "diagram", "graph", "chart", "figure", "schematic", "structure",
+    "anatomy", "cell", "molecule", "atom", "circuit", "wave", "force",
+    "law", "theorem", "formula", "equation", "experiment", "reaction",
+    "cycle", "process", "system", "mechanism", "cross_section",
+    "animation", "illustration", "model", "plot", "spectrum",
+    "svg", ".png", "wikimedia", "commons", "upload",
+    // Broad academic/textbook pattern
+    "physics", "chemistry", "biology", "maths", "math", "science",
+    "electric", "magnetic", "optical", "mechanical", "chemical",
+    "dna", "rna", "photosynthesis", "respiration", "osmosis",
+    "refraction", "reflection", "lens", "mirror", "prism",
+    "newton", "ohm", "faraday", "bohr", "mendel", "darwin"
+  ];
+  return DIAGRAM_KEYWORDS.some(term => lowercaseUrl.includes(term));
 }
 
 /**
@@ -80,23 +111,26 @@ export async function fetchWikipediaImage(wikiTitle: string): Promise<WikiImage 
   const cleaned = cleanWikipediaTitle(wikiTitle);
   if (!cleaned) return null;
 
+  // Reject immediately if the title itself is None or clearly non-academic
+  if (cleaned.toLowerCase() === "none" || cleaned.toLowerCase() === "null") return null;
+
   let matchedTitle = cleaned;
 
   // Step 1: Direct fetch attempt
   let img = await tryFetchWikipediaImage(matchedTitle);
 
-  // If the direct fetch returned a portrait or photo of a person instead of a diagram, reject it
-  if (img && isPhotoOrPortrait(img.url)) {
+  // Reject if portrait/photo OR not a recognizable diagram/scientific image
+  if (img && (isPhotoOrPortrait(img.url) || !isDiagramOrScientificImage(img.url))) {
     img = null;
   }
 
-  // Step 2: Fuzzy search fallback if direct fetch yielded no image
+  // Step 2: Fuzzy search fallback if direct fetch yielded no valid image
   if (!img) {
     const searchedTitle = await searchWikipediaTitle(cleaned);
     if (searchedTitle && searchedTitle.toLowerCase() !== cleaned.toLowerCase()) {
       matchedTitle = searchedTitle;
       img = await tryFetchWikipediaImage(matchedTitle);
-      if (img && isPhotoOrPortrait(img.url)) {
+      if (img && (isPhotoOrPortrait(img.url) || !isDiagramOrScientificImage(img.url))) {
         img = null;
       }
     }

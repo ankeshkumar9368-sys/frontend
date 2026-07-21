@@ -43,13 +43,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "prompt is required" }, { status: 400 });
     }
 
-    // 5. Call Gemini — simple, no responseMimeType (let AI return text, caller parses JSON)
+    // 5. Call Gemini — fast, accurate, cost-effective gemini-1.5-flash
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const aiModel = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: isJsonMode ? 0.1 : 0.7,
-        maxOutputTokens: isJsonMode ? 12000 : 4096,
+        maxOutputTokens: isJsonMode ? 16000 : 8192,
       },
     });
 
