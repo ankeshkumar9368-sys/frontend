@@ -32,7 +32,7 @@ export {
   evaluateSubjectiveAnswer 
 };
 
-export const achivox_cache_version = "v11";
+export const achivox_cache_version = "v12";
 
 export const hasCachedContent = (mode: string, parentId: string | null, type: string) => {
   if (typeof window === "undefined") return false;
@@ -478,11 +478,25 @@ export const fetchContent = async (mode: string, parentId: string | null = null,
                     console.warn("Failed to read global_topics:", dbErr);
                 }
                 if (snap && snap.exists()) {
-                    list = snap.data().topics;
+                    const rawTopics = snap.data().topics;
+                    // Handle both string[] and {topic_name:...}[] formats from Firestore cache
+                    list = (rawTopics || []).map((t: any) => {
+                        if (typeof t === "string") return t;
+                        return t.topic_name || t.name || t.title || t.topic || JSON.stringify(t);
+                    });
                 } else {
-                    list = await generateAISyllabus(board, cls, sub, chapter);
+                    const syllabusData = await generateAISyllabus(board, cls, sub, chapter);
+                    // generateAISyllabus returns {board, class, subject, chapter, topics: [{topic_name, subtopics}]}
+                    // Extract just the topic names as plain strings
+                    const rawTopics = (syllabusData as any)?.topics || (Array.isArray(syllabusData) ? syllabusData : []);
+                    list = rawTopics.map((t: any) => {
+                        if (typeof t === "string") return t;
+                        return t.topic_name || t.name || t.title || t.topic || String(t);
+                    }).filter((name: string) => name && name.trim().length > 0);
+                    
                     if (list && list.length > 0) {
                         try {
+                           // Cache as plain string array
                            await setDoc(docRef, { topics: list, createdAt: serverTimestamp() });
                         } catch(e) {
                            console.warn("Failed to cache topics", e);
