@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth, db } from "../../lib/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { clearLocalAnalytics } from "../../lib/analytics";
 import { useRouter } from "next/navigation";
 import { collection, query, orderBy, onSnapshot, limit, doc, getDoc, setDoc, where, Timestamp, getDocs, updateDoc, serverTimestamp, addDoc, deleteDoc, arrayUnion, deleteField } from "firebase/firestore";
@@ -764,6 +764,22 @@ export default function AdminDashboard() {
     }]
   };
 
+  const handleGoogleAdminLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const res = await signInWithPopup(auth, provider);
+      if (res.user?.email && ADMIN_EMAILS.includes(res.user.email)) {
+        setUser(res.user);
+        setIsAdmin(true);
+      } else {
+        alert("Access Denied: " + (res.user?.email || "This email") + " is not an authorized admin email.");
+        await signOut(auth);
+      }
+    } catch (e: any) {
+      alert("Admin Login Error: " + e.message);
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-[#070518] text-white gap-6">
@@ -773,17 +789,45 @@ export default function AdminDashboard() {
     );
   }
 
+  const isLocalhostEnv = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
   if (isAdmin !== true) {
+    if (!isLocalhostEnv) {
+      return (
+        <div className="h-screen w-full flex flex-col items-center justify-center bg-[#070518] text-white p-10 text-center">
+          <Lock className="w-16 h-16 text-rose-500 mb-6 animate-pulse" />
+          <h2 className="text-3xl font-black tracking-tight mb-2 uppercase italic text-rose-400">404 - Restricted Area</h2>
+          <p className="text-slate-400 font-medium mb-8 max-w-sm mx-auto leading-relaxed text-sm">
+            Admin portal is restricted to local development environments only. Redirecting home...
+          </p>
+          <button onClick={() => router.push("/")} className="bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-indigo-600/30 transition-all">
+            Exit to Home
+          </button>
+        </div>
+      );
+    }
+
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#070518] text-white p-10 text-center">
-        <Lock className="w-16 h-16 text-rose-500 mb-6 animate-pulse" />
-        <h2 className="text-3xl font-black tracking-tight mb-2 uppercase italic text-rose-400">404 - Restricted Area</h2>
-        <p className="text-slate-400 font-medium mb-8 max-w-sm mx-auto leading-relaxed text-sm">
-          Admin portal is restricted to local development environments only. Redirecting home...
-        </p>
-        <button onClick={() => router.push("/")} className="bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-indigo-600/30 transition-all">
-          Exit to Home
-        </button>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#070518] text-white p-6 text-center">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/5 backdrop-blur-2xl border border-white/10 p-10 rounded-[40px] max-w-md w-full shadow-2xl space-y-6">
+          <div className="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto text-indigo-400">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black uppercase italic tracking-tight text-white">Admin Authentication</h2>
+            <p className="text-xs text-slate-400 font-medium">Please sign in with an authorized Admin Google Account to unlock the dashboard on localhost.</p>
+          </div>
+          <button 
+            onClick={handleGoogleAdminLogin}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-indigo-600/30 active:scale-95 transition-all flex items-center justify-center gap-3"
+          >
+            <Sparkles className="w-5 h-5 text-amber-300" />
+            Sign In with Google Admin
+          </button>
+          <button onClick={() => router.push("/")} className="text-xs font-bold text-slate-500 hover:text-slate-300 transition-colors">
+            Return to Student Home
+          </button>
+        </motion.div>
       </div>
     );
   }
