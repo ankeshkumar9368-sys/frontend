@@ -4,8 +4,25 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // We need this for Capacitor to work correctly with routing
   trailingSlash: true,
+  async rewrites() {
+    return [
+      { source: '/explore', destination: '/' },
+      { source: '/explore/', destination: '/' },
+      { source: '/tools', destination: '/' },
+      { source: '/tools/', destination: '/' },
+      { source: '/test', destination: '/' },
+      { source: '/test/', destination: '/' },
+      { source: '/analysis', destination: '/' },
+      { source: '/analysis/', destination: '/' },
+      { source: '/profile', destination: '/' },
+      { source: '/profile/', destination: '/' },
+      { source: '/battle', destination: '/' },
+      { source: '/battle/', destination: '/' },
+      { source: '/rewards', destination: '/' },
+      { source: '/rewards/', destination: '/' },
+    ];
+  },
   async headers() {
     return [
       {
