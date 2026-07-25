@@ -235,6 +235,40 @@ export default function Home() {
         return () => clearInterval(interval);
     }, [isSubscribed, userData?.id]);
 
+    // 🌐 URL HASH & ROUTE SYNC (Initial Hash Sync on Mount)
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        const hash = window.location.hash.toLowerCase();
+        if (hash === "#explore") setActiveTab("Explore");
+        else if (hash === "#tools") setActiveTab("Tools");
+        else if (hash === "#analysis") setActiveTab("Analysis");
+        else if (hash === "#profile") setActiveTab("Profile");
+        else if (hash === "#battle") setShowBattle(true);
+        else if (hash === "#rewards") setShowRewardShop(true);
+        else if (hash === "#topper-notes" || hash === "#topper") setShowTopperNotes(true);
+        else if (hash === "#formula") setShowFormulaVault(true);
+        else if (hash === "#quests") setShowQuestLog(true);
+    }, []);
+
+    // 🌐 Sync activeTab & Modals with URL Hash
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        if (activeNotes) window.history.replaceState(null, "", "#notes");
+        else if (activeTest) window.history.replaceState(null, "", "#test");
+        else if (showBattle) window.history.replaceState(null, "", "#battle");
+        else if (showTopperNotes) window.history.replaceState(null, "", "#topper-notes");
+        else if (showRewardShop) window.history.replaceState(null, "", "#rewards");
+        else if (showFormulaVault) window.history.replaceState(null, "", "#formula");
+        else if (showRevisionVault) window.history.replaceState(null, "", "#revision");
+        else if (activeTab === "Explore") window.history.replaceState(null, "", "#explore");
+        else if (activeTab === "Tools") window.history.replaceState(null, "", "#tools");
+        else if (activeTab === "Analysis") window.history.replaceState(null, "", "#analysis");
+        else if (activeTab === "Profile") window.history.replaceState(null, "", "#profile");
+        else if (activeTab === "Home") window.history.replaceState(null, "", "#home");
+    }, [activeTab, activeNotes, activeTest, showBattle, showTopperNotes, showRewardShop, showFormulaVault, showRevisionVault]);
+
     // 📱 SMART BACK BUTTON & HISTORY MANAGER
     // Prevents direct redirect to Home page when exiting notes, tests, or modals
     const hasAnyModalOpen = Boolean(
