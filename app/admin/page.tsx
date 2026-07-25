@@ -9,7 +9,7 @@ import {
   ShieldCheck, Zap, Activity, Globe, Eye, 
   MoreVertical, AlertTriangle, Key, User, 
   ArrowUpRight, ArrowDownRight, Wallet, Cpu, Plus, Star, Gift, Ticket, Send,
-  MessageSquare, Trash2, X
+  MessageSquare, Trash2, X, ShoppingBag, Target, Truck, MapPin, Phone, Coins
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth, db } from "../../lib/firebase";
@@ -90,6 +90,49 @@ export default function AdminDashboard() {
   const [logs, setLogs] = useState<any[]>([]);
   const [securityAlerts, setSecurityAlerts] = useState<any[]>([]);
   const [goalRequests, setGoalRequests] = useState<any[]>([]);
+  const [merchOrders, setMerchOrders] = useState<any[]>([]);
+
+  const handleUpdateMerchStatus = async (order: any, newStatus: string) => {
+    if (!confirm(`Change order status for ${order.fullName || 'User'} to ${newStatus}?`)) return;
+    try {
+      await updateDoc(doc(db, "merch_orders", order.id), {
+        status: newStatus,
+        updatedAt: serverTimestamp()
+      });
+
+      let notifTitle = "Merch Order Update";
+      let notifMsg = `Your order for ${order.itemName} status is now: ${newStatus}`;
+      if (newStatus === "Shipped") {
+        notifTitle = "🚚 Merch Shipped!";
+        notifMsg = `Great news! Your ${order.itemName} has been shipped to your address.`;
+      } else if (newStatus === "Delivered") {
+        notifTitle = "🎉 Merch Delivered!";
+        notifMsg = `Your ${order.itemName} was successfully delivered. Enjoy your reward!`;
+      } else if (newStatus === "Cancelled") {
+        notifTitle = "❌ Order Cancelled";
+        notifMsg = `Your order for ${order.itemName} was cancelled. Your coins have been refunded.`;
+        if (order.cost && order.userId) {
+          const statsRef = doc(db, "user_stats", order.userId);
+          const statsSnap = await getDoc(statsRef);
+          if (statsSnap.exists()) {
+            await updateDoc(statsRef, { coins: (statsSnap.data().coins || 0) + order.cost });
+          }
+        }
+      }
+
+      await addDoc(collection(db, "users", order.userId, "notifications"), {
+        title: notifTitle,
+        message: notifMsg,
+        type: newStatus === "Cancelled" ? "warning" : "success",
+        createdAt: new Date().toISOString(),
+        read: false
+      });
+
+      alert(`Status updated to ${newStatus}! Notification sent.`);
+    } catch (e: any) {
+      alert("Error updating order: " + e.message);
+    }
+  };
   
   // PAYMENTS STATES
   const [payments, setPayments] = useState<any[]>([]);
@@ -484,6 +527,12 @@ export default function AdminDashboard() {
         setPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       });
 
+      // 9. Real-time Merch Orders
+      const merchQuery = query(collection(db, "merch_orders"), orderBy("orderedAt", "desc"));
+      const unsubscribeMerch = onSnapshot(merchQuery, (snapshot) => {
+        setMerchOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      });
+
       return () => {
         unsubscribeUsers();
         unsubscribeAI();
@@ -495,6 +544,7 @@ export default function AdminDashboard() {
         unsubscribeGoalRequests();
         unsubscribeConfig();
         unsubscribePayments();
+        unsubscribeMerch();
       };
     }
   }, [isAdmin]);
@@ -783,7 +833,7 @@ export default function AdminDashboard() {
         <nav className="flex-1 px-4 space-y-2">
           {[
             { id: "Overview", icon: BarChart3, color: "text-indigo-600" },
-            { id: "Payments", icon: Wallet, color: "text-emerald-500" },
+            { id: "Payments", icon: Wallet, color: "text-emerald-500", badge: payments.filter(p => !p.resolved).length },
             { id: "Live Radar", icon: Eye, color: "text-emerald-500" },
             { id: "User Activity", icon: Activity, color: "text-emerald-600" },
             { id: "Feature Performance", icon: BarChart3, color: "text-violet-600" },
@@ -792,7 +842,8 @@ export default function AdminDashboard() {
             { id: "Smart Campaigns", icon: Send, color: "text-sky-500" },
             { id: "Broadcasts", icon: MessageSquare, color: "text-sky-600" },
             { id: "Lucky Rewards", icon: Gift, color: "text-pink-500" },
-            { id: "Goal Requests", icon: ShieldCheck, color: "text-orange-500" },
+            { id: "Coin Redemptions", icon: ShoppingBag, color: "text-amber-500", badge: merchOrders.filter(o => o.status === "Pending").length },
+            { id: "Goal Requests", icon: Target, color: "text-orange-500", badge: goalRequests.filter(r => r.status === "pending").length },
             { id: "Command Center", icon: Zap, color: "text-yellow-500" },
             { id: "Security", icon: ShieldCheck, color: "text-rose-600" },
             { id: "Settings", icon: Settings, color: "text-slate-400" },
@@ -800,10 +851,17 @@ export default function AdminDashboard() {
             <button 
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-4 px-6 py-4 rounded-[20px] font-black text-[11px] uppercase tracking-widest transition-all ${activeTab === item.id ? 'bg-indigo-50 text-indigo-600 shadow-sm' : 'text-slate-400 hover:bg-slate-50'}`}
+              className={`w-full flex items-center justify-between px-6 py-4 rounded-[20px] font-black text-[11px] uppercase tracking-widest transition-all ${activeTab === item.id ? 'bg-indigo-50 text-indigo-600 shadow-sm' : 'text-slate-400 hover:bg-slate-50'}`}
             >
-              <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-indigo-600' : item.color}`} />
-              {item.id}
+              <div className="flex items-center gap-4">
+                <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-indigo-600' : item.color}`} />
+                {item.id}
+              </div>
+              {!!item.badge && item.badge > 0 && (
+                <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[9px] font-extrabold shadow-sm">
+                  {item.badge}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -1519,6 +1577,128 @@ export default function AdminDashboard() {
                 </motion.div>
             )}
 
+            {activeTab === "Coin Redemptions" && (
+              <motion.div key="coinredemptions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 max-w-6xl">
+                {/* Stats Cards */}
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="bg-white p-8 rounded-[36px] border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Total Merch Redemptions</span>
+                      <h3 className="text-3xl font-black text-slate-800 leading-none">{merchOrders.length}</h3>
+                    </div>
+                    <span className="text-[9px] font-black text-amber-600 bg-amber-50 border border-amber-100 px-3 py-1 rounded-md uppercase tracking-wider w-max mt-4">Lifetime Coin Orders</span>
+                  </div>
+                  <div className="bg-white p-8 rounded-[36px] border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest block mb-2">Pending Dispatch</span>
+                      <h3 className="text-3xl font-black text-orange-600 leading-none">{merchOrders.filter(o => !o.status || o.status === "Pending").length}</h3>
+                    </div>
+                    <span className="text-[9px] font-black text-orange-600 bg-orange-50 border border-orange-100 px-3 py-1 rounded-md uppercase tracking-wider w-max mt-4">Needs Action</span>
+                  </div>
+                  <div className="bg-white p-8 rounded-[36px] border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest block mb-2">Shipped & Delivered</span>
+                      <h3 className="text-3xl font-black text-emerald-600 leading-none">{merchOrders.filter(o => o.status === "Shipped" || o.status === "Delivered").length}</h3>
+                    </div>
+                    <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md uppercase tracking-wider w-max mt-4">Fulfillments Completed</span>
+                  </div>
+                </div>
+
+                {/* Orders List / Table */}
+                <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm">
+                  <div className="flex justify-between items-center mb-8">
+                    <div>
+                      <h3 className="text-2xl font-black text-slate-800 tracking-tight">Coin Merch Redemption Orders</h3>
+                      <p className="text-slate-500 font-medium">Manage physical merchandise orders redeemed using Achivox Coins</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    {merchOrders.length === 0 ? (
+                      <div className="text-center py-20 text-slate-400 font-bold">No merch redemption orders found.</div>
+                    ) : (
+                      merchOrders.map(order => {
+                        const student = realUsers.find(u => u.id === order.userId);
+
+                        return (
+                          <div key={order.id} className="bg-slate-50 p-6 rounded-[32px] border border-slate-200/80 shadow-sm space-y-4">
+                            <div className="flex flex-wrap justify-between items-start gap-4">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center font-black">
+                                  <ShoppingBag className="w-6 h-6" />
+                                </div>
+                                <div>
+                                  <h4 className="text-lg font-black text-slate-800">{order.itemName}</h4>
+                                  <p className="text-xs font-bold text-amber-600 flex items-center gap-1">
+                                    <Coins className="w-3.5 h-3.5" /> {order.cost?.toLocaleString()} Coins
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-3">
+                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                                  !order.status || order.status === "Pending" ? "bg-amber-100 text-amber-700 border-amber-200" :
+                                  order.status === "Shipped" ? "bg-indigo-100 text-indigo-700 border-indigo-200" :
+                                  order.status === "Delivered" ? "bg-emerald-100 text-emerald-700 border-emerald-200" :
+                                  "bg-rose-100 text-rose-700 border-rose-200"
+                                }`}>
+                                  {order.status || "Pending"}
+                                </span>
+                                <span className="text-[10px] font-bold text-slate-400">
+                                  {order.orderedAt?.toDate ? order.orderedAt.toDate().toLocaleString("en-IN") : "Recent"}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Details Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                              <div className="bg-white p-4 rounded-2xl border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><User className="w-3 h-3" /> Student Name</p>
+                                <p className="font-bold text-slate-800">{order.fullName || student?.name || "N/A"}</p>
+                                <p className="text-xs text-slate-500 font-mono mt-0.5"><Phone className="w-3 h-3 inline mr-1" />{order.phone || student?.phone || "No Phone"}</p>
+                              </div>
+
+                              <div className="bg-white p-4 rounded-2xl border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><MapPin className="w-3 h-3" /> Delivery Address</p>
+                                <p className="text-xs font-bold text-slate-700 leading-relaxed">{order.address || "No Address Provided"}</p>
+                              </div>
+
+                              <div className="bg-white p-4 rounded-2xl border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Customization / Text</p>
+                                <p className="text-xs font-extrabold text-indigo-600 bg-indigo-50 p-2 rounded-xl border border-indigo-100">{order.customText || "None"}</p>
+                              </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex flex-wrap gap-3 pt-2 border-t border-slate-200/60">
+                              <button
+                                onClick={() => handleUpdateMerchStatus(order, "Shipped")}
+                                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-1.5"
+                              >
+                                <Truck className="w-4 h-4" /> Mark Shipped
+                              </button>
+                              <button
+                                onClick={() => handleUpdateMerchStatus(order, "Delivered")}
+                                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-1.5"
+                              >
+                                <CheckCircle2 className="w-4 h-4" /> Mark Delivered
+                              </button>
+                              <button
+                                onClick={() => handleUpdateMerchStatus(order, "Cancelled")}
+                                className="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5"
+                              >
+                                <X className="w-4 h-4" /> Cancel & Refund Coins
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {activeTab === "Goal Requests" && (
               <motion.div key="goalreq" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 max-w-5xl">
                 <div className="flex justify-between items-center bg-white p-8 rounded-[40px] shadow-sm border border-slate-100">
@@ -1535,77 +1715,88 @@ export default function AdminDashboard() {
                   {goalRequests.length === 0 ? (
                     <div className="col-span-2 text-center py-20 text-slate-400 font-bold">No requests found.</div>
                   ) : (
-                    goalRequests.map(req => (
-                      <div key={req.id} className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm flex flex-col justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-4">
-                            <div>
-                              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">User ID</p>
-                              <p className="text-sm font-bold text-slate-700 font-mono mt-1 bg-slate-50 px-2 py-1 rounded inline-block">{req.userId}</p>
+                    goalRequests.map(req => {
+                      const student = realUsers.find(u => u.id === req.userId);
+
+                      return (
+                        <div key={req.id} className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm flex flex-col justify-between">
+                          <div>
+                            <div className="flex justify-between items-start mb-4">
+                              <div>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Student</p>
+                                <p className="text-sm font-black text-slate-800 mt-0.5">{student?.name || "Aspirant"}</p>
+                                <p className="text-xs font-mono text-slate-500">{student?.email || student?.phoneNumber || req.userId}</p>
+                              </div>
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${req.status === 'pending' ? 'bg-orange-100 text-orange-600' : req.status === 'approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
+                                {req.status}
+                              </span>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${req.status === 'pending' ? 'bg-orange-100 text-orange-600' : req.status === 'approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
-                              {req.status}
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 mb-6">
-                            <div className="bg-slate-50 p-4 rounded-2xl">
-                              <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Requested Board</p>
-                              <p className="font-black text-slate-800">{req.requestedBoard}</p>
+
+                            <div className="grid grid-cols-2 gap-4 mb-6">
+                              <div className="bg-slate-50 p-4 rounded-2xl">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Requested Board</p>
+                                <p className="font-black text-slate-800">{req.requestedBoard}</p>
+                              </div>
+                              <div className="bg-slate-50 p-4 rounded-2xl">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Requested Class</p>
+                                <p className="font-black text-slate-800">{req.requestedClass}</p>
+                              </div>
                             </div>
-                            <div className="bg-slate-50 p-4 rounded-2xl">
-                              <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Requested Class</p>
-                              <p className="font-black text-slate-800">{req.requestedClass}</p>
-                            </div>
+                            
+                            {req.documentUrl && (
+                              <a href={req.documentUrl} target="_blank" rel="noreferrer" className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold transition-colors mb-6 border border-indigo-100">
+                                View Verification Document
+                              </a>
+                            )}
                           </div>
                           
-                          <a href={req.documentUrl} target="_blank" rel="noreferrer" className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold transition-colors mb-6 border border-indigo-100">
-                            View Verification Document
-                          </a>
+                          {req.status === 'pending' && (
+                            <div className="flex gap-4">
+                              <button 
+                                onClick={async () => {
+                                  if (confirm("Approve this goal change?")) {
+                                    await updateDoc(doc(db, "users", req.userId), { board: req.requestedBoard, cls: req.requestedClass });
+                                    await updateDoc(doc(db, "user_stats", req.userId), { board: req.requestedBoard, cls: req.requestedClass }).catch(e => console.warn(e));
+                                    await updateDoc(doc(db, "goal_change_requests", req.id), { status: "approved" });
+                                    // Send notification
+                                    await addDoc(collection(db, "users", req.userId, "notifications"), {
+                                      title: "Goal Approved! 🎉",
+                                      message: `Your request to change goal to ${req.requestedBoard} ${req.requestedClass} was approved by Admin.`,
+                                      type: "success",
+                                      createdAt: new Date().toISOString(),
+                                      read: false
+                                    });
+                                    alert("Goal change approved!");
+                                  }
+                                }}
+                                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-xl transition-colors shadow-lg shadow-emerald-500/20"
+                              >
+                                Approve
+                              </button>
+                              <button 
+                                onClick={async () => {
+                                  if (confirm("Reject this goal change?")) {
+                                    await updateDoc(doc(db, "goal_change_requests", req.id), { status: "rejected" });
+                                    // Send notification
+                                    await addDoc(collection(db, "users", req.userId, "notifications"), {
+                                      title: "Goal Change Rejected",
+                                      message: `Your request to change goal was rejected. Please upload a clear valid document.`,
+                                      type: "warning",
+                                      createdAt: new Date().toISOString(),
+                                      read: false
+                                    });
+                                    alert("Goal change rejected.");
+                                  }
+                                }}
+                                className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-black py-3 rounded-xl transition-colors border border-red-200"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        
-                        {req.status === 'pending' && (
-                          <div className="flex gap-4">
-                            <button 
-                              onClick={async () => {
-                                if (confirm("Approve this goal change?")) {
-                                  await updateDoc(doc(db, "users", req.userId), { board: req.requestedBoard, cls: req.requestedClass });
-                                  await updateDoc(doc(db, "goal_change_requests", req.id), { status: "approved" });
-                                  // Send notification
-                                  await addDoc(collection(db, "users", req.userId, "notifications"), {
-                                    title: "Goal Approved!",
-                                    message: `Your request to change goal to ${req.requestedBoard} ${req.requestedClass} was approved.`,
-                                    type: "success",
-                                    createdAt: new Date().toISOString(),
-                                    read: false
-                                  });
-                                }
-                              }}
-                              className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-xl transition-colors shadow-lg shadow-emerald-500/20"
-                            >
-                              Approve
-                            </button>
-                            <button 
-                              onClick={async () => {
-                                if (confirm("Reject this goal change?")) {
-                                  await updateDoc(doc(db, "goal_change_requests", req.id), { status: "rejected" });
-                                  // Send notification
-                                  await addDoc(collection(db, "users", req.userId, "notifications"), {
-                                    title: "Goal Change Rejected",
-                                    message: `Your request to change goal was rejected. Please contact support if you think this is a mistake.`,
-                                    type: "warning",
-                                    createdAt: new Date().toISOString(),
-                                    read: false
-                                  });
-                                }
-                              }}
-                              className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-black py-3 rounded-xl transition-colors border border-red-200"
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </motion.div>
