@@ -1,5 +1,5 @@
 import Home from "../page";
 
-export default function BattlePage() {
+export default function ProfilePage() {
   return <Home />;
 }

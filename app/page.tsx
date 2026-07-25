@@ -235,38 +235,45 @@ export default function Home() {
         return () => clearInterval(interval);
     }, [isSubscribed, userData?.id]);
 
-    // 🌐 URL HASH & ROUTE SYNC (Initial Hash Sync on Mount)
+    // 🌐 REAL PATHNAME & URL ROUTE SYNCHRONIZER
+    // Automatically loads exact view based on browser address bar URL (e.g. /explore, /tools, /test, /analysis, /profile)
     useEffect(() => {
         if (typeof window === "undefined") return;
 
+        const path = window.location.pathname.toLowerCase().replace(/\/$/, "");
         const hash = window.location.hash.toLowerCase();
-        if (hash === "#explore") setActiveTab("Explore");
-        else if (hash === "#tools") setActiveTab("Tools");
-        else if (hash === "#analysis") setActiveTab("Analysis");
-        else if (hash === "#profile") setActiveTab("Profile");
-        else if (hash === "#battle") setShowBattle(true);
-        else if (hash === "#rewards") setShowRewardShop(true);
-        else if (hash === "#topper-notes" || hash === "#topper") setShowTopperNotes(true);
-        else if (hash === "#formula") setShowFormulaVault(true);
-        else if (hash === "#quests") setShowQuestLog(true);
+
+        if (path === "/explore" || hash === "#explore") setActiveTab("Explore");
+        else if (path === "/tools" || hash === "#tools") setActiveTab("Tools");
+        else if (path === "/analysis" || hash === "#analysis") setActiveTab("Analysis");
+        else if (path === "/profile" || hash === "#profile") setActiveTab("Profile");
+        else if (path === "/battle" || hash === "#battle") setShowBattle(true);
+        else if (path === "/rewards" || hash === "#rewards") setShowRewardShop(true);
+        else if (path === "/topper-notes" || hash === "#topper-notes" || hash === "#topper") setShowTopperNotes(true);
+        else if (path === "/formula" || hash === "#formula") setShowFormulaVault(true);
+        else if (path === "/quests" || hash === "#quests") setShowQuestLog(true);
     }, []);
 
-    // 🌐 Sync activeTab & Modals with URL Hash
+    // 🌐 Sync activeTab & Modals with Real Browser Pathnames
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        if (activeNotes) window.history.replaceState(null, "", "#notes");
-        else if (activeTest) window.history.replaceState(null, "", "#test");
-        else if (showBattle) window.history.replaceState(null, "", "#battle");
-        else if (showTopperNotes) window.history.replaceState(null, "", "#topper-notes");
-        else if (showRewardShop) window.history.replaceState(null, "", "#rewards");
-        else if (showFormulaVault) window.history.replaceState(null, "", "#formula");
-        else if (showRevisionVault) window.history.replaceState(null, "", "#revision");
-        else if (activeTab === "Explore") window.history.replaceState(null, "", "#explore");
-        else if (activeTab === "Tools") window.history.replaceState(null, "", "#tools");
-        else if (activeTab === "Analysis") window.history.replaceState(null, "", "#analysis");
-        else if (activeTab === "Profile") window.history.replaceState(null, "", "#profile");
-        else if (activeTab === "Home") window.history.replaceState(null, "", "#home");
+        let targetPath = "/";
+        if (activeNotes) targetPath = "/notes";
+        else if (activeTest) targetPath = "/test";
+        else if (showBattle) targetPath = "/battle";
+        else if (showTopperNotes) targetPath = "/topper-notes";
+        else if (showRewardShop) targetPath = "/rewards";
+        else if (showFormulaVault) targetPath = "/formula";
+        else if (showRevisionVault) targetPath = "/revision";
+        else if (activeTab === "Explore") targetPath = "/explore";
+        else if (activeTab === "Tools") targetPath = "/tools";
+        else if (activeTab === "Analysis") targetPath = "/analysis";
+        else if (activeTab === "Profile") targetPath = "/profile";
+
+        if (window.location.pathname !== targetPath) {
+            window.history.pushState({ path: targetPath, tab: activeTab }, "", targetPath);
+        }
     }, [activeTab, activeNotes, activeTest, showBattle, showTopperNotes, showRewardShop, showFormulaVault, showRevisionVault]);
 
     // 📱 SMART BACK BUTTON & HISTORY MANAGER
@@ -279,12 +286,6 @@ export default function Home() {
         showRewardShop || showQuestLog || showStudyPods ||
         showRoadmap || showAnalysis || showSavedMCQs || showWhyWrong
     );
-
-    useEffect(() => {
-        if (hasAnyModalOpen && typeof window !== "undefined") {
-            window.history.pushState({ modalOpen: true }, "");
-        }
-    }, [hasAnyModalOpen]);
 
     useEffect(() => {
         if (typeof window === "undefined") return;
@@ -310,6 +311,14 @@ export default function Home() {
             if (showAnalysis) { setShowAnalysis(false); return; }
             if (showSavedMCQs) { setShowSavedMCQs(false); return; }
             if (showWhyWrong) { setShowWhyWrong(false); return; }
+
+            // If no modal was open, pop tab navigation back to Home or previous tab
+            const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, "");
+            if (currentPath === "/explore") setActiveTab("Explore");
+            else if (currentPath === "/tools") setActiveTab("Tools");
+            else if (currentPath === "/analysis") setActiveTab("Analysis");
+            else if (currentPath === "/profile") setActiveTab("Profile");
+            else setActiveTab("Home");
         };
 
         window.addEventListener("popstate", handlePopState);
