@@ -416,6 +416,13 @@ export default function Home() {
         };
     }, []);
 
+    // Automatically redirect unauthenticated users to /login immediately without showing intermediate landing page
+    useEffect(() => {
+        if (isAuth === false) {
+            router.replace("/login");
+        }
+    }, [isAuth, router]);
+
     // Automatically force Goal Selection popup if user is logged in but goal is not set!
     useEffect(() => {
         if (userData && (!userData.board || !userData.cls)) {
@@ -880,16 +887,11 @@ export default function Home() {
             downloadUrl: forceUpdateUrl
         });
     }
-    if (isAuth === false) {
-        return /*#__PURE__*/ _jsx(LandingPage, {
-            onLogin: ()=>router.push("/login")
-        });
-    }
-    if (isAuth === null) {
+    if (isAuth === false || isAuth === null) {
         return /*#__PURE__*/ _jsx("div", {
-            className: "min-h-screen bg-slate-950 flex items-center justify-center",
+            className: "min-h-screen bg-[#070518] flex items-center justify-center text-white",
             children: /*#__PURE__*/ _jsx(Loader2, {
-                className: "w-5 h-5 text-primary animate-spin"
+                className: "w-6 h-6 text-indigo-500 animate-spin"
             })
         });
     }

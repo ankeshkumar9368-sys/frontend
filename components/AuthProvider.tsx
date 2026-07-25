@@ -56,12 +56,12 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading) {
+  if (loading && pathname !== "/login") {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-background">
-        <BookOpen className="w-6 h-6 text-primary animate-pulse mb-4" />
-        <div className="animate-spin w-6 h-6 border-4 border-primary border-t-transparent rounded-full"></div>
-        <p className="text-sm font-bold text-slate-500 mt-4 tracking-widest uppercase">Achivox</p>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#070518] text-white">
+        <BookOpen className="w-6 h-6 text-indigo-500 animate-pulse mb-4" />
+        <div className="animate-spin w-6 h-6 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+        <p className="text-sm font-bold text-slate-400 mt-4 tracking-widest uppercase">Achivox</p>
       </div>
     );
   }
