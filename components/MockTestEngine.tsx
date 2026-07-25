@@ -63,14 +63,11 @@ export default function MockTestEngine({ testTitle, userData, subTitle, duration
   };
 
   const handleSelectOption = (optIdx: number) => {
-    if (answers[currentIdx] !== undefined) return;
-
+    // Allow user to change option selection freely before submitting
     const currentQ = activeQuestions[currentIdx];
     const isCorrect = optIdx === currentQ.correctAnswer;
 
     setAnswers(prev => ({ ...prev, [currentIdx]: optIdx }));
-    setTotalAttempted(prev => prev + 1);
-    if (isCorrect) setTotalCorrect(prev => prev + 1);
 
     if (isCorrect) {
       if (onCorrectAnswer) {
@@ -115,9 +112,6 @@ export default function MockTestEngine({ testTitle, userData, subTitle, duration
         subject: subTitle || "Academic"
       });
     }
-
-    // Background generation and auto-advance removed to respect manual navigation.
-    // The UI handles 'Next' logic via the Finish/Next button.
   };
 
   const toggleReview = () => {
@@ -140,7 +134,23 @@ export default function MockTestEngine({ testTitle, userData, subTitle, duration
 
   const handleSubmit = () => {
     setIsSubmitted(true);
-    onComplete(totalCorrect, totalAttempted || activeQuestions.length, []);
+    let correctCount = 0;
+    const results = activeQuestions.map((q, idx) => {
+      const userChoice = answers[idx];
+      const isAttempted = userChoice !== undefined;
+      const isCorrect = isAttempted && userChoice === q.correctAnswer;
+      if (isCorrect) correctCount++;
+
+      return {
+        question: q.text,
+        userAnswer: isAttempted ? q.options[userChoice] : "Not Answered",
+        correctAnswer: q.options[q.correctAnswer],
+        correct: isCorrect,
+        topic: testTitle
+      };
+    });
+
+    onComplete(correctCount, activeQuestions.length, results);
   };
 
   const currentQuestion = activeQuestions[currentIdx] || activeQuestions[0];

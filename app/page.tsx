@@ -642,32 +642,29 @@ export default function Home() {
         }
     };
     const handleTestComplete = async (score, total, results)=>{
+        const currentTitle = activeTest?.title || "Test";
+        const currentSubject = activeTest?.subject || "General";
+        
+        // 1. Immediately set result and close active test modal to avoid flash
         setTestResult({
             score,
             total,
-            results,
-            title: activeTest.title
+            percentage: total > 0 ? Math.round(score / total * 100) : 0,
+            results: results || [],
+            title: currentTitle
         });
-        // 1. Record in Local Analytics
+        setActiveTest(null);
+
+        // 2. Record in Local Analytics
         recordTestResult({
-            topicId: activeTest.title.toLowerCase().replace(/\s+/g, "-"),
-            topicName: activeTest.title,
-            subject: activeTest.subject || "General",
+            topicId: currentTitle.toLowerCase().replace(/\s+/g, "-"),
+            topicName: currentTitle,
+            subject: currentSubject,
             cls: userData?.cls || "12th",
-            score: Math.round(score / total * 100),
+            score: total > 0 ? Math.round(score / total * 100) : 0,
             totalQ: total,
             correctQ: score,
-            timeTakenSec: 0 // Mock for now
-        });
-        if (activeTest?.isSchoolTest) {
-            setActiveTest(null);
-            return;
-        }
-        setTestResult({
-            score,
-            total,
-            percentage: Math.round(score / total * 100),
-            results
+            timeTakenSec: 0
         });
         // 2. Update Firestore
         if (auth.currentUser) {
@@ -778,7 +775,6 @@ export default function Home() {
                 setUnlockedBadge(badgeInfo);
             }
         }
-        setActiveTest(null);
     };
     const handleCorrectAnswer = async (questionText)=>{
         if (!userData?.id || !activeTest) return;
