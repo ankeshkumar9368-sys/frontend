@@ -235,6 +235,60 @@ export default function Home() {
         return () => clearInterval(interval);
     }, [isSubscribed, userData?.id]);
 
+    // 📱 SMART BACK BUTTON & HISTORY MANAGER
+    // Prevents direct redirect to Home page when exiting notes, tests, or modals
+    const hasAnyModalOpen = Boolean(
+        activeNotes || activeTest || testResult || selectionModal ||
+        showTopperNotes || showFlashcards || showFormulaVault ||
+        showRevisionVault || showQuickStudy || showBattle ||
+        showScanSolve || showTimetable || showProjectAssistant ||
+        showRewardShop || showQuestLog || showStudyPods ||
+        showRoadmap || showAnalysis || showSavedMCQs || showWhyWrong
+    );
+
+    useEffect(() => {
+        if (hasAnyModalOpen && typeof window !== "undefined") {
+            window.history.pushState({ modalOpen: true }, "");
+        }
+    }, [hasAnyModalOpen]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        const handlePopState = (e: PopStateEvent) => {
+            if (activeNotes) { setActiveNotes(null); return; }
+            if (activeTest) { setActiveTest(null); return; }
+            if (testResult) { setTestResult(null); return; }
+            if (selectionModal) { setSelectionModal(null); return; }
+            if (showTopperNotes) { setShowTopperNotes(false); return; }
+            if (showFlashcards) { setShowFlashcards(false); return; }
+            if (showFormulaVault) { setShowFormulaVault(false); return; }
+            if (showRevisionVault) { setShowRevisionVault(false); return; }
+            if (showQuickStudy) { setShowQuickStudy(false); return; }
+            if (showBattle) { setShowBattle(false); return; }
+            if (showScanSolve) { setShowScanSolve(false); return; }
+            if (showTimetable) { setShowTimetable(false); return; }
+            if (showProjectAssistant) { setShowProjectAssistant(false); return; }
+            if (showRewardShop) { setShowRewardShop(false); return; }
+            if (showQuestLog) { setShowQuestLog(false); return; }
+            if (showStudyPods) { setShowStudyPods(false); return; }
+            if (showRoadmap) { setShowRoadmap(false); return; }
+            if (showAnalysis) { setShowAnalysis(false); return; }
+            if (showSavedMCQs) { setShowSavedMCQs(false); return; }
+            if (showWhyWrong) { setShowWhyWrong(false); return; }
+        };
+
+        window.addEventListener("popstate", handlePopState);
+        return () => window.removeEventListener("popstate", handlePopState);
+    }, [
+        activeNotes, activeTest, testResult, selectionModal,
+        showTopperNotes, showFlashcards, showFormulaVault,
+        showRevisionVault, showQuickStudy, showBattle,
+        showScanSolve, showTimetable, showProjectAssistant,
+        showRewardShop, showQuestLog, showStudyPods,
+        showRoadmap, showAnalysis, showSavedMCQs, showWhyWrong
+    ]);
+
     // Safety fallback: Ensure splash screen automatically closes after max 2.0s
     useEffect(() => {
         if (showSplash) {
