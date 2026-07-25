@@ -373,6 +373,19 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
+    // 🔒 STRICT SECURITY: Block Admin Panel on live production website (achivox.online).
+    // Admin Panel is strictly allowed ONLY on localhost / 127.0.0.1.
+    if (typeof window !== "undefined") {
+      const hostname = window.location.hostname;
+      const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+      if (!isLocalhost) {
+        setIsAdmin(false);
+        setLoading(false);
+        router.replace("/");
+        return;
+      }
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
@@ -380,10 +393,11 @@ export default function AdminDashboard() {
           setIsAdmin(true);
         } else {
           setIsAdmin(false);
-          setTimeout(() => router.push("/"), 3000);
+          router.replace("/");
         }
       } else {
-        router.push("/#login");
+        setIsAdmin(false);
+        router.replace("/#login");
       }
       setLoading(false);
     });
@@ -752,20 +766,24 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-white gap-6">
-        <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
-        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Accessing Achivox Core...</p>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#070518] text-white gap-6">
+        <Loader2 className="w-12 h-12 animate-spin text-indigo-500" />
+        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Connecting to Achivox Admin Core...</p>
       </div>
     );
   }
 
-  if (isAdmin === false) {
+  if (isAdmin !== true) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50 p-10 text-center">
-        <Lock className="w-16 h-16 text-slate-300 mb-6" />
-        <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-2 uppercase">Vault Restricted</h2>
-        <p className="text-slate-500 font-medium mb-8 max-w-sm mx-auto leading-relaxed">This area is reserved for the platform architect. Redirecting you home...</p>
-        <button onClick={() => router.push("/")} className="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20">Exit Now</button>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#070518] text-white p-10 text-center">
+        <Lock className="w-16 h-16 text-rose-500 mb-6 animate-pulse" />
+        <h2 className="text-3xl font-black tracking-tight mb-2 uppercase italic text-rose-400">404 - Restricted Area</h2>
+        <p className="text-slate-400 font-medium mb-8 max-w-sm mx-auto leading-relaxed text-sm">
+          Admin portal is restricted to local development environments only. Redirecting home...
+        </p>
+        <button onClick={() => router.push("/")} className="bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-indigo-600/30 transition-all">
+          Exit to Home
+        </button>
       </div>
     );
   }
