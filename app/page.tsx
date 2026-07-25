@@ -104,7 +104,7 @@ const generateUniqueId = async ()=>{
 export default function Home() {
     const { theme, setTheme } = useTheme();
     // ... existing states ...
-    const [mode, setMode] = useState("govt");
+    const [mode, setMode] = useState("school");
     const [activeTab, setActiveTab] = useState("Home");
     const [realUserData, setRealUserData] = useState(null);
     const isSubscribed = realUserData?.isSubscribed || false;
@@ -446,10 +446,9 @@ export default function Home() {
         }
     }, [userData]);
 
-    // Prefetch government/school syllabus categories
+    // Prefetch school syllabus categories
     useEffect(() => {
         const prefetch = async () => {
-            await fetchContent("govt", null, "Categories");
             await fetchContent("school", null, "Boards");
         };
         prefetch();
@@ -1013,7 +1012,7 @@ export default function Home() {
                                         style: {
                                             color: "#8b5cf6"
                                         },
-                                        children: mode === "govt" ? "⚡ Gov Prep" : "\uD83C\uDF93 School Core"
+                                        children: "🎓 Academic Core"
                                     })
                                 ]
                             })
@@ -1123,57 +1122,6 @@ export default function Home() {
                     })
                 ]
             }),
-            activeTab === "Home" && /*#__PURE__*/ _jsx("div", {
-                className: "px-4 pt-3 pb-2 shrink-0 z-40",
-                children: /*#__PURE__*/ _jsxs("div", {
-                    className: "relative flex gap-1 p-1.5 rounded-2xl",
-                    style: {
-                        background: "rgba(99,102,241,0.06)",
-                        border: "1px solid rgba(99,102,241,0.1)"
-                    },
-                    children: [
-                        /*#__PURE__*/ _jsx(motion.div, {
-                            className: "absolute inset-1.5 rounded-xl",
-                            style: {
-                                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                                boxShadow: "0 4px 20px rgba(99,102,241,0.35)"
-                            },
-                            animate: {
-                                left: mode === "govt" ? "6px" : "50%",
-                                width: mode === "govt" ? "calc(50% - 6px)" : "calc(50% - 6px)"
-                            },
-                            transition: {
-                                type: "spring",
-                                stiffness: 400,
-                                damping: 35
-                            }
-                        }),
-                        /*#__PURE__*/ _jsxs("button", {
-                            onClick: ()=>setMode("govt"),
-                            className: `flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "govt" ? "text-white" : "text-slate-500 dark:text-slate-400"}`,
-                            children: [
-                                /*#__PURE__*/ _jsx(Building2, {
-                                    className: "w-4 h-4"
-                                }),
-                                " Gov Prep ",
-                                /*#__PURE__*/ _jsx(Lock, {
-                                    className: "w-3 h-3 opacity-60"
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxs("button", {
-                            onClick: ()=>setMode("school"),
-                            className: `flex-1 py-2.5 text-sm font-bold rounded-xl flex items-center justify-center gap-2 relative z-10 transition-colors duration-300 ${mode === "school" ? "text-white" : "text-slate-500 dark:text-slate-400"}`,
-                            children: [
-                                /*#__PURE__*/ _jsx(GraduationCap, {
-                                    className: "w-4 h-4"
-                                }),
-                                " School Prep"
-                            ]
-                        })
-                    ]
-                })
-            }),
             /*#__PURE__*/ _jsxs("main", {
                 className: "flex-1 overflow-y-auto",
                 children: [
@@ -1182,61 +1130,7 @@ export default function Home() {
                         children: [
                             activeTab === "Home" && /*#__PURE__*/ _jsx(AnimatePresence, {
                                 mode: "wait",
-                                children: mode === "govt" ? /*#__PURE__*/ _jsxs(motion.div, {
-                                    initial: {
-                                        opacity: 0,
-                                        y: 20
-                                    },
-                                    animate: {
-                                        opacity: 1,
-                                        y: 0
-                                    },
-                                    exit: {
-                                        opacity: 0,
-                                        y: -20
-                                    },
-                                    className: "flex flex-col items-center justify-center py-20 text-center space-y-6",
-                                    children: [
-                                        /*#__PURE__*/ _jsx("div", {
-                                            className: "w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center border-2 border-primary/20 shadow-2xl shadow-primary/10",
-                                            children: /*#__PURE__*/ _jsx(Lock, {
-                                                className: "w-5 h-5 text-primary"
-                                            })
-                                        }),
-                                        /*#__PURE__*/ _jsxs("div", {
-                                            className: "space-y-2",
-                                            children: [
-                                                /*#__PURE__*/ _jsx("h2", {
-                                                    className: "text-2xl font-black text-slate-800 dark:text-white tracking-tighter uppercase italic",
-                                                    children: "Gov Prep Vault"
-                                                }),
-                                                /*#__PURE__*/ _jsx("p", {
-                                                    className: "text-primary font-black text-xs uppercase tracking-[0.3em]",
-                                                    children: "Launching Very Soon"
-                                                })
-                                            ]
-                                        }),
-                                        /*#__PURE__*/ _jsx("p", {
-                                            className: "text-slate-500 dark:text-slate-400 text-sm font-medium max-w-[280px] leading-relaxed",
-                                            children: "We are currently indexing 50,000+ government exam questions."
-                                        }),
-                                        /*#__PURE__*/ _jsx(motion.div, {
-                                            animate: {
-                                                scale: [
-                                                    1,
-                                                    1.1,
-                                                    1
-                                                ]
-                                            },
-                                            transition: {
-                                                duration: 2,
-                                                repeat: Infinity
-                                            },
-                                            className: "bg-emerald-500/10 text-emerald-500 px-4 py-2.5 rounded-2xl border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest",
-                                            children: "94% Completed"
-                                        })
-                                    ]
-                                }, "govt-locked") : /*#__PURE__*/ _jsxs(motion.div, {
+                                children: /*#__PURE__*/ _jsxs(motion.div, {
                                     initial: {
                                         opacity: 0
                                     },
@@ -1738,21 +1632,6 @@ export default function Home() {
                                 className: "space-y-6",
                                 children: [
                                     /*#__PURE__*/ _jsxs("div", {
-                                        className: "bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl flex gap-1 shadow-inner",
-                                        children: [
-                                            /*#__PURE__*/ _jsx("button", {
-                                                onClick: ()=>setMode("govt"),
-                                                className: `flex-1 py-2.5 text-sm font-bold rounded-xl ${mode === "govt" ? "bg-white dark:bg-slate-700 shadow-md text-primary" : "text-slate-500"}`,
-                                                children: "Gov Tests"
-                                            }),
-                                            /*#__PURE__*/ _jsx("button", {
-                                                onClick: ()=>setMode("school"),
-                                                className: `flex-1 py-2.5 text-sm font-bold rounded-xl ${mode === "school" ? "bg-white dark:bg-slate-700 shadow-md text-primary" : "text-slate-500"}`,
-                                                children: "School Tests"
-                                            })
-                                        ]
-                                    }),
-                                    mode === "school" ? /*#__PURE__*/ _jsxs("div", {
                                         className: "space-y-6",
                                         children: [
                                             /*#__PURE__*/ _jsxs("div", {
@@ -1819,21 +1698,6 @@ export default function Home() {
                                             /*#__PURE__*/ _jsx(SchoolTestEngine, {
                                                 isSubscribed: isSubscribed,
                                                 userData: userData
-                                            })
-                                        ]
-                                    }) : /*#__PURE__*/ _jsxs("div", {
-                                        className: "py-24 text-center glass-card rounded-[40px] border border-border shadow-inner",
-                                        children: [
-                                            /*#__PURE__*/ _jsx(FileSpreadsheet, {
-                                                className: "w-5 h-5 opacity-30 mx-auto mb-6"
-                                            }),
-                                            /*#__PURE__*/ _jsx("h2", {
-                                                className: "text-2xl font-black tracking-tighter text-slate-500 uppercase",
-                                                children: "Govt Test Series"
-                                            }),
-                                            /*#__PURE__*/ _jsx("p", {
-                                                className: "mt-3 text-xs font-bold text-slate-400 uppercase tracking-widest",
-                                                children: "Coming Soon"
                                             })
                                         ]
                                     })
