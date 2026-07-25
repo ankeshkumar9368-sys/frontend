@@ -122,13 +122,6 @@ export const fetchChapterNotes = async (topicName: string, userData?: any, lang:
     fullTopic = `${subjectContext || "General"} - ${chapterName} - ${topicName}`;
   }
   
-  const boardKey = userData?.board || "CBSE";
-  const classKey = userData?.cls || "10th";
-  // All users get personalized cache based on their own performance data
-  const safeId = `${mode}_${boardKey}_${classKey}_${fullTopic}_user_${userData?.id || 'guest'}`.replace(/[\/\.#$\[\]\s]/g, '_').toLowerCase();
-      
-  const noteRef = doc(db, "ai_cache", "note_" + safeId);
-
   let topicAccuracy = 50; // Default performance fallback
   try {
     const stats = getOverallStats();
@@ -144,6 +137,15 @@ export const fetchChapterNotes = async (topicName: string, userData?: any, lang:
   } catch (err) {
     console.warn("Failed to extract performance metrics:", err);
   }
+
+  const level = topicAccuracy < 40 ? "weak" : topicAccuracy < 75 ? "average" : "strong";
+  
+  const boardKey = userData?.board || "CBSE";
+  const classKey = userData?.cls || "10th";
+  // Shared global performance-tier cache key (weak / average / strong)
+  const safeId = `${mode}_${boardKey}_${classKey}_${level}_${fullTopic}`.replace(/[\/\.#$\[\]\s]/g, '_').toLowerCase();
+      
+  const noteRef = doc(db, "ai_cache", "note_" + safeId);
 
   // Enforcement of Regeneration limits: 7 days for Premium, 30 days for Free users
   if (forceRefresh) {
@@ -273,8 +275,10 @@ import { INDIAN_BOARDS, CLASSES, getSubjects, getChapters, getTopics, getSubtopi
 export const getTestBankId = (mode: string, topicName: string, userData?: any, subjectContext?: string) => {
   const boardKey = userData?.board || "CBSE";
   const classKey = userData?.cls || "10th";
+  const accNum = (userData && userData.totalSolved > 0) ? Number(((userData.correctAnswers / userData.totalSolved) * 100).toFixed(0)) : 50;
+  const level = accNum < 40 ? "weak" : accNum < 75 ? "average" : "strong";
   const fullTopic = subjectContext ? `${subjectContext} - ${topicName}` : topicName;
-  return `questions_${mode}_${boardKey}_${classKey}_${fullTopic}_${achivox_cache_version}`.replace(/[\/\.#$\[\]\s]/g, '_').toLowerCase();
+  return `questions_${mode}_${boardKey}_${classKey}_${level}_${fullTopic}_${achivox_cache_version}`.replace(/[\/\.#$\[\]\s]/g, '_').toLowerCase();
 };
 
 

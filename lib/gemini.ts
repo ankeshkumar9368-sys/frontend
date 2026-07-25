@@ -929,11 +929,13 @@ export async function generateQuickStudyCards(subjects: string[], board: string,
   const startTime = Date.now();
   const lang = getBoardLanguage(board);
 
-  // CACHE DISABLED: Generate fresh cards every time
-  // const safeSubjects = subjects.join('_').replace(/\W+/g, '_').toLowerCase();
-  // const cacheKey = `flashcards_${board.replace(/\W+/g, '')}_${cls.replace(/\W+/g, '')}_${safeSubjects}`;
-  // const cachedData = await checkAICache(cacheKey);
-  // if (cachedData) return cachedData;
+  const safeSubjects = subjects.join('_').replace(/\W+/g, '_').toLowerCase();
+  const cacheKey = `flashcards_${board.replace(/\W+/g, '')}_${cls.replace(/\W+/g, '')}_${safeSubjects}`;
+  const cachedData = await checkAICache(cacheKey);
+  if (cachedData) {
+    logToTerminal(`⚡ L1/L2 CACHE HIT: Returning saved quick study cards [${cacheKey}]`, 'info');
+    return cachedData;
+  }
 
   logToTerminal(`🎴 GENERATING QUICK STUDY CARDS: [${subjects.join(', ')}] for ${board} ${cls} in ${lang}`, 'info');
 
@@ -964,14 +966,12 @@ export async function generateQuickStudyCards(subjects: string[], board: string,
     2. Focus on conceptual clarity and "Topper-level" facts.
     3. Language: English + simple ${lang} mix.
     4. Keep it ultra-concise (1 line max for question/fact).
-    5. RANDOMIZE the topics to ensure fresh content every time.
   `;
 
   try {
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("achivox_task_completed", { detail: { type: "quick_study" } }));
     }
-    
 
     const result = await jsonModel.generateContent(prompt);
     const response = await result.response;
@@ -981,7 +981,7 @@ export async function generateQuickStudyCards(subjects: string[], board: string,
     
     const data = JSON.parse(text);
     logToTerminal(`✅ QUICK STUDY CARDS READY: ${data.length} cards in ${((Date.now() - startTime) / 1000).toFixed(1)}s`, 'info');
-    // saveToAICache(cacheKey, data);
+    saveToAICache(cacheKey, data);
     return data;
   } catch (error: any) {
     console.error("❌ ERROR in generateQuickStudyCards:", error);
@@ -1023,6 +1023,19 @@ export async function generateTopperNotes(
   let normalizedLanguage = language;
   if (language === "en-hi" || language === "Hinglish") {
     normalizedLanguage = `Bilingual English + ${boardLang}`;
+  }
+
+  const accNum = (clsOrUserData && typeof clsOrUserData === "object" && clsOrUserData.totalSolved > 0)
+    ? Number(((clsOrUserData.correctAnswers / clsOrUserData.totalSolved) * 100).toFixed(0))
+    : 50;
+  const level = accNum < 40 ? "weak" : accNum < 75 ? "average" : "strong";
+
+  const safeTopic = topic.replace(/\W+/g, '_').toLowerCase();
+  const cacheKey = `topper_${board.replace(/\W+/g, '')}_${cls.replace(/\W+/g, '')}_${level}_${safeTopic}`;
+  const cachedData = await checkAICache(cacheKey);
+  if (cachedData) {
+    logToTerminal(`⚡ L1/L2 CACHE HIT: Returning saved topper notes for level [${level}]`, 'info');
+    return cachedData;
   }
 
   logToTerminal(`📝 GENERATING TOPPER'S HANDWRITTEN NOTES: "${topic}" for ${subject} in ${normalizedLanguage} (Goal: ${goalMode})`);
@@ -1203,6 +1216,7 @@ export async function generateTopperNotes(
     // Log tracking
     logGenerationMetric(board, subject, "topper_notes", 1).catch(e => console.error(e));
 
+    saveToAICache(cacheKey, data);
     return data;
   } catch (error) {
     console.error("Gemini Topper Notes Error:", error);
