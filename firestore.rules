@@ -22,10 +22,15 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
+    function isNotTamperingSensitiveUserFields() {
+      let affected = request.resource.data.diff(resource.data).affectedKeys();
+      return !affected.hasAny(['isSubscribed', 'isBlocked', 'planType', 'subscriptionId', 'paymentVerifiedAt']);
+    }
+    
     // User Profiles & Nested Subcollections (notifications, saved_mcqs)
     match /users/{userId} {
       allow read: if isAuthenticated();
-      allow write: if isOwner(userId) || isAdmin();
+      allow write: if isAdmin() || (isOwner(userId) && (!exists(/databases/$(database)/documents/users/$(userId)) || isNotTamperingSensitiveUserFields()));
       
       match /{document=**} {
         allow read, write: if isOwner(userId) || isAdmin();
