@@ -30,6 +30,20 @@ export default function VerifyPaymentPage() {
     try {
       const response = await axios.post("/api/payment/verify", { orderId });
       
+      const finalStatus = response.data?.success ? "SUCCESS" : (response.data?.status || "FAILED");
+
+      // Update Payments collection status in client-side Firestore for Admin Panel
+      try {
+        const { doc, setDoc, serverTimestamp } = await import("firebase/firestore");
+        const { db } = await import("../../../lib/firebase");
+        await setDoc(doc(db, "payments", orderId), {
+          status: finalStatus,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (logErr) {
+        console.warn("Client verification status log notice:", logErr);
+      }
+
       if (response.data && response.data.success) {
         setSuccess(true);
         
@@ -59,7 +73,7 @@ export default function VerifyPaymentPage() {
           origin: { y: 0.6 }
         });
       } else {
-        setErrorMsg(response.data.message || "Payment verification failed. If money was debited, contact support.");
+        setErrorMsg(response.data.message || "Payment status is FAILED or Cancelled. You can try paying again or return to dashboard.");
       }
     } catch (error: any) {
       console.error("Verification callback error:", error);

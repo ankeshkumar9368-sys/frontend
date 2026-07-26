@@ -129,7 +129,30 @@ export default function SubscriptionPage() {
       });
 
       if (response.data && response.data.payment_session_id) {
-        const { payment_session_id } = response.data;
+        const { payment_session_id, order_id } = response.data;
+
+        // Record real-time PENDING payment log in Firestore for Admin Panel
+        if (order_id) {
+          try {
+            const { doc, setDoc, serverTimestamp } = await import("firebase/firestore");
+            const { db } = await import("../../lib/firebase");
+            await setDoc(doc(db, "payments", order_id), {
+              userId: targetUserId,
+              orderId: order_id,
+              amount: finalPrice,
+              status: "PENDING",
+              paymentGateway: "Cashfree PG",
+              customerName,
+              email: customerEmail,
+              phone: "9999999999",
+              planName,
+              createdAt: serverTimestamp()
+            }, { merge: true });
+          } catch (logErr) {
+            console.warn("Client payment order log notice:", logErr);
+          }
+        }
+
         cashfree.checkout({
           paymentSessionId: payment_session_id,
           redirectTarget: "_self"
