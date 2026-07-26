@@ -283,6 +283,24 @@ export default function AdminDashboard() {
     }
   };
 
+  const [clearingPayments, setClearingPayments] = useState(false);
+
+  const handleClearPaymentLogs = async () => {
+    if (!confirm("Are you sure you want to clear all old payment transaction records? Future real-time payments will appear fresh.")) return;
+    setClearingPayments(true);
+    try {
+      const snap = await getDocs(collection(db, "payments"));
+      for (const d of snap.docs) {
+        await deleteDoc(doc(db, "payments", d.id));
+      }
+      alert("All old payment transaction records have been cleared successfully!");
+    } catch (e: any) {
+      alert("Failed to clear payment records: " + e.message);
+    } finally {
+      setClearingPayments(false);
+    }
+  };
+
   const handleResolvePayment = async (paymentId: string) => {
     if (!resolveInput.trim()) return alert("Please enter a registered email or phone number.");
     setIsResolving(true);
@@ -1098,11 +1116,21 @@ export default function AdminDashboard() {
 
                 {/* Audit Table */}
                 <div className="bg-white rounded-[40px] border border-slate-100 p-8 shadow-sm">
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
                     <div>
                       <h3 className="font-black text-lg text-slate-800 uppercase italic">Payment Transaction History</h3>
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Real-time Audits of Cashfree & Gateway Orders</p>
                     </div>
+                    {payments.length > 0 && (
+                      <button
+                        onClick={handleClearPaymentLogs}
+                        disabled={clearingPayments}
+                        className="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl font-bold text-xs transition-all flex items-center gap-2 shadow-sm"
+                      >
+                        {clearingPayments ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        Clear Old Payment Logs
+                      </button>
+                    )}
                   </div>
 
                   <div className="overflow-x-auto">
