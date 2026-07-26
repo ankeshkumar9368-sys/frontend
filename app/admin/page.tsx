@@ -525,9 +525,15 @@ export default function AdminDashboard() {
       });
 
       // 8. Real-time Payments
-      const paymentsQuery = query(collection(db, "payments"), orderBy("timestamp", "desc"));
+      const paymentsQuery = query(collection(db, "payments"));
       const unsubscribePayments = onSnapshot(paymentsQuery, (snapshot) => {
-        setPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => {
+            const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.timestamp?.toDate ? a.timestamp.toDate().getTime() : (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() : 0));
+            const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.timestamp?.toDate ? b.timestamp.toDate().getTime() : (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() : 0));
+            return timeB - timeA;
+          });
+        setPayments(list);
       });
 
       // 9. Real-time Merch Orders
@@ -1062,7 +1068,7 @@ export default function AdminDashboard() {
                   <div className="flex justify-between items-center mb-6">
                     <div>
                       <h3 className="font-black text-lg text-slate-800 uppercase italic">Payment Transaction History</h3>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Real-time Audits of Razorpay Webhook Orders</p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Real-time Audits of Cashfree & Gateway Orders</p>
                     </div>
                   </div>
 
@@ -1071,9 +1077,9 @@ export default function AdminDashboard() {
                       <thead>
                         <tr className="border-b border-slate-100 text-[10px] font-black uppercase text-slate-400">
                           <th className="py-4">Date & Time</th>
-                          <th className="py-4">Order ID</th>
-                          <th className="py-4">User Details</th>
-                          <th className="py-4">Plan Type</th>
+                          <th className="py-4">Transaction / Order ID</th>
+                          <th className="py-4">Student Name & Contact</th>
+                          <th className="py-4">Gateway & Plan</th>
                           <th className="py-4 text-right">Amount Paid</th>
                           <th className="py-4 text-center">Status</th>
                           <th className="py-4 text-right">Actions</th>
@@ -1081,53 +1087,64 @@ export default function AdminDashboard() {
                       </thead>
                       <tbody className="divide-y divide-slate-50 text-xs font-bold text-slate-700">
                         {payments.length > 0 ? (
-                          payments.map((pay) => (
-                            <tr key={pay.id} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="py-4 text-[10px] font-black text-slate-400 uppercase">
-                                {pay.timestamp ? new Date(pay.timestamp).toLocaleString("en-IN") : "Unknown"}
-                              </td>
-                              <td className="py-4 font-mono text-[10px] text-slate-500">{pay.orderId}</td>
-                              <td className="py-4">
-                                <div className="flex flex-col">
-                                  <span className="text-slate-800 font-extrabold">{pay.email}</span>
-                                  <span className="text-[10px] text-slate-400 mt-0.5">{pay.phone}</span>
-                                </div>
-                              </td>
-                              <td className="py-4">
-                                <span className={`px-2.5 py-1 rounded-md text-[9px] font-black uppercase border ${pay.planType === "pro" ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
-                                  {pay.planType === "pro" ? "⚡ Pro (Fast Content)" : "Standard Premium"}
-                                </span>
-                              </td>
-                              <td className="py-4 text-right font-black text-slate-900">₹{pay.amount}</td>
-                              <td className="py-4 text-center">
-                                {pay.resolved ? (
-                                  <div className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full text-[9px] font-black uppercase">
-                                    <CheckCircle2 className="w-3.5 h-3.5" /> Auto-Matched
+                          payments.map((pay) => {
+                            const student = realUsers.find(u => u.id === pay.userId);
+                            const name = student?.name || pay.gatewayResponse?.customer_details?.customer_name || pay.customerName || "Aspirant";
+                            const contact = student?.email || pay.gatewayResponse?.customer_details?.customer_email || pay.email || pay.userId;
+                            const phone = student?.phone || pay.gatewayResponse?.customer_details?.customer_phone || pay.phone || "";
+
+                            let dateStr = "Recent";
+                            if (pay.createdAt?.toDate) dateStr = pay.createdAt.toDate().toLocaleString("en-IN");
+                            else if (pay.timestamp?.toDate) dateStr = pay.timestamp.toDate().toLocaleString("en-IN");
+                            else if (pay.createdAt) dateStr = new Date(pay.createdAt).toLocaleString("en-IN");
+                            else if (pay.timestamp) dateStr = new Date(pay.timestamp).toLocaleString("en-IN");
+
+                            const status = (pay.status || "PENDING").toUpperCase();
+                            const isSuccess = status === "PAID" || status === "SUCCESS" || status === "COMPLETED";
+                            const isFailed = status === "FAILED" || status === "CANCELLED" || status === "EXPIRED";
+
+                            return (
+                              <tr key={pay.id} className="hover:bg-slate-50/50 transition-colors">
+                                <td className="py-4 text-[10px] font-black text-slate-400 uppercase">
+                                  {dateStr}
+                                </td>
+                                <td className="py-4 font-mono text-[10px] text-indigo-600 font-bold">{pay.orderId || pay.id}</td>
+                                <td className="py-4">
+                                  <div className="flex flex-col">
+                                    <span className="text-slate-800 font-extrabold">{name}</span>
+                                    <span className="text-[10px] text-slate-400 font-mono mt-0.5">{contact} {phone && `• ${phone}`}</span>
                                   </div>
-                                ) : (
-                                  <div className="inline-flex items-center gap-1 bg-rose-50 text-rose-600 border border-rose-100 px-2.5 py-1 rounded-full text-[9px] font-black uppercase">
-                                    <AlertTriangle className="w-3.5 h-3.5" /> Unmatched
-                                  </div>
-                                )}
-                              </td>
-                              <td className="py-4 text-right">
-                                {pay.resolved ? (
-                                  <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Matched ({pay.matchedUserId?.substring(0, 8)})</span>
-                                ) : (
+                                </td>
+                                <td className="py-4">
+                                  <span className="px-2.5 py-1 rounded-md text-[9px] font-black uppercase bg-indigo-50 text-indigo-600 border border-indigo-200">
+                                    {pay.paymentGateway || "Cashfree PG"}
+                                  </span>
+                                </td>
+                                <td className="py-4 text-right font-black text-slate-900 text-sm">₹{pay.amount || 399}</td>
+                                <td className="py-4 text-center">
+                                  <span className={`inline-flex items-center gap-1 border px-3 py-1 rounded-full text-[9px] font-black uppercase ${
+                                    isSuccess ? "bg-emerald-50 text-emerald-600 border-emerald-200" :
+                                    isFailed ? "bg-rose-50 text-rose-600 border-rose-200" :
+                                    "bg-amber-50 text-amber-600 border-amber-200"
+                                  }`}>
+                                    {isSuccess ? "✅ SUCCESS" : isFailed ? "❌ FAILED" : "⏳ PENDING"}
+                                  </span>
+                                </td>
+                                <td className="py-4 text-right">
                                   <button
                                     onClick={() => setResolvingPayment(pay)}
                                     className="bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[9px] uppercase tracking-wider px-3.5 py-2 rounded-xl transition-all shadow-sm"
                                   >
-                                    Link User
+                                    Manage / Link
                                   </button>
-                                )}
-                              </td>
-                            </tr>
-                          ))
+                                </td>
+                              </tr>
+                            );
+                          })
                         ) : (
                           <tr>
-                            <td colSpan={7} className="py-8 text-center text-slate-400 font-extrabold uppercase text-[10px] tracking-widest">
-                              No payments found in collection
+                            <td colSpan={7} className="py-12 text-center text-slate-400 font-extrabold uppercase text-[10px] tracking-widest">
+                              No payment transactions recorded yet.
                             </td>
                           </tr>
                         )}
