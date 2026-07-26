@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Achivox AI — आधिकारिक प्लेटफ़ॉर्म गाइड एवं सब्सक्रिप्शन विवरण</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+      background: #F8FAFC;
+      color: #0F172A;
+      line-height: 1.5;
+      font-size: 13px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    /* HEADER */
+    .header-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
+      color: #FFFFFF;
+      padding: 26px 30px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #3730A3;
+    }
+    .header-banner h1 {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-banner h1 span.badge {
+      background: #F59E0B;
+      color: #0F172A;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: 99px;
+      text-transform: uppercase;
+    }
+    .header-subtitle {
+      font-size: 13px;
+      font-weight: 600;
+      color: #C7D2FE;
+    }
+    .header-meta {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #E0E7FF;
+      font-weight: 600;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #1E1B4B;
+      margin: 22px 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 5px solid #4F46E5;
+      padding-left: 10px;
+    }
+
+    /* VISION CARD */
+    .vision-card {
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 13px;
+      color: #334155;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    /* FEATURES GRID */
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .feature-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 14px 16px;
+      border-radius: 14px;
+      transition: all 0.2s ease;
+    }
+    .feature-card-header {
+      font-size: 13px;
+      font-weight: 800;
+      color: #4F46E5;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .feature-card-desc {
+      font-size: 11.5px;
+      color: #475569;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    /* BENEFITS GRID */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .benefit-card {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      padding: 14px 16px;
+      border-radius: 14px;
+    }
+    .benefit-card h4 {
+      font-size: 13px;
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 4px;
+    }
+    .benefit-card p {
+      font-size: 11.5px;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    /* PRO HIGHLIGHT BOX */
+    .pro-box {
+      background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+      border: 2px solid #10B981;
+      padding: 18px 22px;
+      border-radius: 18px;
+      margin-top: 14px;
+    }
+    .pro-box-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #047857;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pro-box-text {
+      font-size: 12px;
+      color: #065F46;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    /* PRO ADVANTAGES LIST */
+    .pro-advantages {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .adv-item {
+      background: #FFFFFF;
+      border: 1px solid #A7F3D0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #064E3B;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* COMPARISON TABLE */
+    .table-container {
+      margin-top: 14px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #E2E8F0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+    th {
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 12px 16px;
+      font-weight: 800;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      font-weight: 600;
+      color: #334155;
+    }
+    tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+    td.pro-col {
+      color: #4F46E5;
+      font-weight: 800;
+    }
+    td.free-col {
+      color: #64748B;
+    }
+
+    /* CTA FOOTER */
+    .cta-banner {
+      background: linear-gradient(135deg, #312E81 0%, #1E1B4B 100%);
+      color: #FFFFFF;
+      padding: 20px 24px;
+      border-radius: 18px;
+      margin-top: 24px;
+      text-align: center;
+    }
+    .cta-banner h3 {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      color: #F59E0B;
+    }
+    .cta-banner p {
+      font-size: 12px;
+      color: #E0E7FF;
+      font-weight: 600;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 10px;
+      color: #94A3B8;
+      font-weight: 600;
+      border-top: 1px solid #E2E8F0;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    
+    <!-- HEADER BANNER -->
+    <div class="header-banner">
+      <h1>
+        🎓 ACHIVOX AI (अचिवॉक्स)
+        <span class="badge">ऑफिशियल गाइड</span>
+      </h1>
+      <div class="header-subtitle">
+        भारत का सबसे तेज़ AI स्टडी पार्टनर — बोर्ड परीक्षा, JEE, NEET और कॉम्पिटिटिव एग्जाम्स के लिए
+      </div>
+      <div class="header-meta">
+        <span>🌐 आधिकारिक वेबसाइट: www.achivox.online</span>
+        <span>⚡ प्लान: प्रो सब्सक्रिप्शन गाइड (₹399/वर्ष)</span>
+      </div>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section-title">
+      📌 1. अचिवॉक्स AI क्या है? (प्लेटफ़ॉर्म परिचय)
+    </div>
+    <div class="vision-card">
+      <b>Achivox AI</b> भारतीय छात्रों (CBSE, ICSE, स्टेट बोर्ड्स, JEE और NEET) के लिए बनाया गया एक अत्याधुनिक <b>AI स्टडी असिस्टेंट</b> है। यह प्लेटफ़ॉर्म आर्टिफिशियल इंटेलिजेंस का उपयोग करके कठिन से कठिन अध्यायों को 2-मिनट के आसान नोट्स, डायग्राम्स, और लाइव मॉक टेस्ट्स में बदल देता है। इसका मुख्य उद्देश्य छात्रों के मन से परीक्षा का डर खत्म करना और कम समय में <b>95%+ अंक हासिल कराने में मदद करना है।</b>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section-title">
+      ⚡ 2. वेबसाइट के मुख्य फ़ीचर्स और क्षमताएं (Core Features)
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-card-header">📚 AI स्मार्ट नोट्स (Smart Notes)</div>
+        <div class="feature-card-desc">हर चैप्टर के 2-मिनट के रिवीज़न नोट्स, फ़ॉर्मूला सारांश, हिंदी/अंग्रेजी शार्ट-ट्रिक्स और इंटरैक्टिव डायग्राम्स।</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-header">📝 AI मॉक टेस्ट सिम्युलेटर (Mock Test)</div>
+        <div class="feature-card-desc">असली बोर्ड और JEE टाइमर के साथ ऑनलाइन टेस्ट, तुरंत मार्क्स, नेगेटिव मार्किंग और हल किए गए उत्तर।</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-header">⚔️ 1v1 लाइव बैटल क्विज़ (Battle Arena)</div>
+        <div class="feature-card-desc">पूरे भारत के छात्रों के साथ 10-सेकंड की लाइव क्विज़ प्रतियोगिता। जीतें XP कॉइन्स और लीडरबोर्ड रैंक।</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-header">👑 टॉपर PYQ तिजोरी (Topper Notes)</div>
+        <div class="feature-card-desc">99% अंक पाने वाले टॉपर्स के हाथ से लिखे नोट्स, पिछले 10 सालों के प्रश्न पत्र और 2026 के सम्भावित प्रश्न।</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-header">📐 फ़ॉर्मूला और कॉन्स्टेंट तिजोरी</div>
+        <div class="feature-card-desc">फिजिक्स, केमिस्ट्री और गणित के सभी फ़ॉर्मूले, डेरिवेशन और SI यूनिट्स एक ही क्लिक में उपलब्ध।</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-header">🤖 24/7 AI डाउट सॉल्वर (Doubt Solver)</div>
+        <div class="feature-card-desc">बोलकर (Voice) या सवाल की फोटो खींचकर पूछें — AI टीचर तुरंत आसान हिंग्लिश में हल समझाएगा।</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-header">📅 AI टाइमटेबल और स्टडी पॉड्स</div>
+        <div class="feature-card-desc">आपकी परीक्षा तारीख और कमजोर विषयों के हिसाब से खुद ब खुद बनने वाला रोज़ाना का पढ़ाई का टाइमटेबल।</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-header">🎁 कॉइन्स और असली इनाम (Merch Rewards)</div>
+        <div class="feature-card-desc">पढ़ाई करने पर कॉइन्स कमाएँ और असली सामान (T-Shirts, Hoodies, Notebooks, Water Bottle) घर मँगवाएँ।</div>
+      </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section-title">
+      🎯 3. Achivox छात्रों को 95%+ अंक दिलाने में कैसे मदद करता है?
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <h4>🎯 अंधी पढ़ाई का अंत (Targeted Practice)</h4>
+        <p>टेस्ट के बाद AI तुरंत बताता है कि आपका कौन सा टॉपिक कमजोर है, जिससे समय केवल सही जगह इस्तेमाल होता है।</p>
+      </div>
+      <div class="benefit-card">
+        <h4>⚡ 10x तेज़ रिवीज़न (Bullet Summaries)</h4>
+        <p>200 पन्नों की भारी किताबों को पलटने के बजाय 2-मिनट के स्मार्ट बुलेट नोट्स से मिनटों में रिवीज़न करें।</p>
+      </div>
+      <div class="benefit-card">
+        <h4>🛡️ परीक्षा के डर का ख़ात्मा (Exam Panic Free)</h4>
+        <p>रियल परीक्षा जैसा टाइमर और नेगेटिव मार्किंग सिस्टम छात्रों में आत्मविश्वास भर देता है।</p>
+      </div>
+      <div class="benefit-card">
+        <h4>🏆 रोज़ाना पढ़ाई का अनुशासन (Daily Streaks)</h4>
+        <p>डेली स्ट्रिक्स, कॉइन्स और लीडरबोर्ड रैंकिंग छात्रों को रोज़ बिना रुके पढ़ाई करने की प्रेरणा देती है।</p>
+      </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section-title">
+      💎 4. छात्रों को Achivox Pro सब्सक्रिप्शन (₹399/वर्ष) क्यों लेना चाहिए?
+    </div>
+    <div class="pro-box">
+      <div class="pro-box-title">
+        ⚡ बेमिसाल बचत: ₹399/वर्ष = मात्र ₹1 प्रतिदिन!
+      </div>
+      <div class="pro-box-text">
+        एक सामान्य फोटोकॉपी कॉपी के मूल्य से भी कम दाम में, Achivox Pro आपको पूरे साल के लिए अनलिमिटेड AI जनरेशन, 0ms की फास्ट स्पीड, टॉपर नोट्स और असली इनाम मँगवाने की सुविधा देता है।
+      </div>
+      <div class="pro-advantages">
+        <div class="adv-item">✅ अनलिमिटेड AI स्मार्ट नोट्स और टेस्ट</div>
+        <div class="adv-item">🚀 0ms की सुपरफास्ट GPU सर्वर स्पीड</div>
+        <div class="adv-item">🔓 10 साल के सॉल्व्ड PYQ और टॉपर नोट्स</div>
+        <div class="adv-item">🎁 कॉइन्स से असली सामान घर मँगवाने का एक्सेस</div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section-title">
+      📊 5. फ्री प्लान vs अचिवॉक्स प्रो तुलना सारणी (Comparison Table)
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>फीचर (Feature Name)</th>
+            <th>फ्री प्लान (Free Tier)</th>
+            <th>अचिवॉक्स प्रो (₹399/वर्ष)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AI स्मार्ट नोट्स जनरेटर</td>
+            <td class="free-col">2 नोट्स / दिन</td>
+            <td class="pro-col">अनलिमिटेड ⚡ (Unlimited)</td>
+          </tr>
+          <tr>
+            <td>AI मॉक टेस्ट सिम्युलेटर</td>
+            <td class="free-col">1 टेस्ट / दिन</td>
+            <td class="pro-col">अनलिमिटेड ⚡ (Unlimited)</td>
+          </tr>
+          <tr>
+            <td>टॉपर हैंडरिटन नोट्स & PYQs</td>
+            <td class="free-col">लॉक रहेगा (Locked)</td>
+            <td class="pro-col">पूरा एक्सेस 🔓 (Full Access)</td>
+          </tr>
+          <tr>
+            <td>24/7 AI डाउट सॉल्वर</td>
+            <td class="free-col">सीमित (Limited)</td>
+            <td class="pro-col">24/7 अनलिमिटेड 🤖</td>
+          </tr>
+          <tr>
+            <td>AI स्पीड (Response Time)</td>
+            <td class="free-col">नॉर्मल स्पीड</td>
+            <td class="pro-col">0ms सुपरफास्ट GPU 🚀</td>
+          </tr>
+          <tr>
+            <td>कॉइन्स रिडीम करके सामान मँगवाना</td>
+            <td class="free-col">बंद (Disabled)</td>
+            <td class="pro-col">चालू 🎁 (Enabled)</td>
+          </tr>
+          <tr>
+            <td>आधिकारिक प्रो सर्टिफ़िकेट & बैच</td>
+            <td class="free-col">बेसिक</td>
+            <td class="pro-col">प्रो बैच & टॉपर सर्टिफ़िकेट 🏆</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="cta-banner">
+      <h3>🚀 परीक्षा में 95%+ मार्क्स पाने के लिए आज ही जुड़ें!</h3>
+      <p>वेबसाइट पर जाएँ: <b>https://www.achivox.online/subscription</b> और अपना प्रो पास एक्टिवेट करें।</p>
+      <p style="margin-top: 4px; font-size: 11px; opacity: 0.9;">अफ़िशियल वेबसाइट: www.achivox.online | सपोर्ट ईमेल: ankeshkumar9368@gmail.com</p>
+    </div>
+
+    <div class="footer-note">
+      Achivox AI Academic Copilot © 2026 | सर्वाधिकार सुरक्षित | www.achivox.online
+    </div>
+
+  </div>
+
+</body>
+</html>
