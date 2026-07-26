@@ -87,13 +87,16 @@ export default function SubscriptionPage() {
     e.preventDefault();
     setCouponError("");
     const cleanCode = coupon.trim().toUpperCase();
-    if (["SCHOOL20", "ACHIVOX20", "EXAM20"].includes(cleanCode)) {
+    if (cleanCode === "ANKESH100") {
+      setDiscountPercent(100);
+      setCouponApplied(true);
+    } else if (["SCHOOL20", "ACHIVOX20", "EXAM20"].includes(cleanCode)) {
       setDiscountPercent(20);
       setCouponApplied(true);
     } else if (cleanCode === "") {
       setCouponError("Please enter a coupon code");
     } else {
-      setCouponError("Invalid code. Try 'SCHOOL20' for 20% OFF");
+      setCouponError("Invalid coupon code");
     }
   };
 
@@ -108,6 +111,46 @@ export default function SubscriptionPage() {
     const finalPrice = discountPercent > 0 
       ? Math.round(baseAmount * (1 - discountPercent / 100))
       : baseAmount;
+
+    // Secret 100% Discount Coupon Handler
+    if (finalPrice === 0) {
+      try {
+        const order_id = `ord_coupon_ankesh100_${Date.now()}`;
+        const { doc, setDoc, serverTimestamp } = await import("firebase/firestore");
+        const { db } = await import("../../lib/firebase");
+
+        if (user?.uid) {
+          await setDoc(doc(db, "users", user.uid), {
+            isSubscribed: true,
+            planType: "pro",
+            plan: "Achivox Pro (100% Coupon)",
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+        }
+
+        await setDoc(doc(db, "payments", order_id), {
+          userId: targetUserId,
+          orderId: order_id,
+          amount: 0,
+          status: "SUCCESS",
+          paymentGateway: "Coupon: ANKESH100",
+          customerName,
+          email: customerEmail,
+          phone: "9999999999",
+          planName: `${planName} (100% Coupon)`,
+          createdAt: serverTimestamp()
+        }, { merge: true });
+
+        localStorage.setItem("achivox_is_subscribed", "true");
+        router.push(`/subscription/verify?order_id=${order_id}`);
+        return;
+      } catch (err: any) {
+        console.error("100% coupon activation error:", err);
+        setErrorMsg("Failed to activate coupon. Please try again.");
+        setPayingPlan(null);
+        return;
+      }
+    }
 
     try {
       const cfMode = process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox";
