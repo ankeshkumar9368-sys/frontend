@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, CheckCircle2, XCircle, ArrowRight, RefreshCw } from "lucide-react";
 import axios from "axios";
 import confetti from "canvas-confetti";
+import { auth } from "../../../lib/firebase";
 
 export default function VerifyPaymentPage() {
   const router = useRouter();
@@ -31,6 +32,26 @@ export default function VerifyPaymentPage() {
       
       if (response.data && response.data.success) {
         setSuccess(true);
+        
+        // Double Guarantee: Instant client-side Firestore & localStorage update
+        try {
+          if (auth.currentUser) {
+            const { doc, updateDoc } = await import("firebase/firestore");
+            const { db } = await import("../../../lib/firebase");
+            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+              isSubscribed: true,
+              planType: "pro",
+              plan: "Achivox Pro"
+            });
+          }
+        } catch (e) {
+          console.warn("Client Firestore update fallback:", e);
+        }
+
+        try {
+          localStorage.setItem("achivox_is_subscribed", "true");
+        } catch (e) {}
+
         // Play premium upgrade celebration confetti!
         confetti({
           particleCount: 150,
