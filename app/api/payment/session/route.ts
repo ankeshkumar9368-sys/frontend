@@ -28,9 +28,10 @@ export async function POST(req: Request) {
     const sanitizedUserId = userId ? userId.replace(/[^a-zA-Z0-9]/g, "").substring(0, 16) : "guest";
     const orderId = `ord_${sanitizedUserId}_${Date.now()}`;
 
-    // Get origin from request headers to formulate return URL
-    const origin = req.headers.get("origin") || "https://www.achivox.online";
-    const returnUrl = `${origin}/subscription/verify?order_id=${orderId}`;
+    // Get origin from request headers and normalize to approved achivox.online
+    const rawOrigin = req.headers.get("origin") || "https://achivox.online";
+    const cleanOrigin = rawOrigin.replace("www.achivox.online", "achivox.online");
+    const returnUrl = `${cleanOrigin}/subscription/verify?order_id=${orderId}`;
 
     const payload = {
       customer_details: {
