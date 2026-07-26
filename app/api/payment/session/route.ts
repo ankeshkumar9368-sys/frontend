@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
+import { db, admin } from "../../../../lib/firebase-admin";
 
 export async function POST(req: Request) {
   try {
@@ -59,6 +60,26 @@ export async function POST(req: Request) {
     });
 
     if (response.data && response.data.payment_session_id) {
+      // Record payment attempt in Firestore payments collection for Admin Panel
+      if (db) {
+        try {
+          await db.collection("payments").doc(orderId).set({
+            userId: sanitizedUserId,
+            orderId: orderId,
+            amount: orderAmount,
+            status: "PENDING",
+            paymentGateway: "Cashfree PG",
+            customerName: customerName || "Academic Achiever",
+            email: customerEmail || "student@achivox.online",
+            phone: customerPhone || "9999999999",
+            planName: planName || "Pro Plan",
+            createdAt: admin ? admin.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+          }, { merge: true });
+        } catch (e: any) {
+          console.warn("Firestore order creation log warning:", e.message);
+        }
+      }
+
       return NextResponse.json({
         success: true,
         payment_session_id: response.data.payment_session_id,

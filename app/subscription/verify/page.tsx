@@ -129,19 +129,19 @@ export default function VerifyPaymentPage() {
                 Order Reference: <code className="bg-slate-950 px-2 py-0.5 rounded text-slate-300">{orderId || "N/A"}</code>
               </p>
 
-              <div className="w-full flex gap-3 mt-6">
-                <button
-                  onClick={verifyPayment}
-                  className="flex-1 flex items-center justify-center gap-2 border border-white/5 hover:bg-white/5 text-slate-300 font-black text-xs uppercase tracking-widest py-3 px-4 rounded-2xl transition-colors"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  Retry
-                </button>
+              <div className="w-full flex flex-col gap-3 mt-6">
                 <button
                   onClick={() => router.push("/subscription")}
-                  className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs uppercase tracking-widest py-3 px-4 rounded-2xl transition-all hover:scale-[1.01]"
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-widest py-3.5 px-4 rounded-2xl shadow-xl shadow-indigo-600/10 transition-all hover:scale-[1.01]"
                 >
-                  Back
+                  <RefreshCw className="w-4 h-4" />
+                  Try Payment Again
+                </button>
+                <button
+                  onClick={() => router.push("/")}
+                  className="w-full flex items-center justify-center gap-2 border border-white/10 hover:bg-white/5 text-slate-300 font-bold text-xs uppercase tracking-widest py-3 px-4 rounded-2xl transition-colors"
+                >
+                  Go to Dashboard
                 </button>
               </div>
             </div>

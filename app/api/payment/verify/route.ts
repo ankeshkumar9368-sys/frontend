@@ -85,10 +85,36 @@ export async function POST(req: Request) {
         userId
       });
     } else {
+      const failedStatus = orderData?.order_status || "FAILED";
+      
+      if (db) {
+        try {
+          let uId = orderData.customer_details?.customer_id;
+          if (!uId && orderId.startsWith("ord_")) {
+            const parts = orderId.split("_");
+            if (parts.length >= 2) uId = parts[1];
+          }
+          await db.collection("payments").doc(orderId).set({
+            userId: uId || "guest",
+            orderId: orderId,
+            amount: orderData.order_amount || 399,
+            status: failedStatus,
+            paymentGateway: "Cashfree PG",
+            customerName: orderData.customer_details?.customer_name || "Academic Achiever",
+            email: orderData.customer_details?.customer_email || "student@achivox.online",
+            phone: orderData.customer_details?.customer_phone || "9999999999",
+            gatewayResponse: orderData,
+            updatedAt: admin ? admin.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+          }, { merge: true });
+        } catch (e: any) {
+          console.warn("Firestore failed payment update warning:", e.message);
+        }
+      }
+
       return NextResponse.json({
         success: false,
-        status: orderData?.order_status || "UNKNOWN",
-        message: `Payment status is ${orderData?.order_status || "PENDING"}. If amount was debited, it will reflect within 5 minutes.`
+        status: failedStatus,
+        message: `Payment status is ${failedStatus}. You can try paying again or return to dashboard.`
       });
     }
   } catch (error: any) {
