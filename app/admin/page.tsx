@@ -410,14 +410,15 @@ export default function AdminDashboard() {
       fetchApiKey();
       
       // 1. Real-time Users & DAU
-      const usersQuery = query(collection(db, "users"), orderBy("points", "desc"));
+      const usersQuery = collection(db, "users");
       const unsubscribeUsers = onSnapshot(usersQuery, (snapshot) => {
-        const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => (b.points || 0) - (a.points || 0));
         setRealUsers(users);
         
         const todayStr = new Date().toDateString();
         const dauCount = users.filter((u: any) => {
-            const lastActive = u.lastActiveDate instanceof Timestamp ? u.lastActiveDate.toDate() : new Date(u.lastActiveDate);
+            const lastActive = u.lastActiveDate instanceof Timestamp ? u.lastActiveDate.toDate() : new Date(u.lastActiveDate || 0);
             return lastActive.toDateString() === todayStr;
         }).length;
 
@@ -445,7 +446,7 @@ export default function AdminDashboard() {
           ...prev,
           totalUsers: users.length,
           premiumUsers: premium,
-          dau: dauCount || 1,
+          dau: dauCount || (users.length > 0 ? 1 : 0),
           totalStudyTime: totalTime,
           weakTopics
         }));
@@ -494,24 +495,50 @@ export default function AdminDashboard() {
       });
 
       // 6. Logs & Security Alerts
-      const logsQuery = query(collection(db, "system_logs"), orderBy("timestamp", "desc"), limit(50));
+      const logsQuery = collection(db, "system_logs");
       const unsubscribeLogs = onSnapshot(logsQuery, (snapshot) => {
-        setLogs(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => {
+            const timeA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : (typeof a.timestamp === 'number' ? a.timestamp : 0);
+            const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : (typeof b.timestamp === 'number' ? b.timestamp : 0);
+            return timeB - timeA;
+          })
+          .slice(0, 50);
+        setLogs(list);
       });
 
-      const alertsQuery = query(collection(db, "security_alerts"), orderBy("timestamp", "desc"), limit(50));
+      const alertsQuery = collection(db, "security_alerts");
       const unsubscribeAlerts = onSnapshot(alertsQuery, (snapshot) => {
-        setSecurityAlerts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => {
+            const timeA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : (typeof a.timestamp === 'number' ? a.timestamp : 0);
+            const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : (typeof b.timestamp === 'number' ? b.timestamp : 0);
+            return timeB - timeA;
+          })
+          .slice(0, 50);
+        setSecurityAlerts(list);
       });
 
-      const broadcastsQuery = query(collection(db, "broadcasts"), orderBy("createdAt", "desc"));
+      const broadcastsQuery = collection(db, "broadcasts");
       const unsubscribeBroadcasts = onSnapshot(broadcastsQuery, (snapshot) => {
-        setBroadcasts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => {
+            const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() : (a.timestamp || 0));
+            const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() : (b.timestamp || 0));
+            return timeB - timeA;
+          });
+        setBroadcasts(list);
       });
 
-      const goalReqQuery = query(collection(db, "goal_change_requests"), orderBy("createdAt", "desc"));
+      const goalReqQuery = collection(db, "goal_change_requests");
       const unsubscribeGoalRequests = onSnapshot(goalReqQuery, (snapshot) => {
-        setGoalRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => {
+            const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() : 0);
+            const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() : 0);
+            return timeB - timeA;
+          });
+        setGoalRequests(list);
       });
 
       // 7. App Config
@@ -525,7 +552,7 @@ export default function AdminDashboard() {
       });
 
       // 8. Real-time Payments
-      const paymentsQuery = query(collection(db, "payments"));
+      const paymentsQuery = collection(db, "payments");
       const unsubscribePayments = onSnapshot(paymentsQuery, (snapshot) => {
         const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
           .sort((a: any, b: any) => {
@@ -537,9 +564,15 @@ export default function AdminDashboard() {
       });
 
       // 9. Real-time Merch Orders
-      const merchQuery = query(collection(db, "merch_orders"), orderBy("orderedAt", "desc"));
+      const merchQuery = collection(db, "merch_orders");
       const unsubscribeMerch = onSnapshot(merchQuery, (snapshot) => {
-        setMerchOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => {
+            const timeA = a.orderedAt?.toDate ? a.orderedAt.toDate().getTime() : (typeof a.orderedAt === 'string' ? new Date(a.orderedAt).getTime() : 0);
+            const timeB = b.orderedAt?.toDate ? b.orderedAt.toDate().getTime() : (typeof b.orderedAt === 'string' ? new Date(b.orderedAt).getTime() : 0);
+            return timeB - timeA;
+          });
+        setMerchOrders(list);
       });
 
       return () => {
