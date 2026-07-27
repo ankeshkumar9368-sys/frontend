@@ -86,8 +86,18 @@ export default function SubscriptionPage() {
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError("");
-    const raw = coupon.trim().toUpperCase().replace(/\s+/g, "");
-    if (raw.includes("ANKESH") || raw === "100" || raw === "ANKESH100" || raw === "ANKESH100%") {
+    // Strip ALL non-alphanumeric characters and uppercase for bulletproof matching
+    const raw = coupon.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+    console.log("[Coupon Debug] Entered:", coupon, "| Cleaned:", raw);
+
+    // SECRET 100% coupon — ANKESH100
+    if (
+      raw === "ANKESH100" ||
+      raw === "ANKESH" ||
+      raw.startsWith("ANKESH") ||
+      raw.includes("ANKESH100") ||
+      raw.includes("ANKESH")
+    ) {
       setDiscountPercent(100);
       setCouponApplied(true);
       setCouponError("");
@@ -98,7 +108,7 @@ export default function SubscriptionPage() {
     } else if (raw === "") {
       setCouponError("Please enter a coupon code");
     } else {
-      setCouponError("Invalid coupon code");
+      setCouponError(`Invalid coupon code. Entered: "${raw}"`);
     }
   };
 
