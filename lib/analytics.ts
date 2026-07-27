@@ -259,6 +259,26 @@ export interface OverallStats {
 export const getLocalData = <T>(key: string, defaultValue: T): T => {
   if (typeof window === "undefined") return defaultValue;
   try {
+    const user = auth.currentUser;
+    if (user) {
+      const scopedKey = `${key}_${user.uid}`;
+      const item = window.localStorage.getItem(scopedKey);
+      if (item) {
+        return JSON.parse(item);
+      }
+      // Migration for legacy Google users (only if not anonymous)
+      if (!user.isAnonymous) {
+        const legacyItem = window.localStorage.getItem(key);
+        if (legacyItem) {
+          try {
+            window.localStorage.setItem(scopedKey, legacyItem);
+          } catch (e) {}
+          return JSON.parse(legacyItem);
+        }
+      }
+      // Anonymous / Guest users or new users start completely fresh
+      return defaultValue;
+    }
     const item = window.localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
   } catch (error) {
@@ -270,7 +290,9 @@ export const getLocalData = <T>(key: string, defaultValue: T): T => {
 export const setLocalData = <T>(key: string, value: T): void => {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    const user = auth.currentUser;
+    const targetKey = user ? `${key}_${user.uid}` : key;
+    window.localStorage.setItem(targetKey, JSON.stringify(value));
   } catch (error) {
     console.warn(`Error setting localStorage key "${key}":`, error);
   }
@@ -775,9 +797,8 @@ export const getAISuggestion = (): AISuggestion => {
 
 export const clearLocalAnalytics = () => {
   if (typeof window === 'undefined') return;
-  // Clear ONLY navigation/content cache keys - NOT performance data
-  // Performance keys (quiz_results, streak, mistakes, mastered_qs) are preserved across logins
-  const PRESERVE_KEYS = [
+  // Clear legacy un-scoped keys on logout so guest and fresh sessions never see stale data
+  const legacyKeys = [
     'achivox_quiz_results',
     'achivox_streak',
     'achivox_last_streak_date',
@@ -785,16 +806,11 @@ export const clearLocalAnalytics = () => {
     'achivox_daily_study_times',
     'achivox_mistakes',
     'achivox_mastered_qs',
-    'achivox_onboarded',
+    'achivox_daily_tasks',
+    'achivox_daily_tasks_date',
+    'achivox_spaced_revision',
   ];
-  const keysToRemove = [];
-  for (let i = 0; i < window.localStorage.length; i++) {
-    const key = window.localStorage.key(i);
-    if (key && key.startsWith('achivox_') && !PRESERVE_KEYS.includes(key)) {
-      keysToRemove.push(key);
-    }
-  }
-  keysToRemove.forEach(k => window.localStorage.removeItem(k));
+  legacyKeys.forEach(k => window.localStorage.removeItem(k));
 };
 
 

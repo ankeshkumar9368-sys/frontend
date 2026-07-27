@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RotateCcw, BookOpen, Calendar, CheckCircle, Clock, X, Brain, Flame, ChevronRight } from "lucide-react";
-import { getSpacedRevisionTopics, RevisionTopic } from "../lib/analytics";
+import { getSpacedRevisionTopics, RevisionTopic, getLocalData, setLocalData } from "../lib/analytics";
 
 interface RevisionItem {
   id: string;
@@ -72,9 +72,8 @@ export default function SpacedRevisionSystem({
 
   useEffect(() => {
     // 1. Load manual items from storage
-    const stored = localStorage.getItem("achivox_spaced_revision");
-    let manualItems: RevisionItem[] = stored ? JSON.parse(stored) : [];
-    
+    const manualItems = getLocalData<RevisionItem[]>("achivox_spaced_revision", []);
+
     // 2. Load automatic items from real-time analytics
     const autoTopics = getSpacedRevisionTopics();
     const autoItems: RevisionItem[] = autoTopics.map(t => ({
@@ -97,7 +96,7 @@ export default function SpacedRevisionSystem({
 
   const save = (updated: RevisionItem[]) => {
     setItems(updated);
-    localStorage.setItem("achivox_spaced_revision", JSON.stringify(updated));
+    setLocalData("achivox_spaced_revision", updated);
   };
 
   const handleQuality = (item: RevisionItem, quality: 0 | 1 | 2 | 3 | 4 | 5) => {

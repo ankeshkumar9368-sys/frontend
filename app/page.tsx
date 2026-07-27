@@ -20,7 +20,7 @@ import { doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, ser
 import AIDoubtSolver from "../components/AIDoubtSolver";
 import { fetchContent, fetchQuestions, ContentItem, fetchDoubtResponse, generateAIPYQs, fetchChapterNotes, generateAIQuestions, getTestBankId, generateSingleReplacementQuestion } from "../lib/content";
 import ExploreEngine from "../components/ExploreEngine";
-import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics } from "../lib/analytics";
+import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics, getLocalData, setLocalData } from "../lib/analytics";
 const MockTestEngine = dynamic(() => import("../components/MockTestEngine"));
 const SchoolTestEngine = dynamic(() => import("../components/SchoolTestEngine"));
 
@@ -409,6 +409,7 @@ export default function Home() {
         let userUnsub = null;
         let statsUnsub = null;
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setUserData(null); // Reset user state immediately on auth change
             if (user) {
                 setIsAuth(true);
                 setShowSplash(true);
@@ -420,6 +421,17 @@ export default function Home() {
                         if (userSnap.exists()) {
                             const data = userSnap.data();
                             setUserData({ id: user.uid, ...data });
+
+                            // Sync Firestore quizResults and mistakes to user-scoped storage if local is empty
+                            if (data.quizResults && data.quizResults.length > 0) {
+                                const current = getLocalData<any[]>("achivox_quiz_results", []);
+                                if (current.length === 0) setLocalData("achivox_quiz_results", data.quizResults);
+                            }
+                            if (data.mistakes && data.mistakes.length > 0) {
+                                const current = getLocalData<any[]>("achivox_mistakes", []);
+                                if (current.length === 0) setLocalData("achivox_mistakes", data.mistakes);
+                            }
+
                             if (!user.isAnonymous && !data.studentId) {
                                 const uniqueId = await generateUniqueId();
                                 await updateDoc(userRef, { studentId: uniqueId });
@@ -437,8 +449,8 @@ export default function Home() {
                             }
                             const initialData: any = {
                                 id: user.uid,
-                                name: user.displayName || "New Aspirant",
-                                email: user.email,
+                                name: user.displayName || (user.isAnonymous ? "Guest Aspirant" : "New Aspirant"),
+                                email: user.email || null,
                                 totalSolved: 0,
                                 correctAnswers: 0,
                                 streak: 0,
@@ -484,6 +496,7 @@ export default function Home() {
                 }
             } else {
                 setIsAuth(false);
+                setUserData(null);
                 if (userUnsub) userUnsub();
                 if (statsUnsub) statsUnsub();
             }
@@ -585,6 +598,7 @@ export default function Home() {
         setShowDoubtSolver(true);
     };
     const handleLogout = async ()=>{
+        setUserData(null);
         clearLocalAnalytics();
         await signOut(auth);
         router.push("/login");

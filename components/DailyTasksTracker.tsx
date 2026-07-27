@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Circle, Flame, Sparkles, BookOpen, Brain, Zap, Target } from "lucide-react";
 import confetti from "canvas-confetti";
+import { getLocalData, setLocalData } from "../lib/analytics";
 
 export type TaskType = "read_notes" | "take_test" | "quick_study" | "revise";
 
@@ -31,13 +32,13 @@ export default function DailyTasksTracker() {
   useEffect(() => {
     // Initialize or load tasks
     const today = new Date().toISOString().split("T")[0];
-    const savedDate = localStorage.getItem("achivox_daily_tasks_date");
+    const savedDate = getLocalData<string>("achivox_daily_tasks_date", "");
     let currentTasks: DailyTask[] = [];
 
     if (savedDate === today) {
-      const savedTasks = localStorage.getItem("achivox_daily_tasks");
+      const savedTasks = getLocalData<DailyTask[] | null>("achivox_daily_tasks", null);
       if (savedTasks) {
-        currentTasks = JSON.parse(savedTasks);
+        currentTasks = savedTasks;
       }
     }
 
@@ -51,8 +52,8 @@ export default function DailyTasksTracker() {
         icon: t.icon, // Won't stringify well, we will re-map below
         color: t.color
       }));
-      localStorage.setItem("achivox_daily_tasks_date", today);
-      localStorage.setItem("achivox_daily_tasks", JSON.stringify(currentTasks.map(t => ({...t, icon: null}))));
+      setLocalData("achivox_daily_tasks_date", today);
+      setLocalData("achivox_daily_tasks", currentTasks.map(t => ({...t, icon: null})));
     }
 
     // Remap icons since they are lost in JSON stringify
@@ -80,7 +81,7 @@ export default function DailyTasksTracker() {
         });
 
         if (updated) {
-          localStorage.setItem("achivox_daily_tasks", JSON.stringify(newTasks.map(n => ({...n, icon: null}))));
+          setLocalData("achivox_daily_tasks", newTasks.map(n => ({...n, icon: null})));
           checkAllCompleted(newTasks);
         }
         return newTasks;
