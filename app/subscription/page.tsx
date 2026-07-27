@@ -403,7 +403,7 @@ export default function SubscriptionPage() {
           </form>
           {couponApplied && (
             <p className="text-xs font-bold text-emerald-600 mt-2 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Coupon 'SCHOOL20' applied! Extra 20% OFF applied across all plans.
+              <CheckCircle2 className="w-3.5 h-3.5" /> {discountPercent === 100 ? "🎉 Secret Coupon Applied! 100% FREE Pro Access Unlocked." : `Coupon applied! Extra ${discountPercent}% OFF applied across all plans.`}
             </p>
           )}
           {couponError && (
