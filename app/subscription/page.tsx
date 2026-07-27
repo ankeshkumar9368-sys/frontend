@@ -86,16 +86,16 @@ export default function SubscriptionPage() {
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError("");
-    const cleanCode = coupon.trim().toUpperCase().replace(/\s+/g, "");
-    if (cleanCode === "ANKESH100" || cleanCode === "ANKESH" || cleanCode.includes("ANKESH100")) {
+    const raw = coupon.trim().toUpperCase().replace(/\s+/g, "");
+    if (raw.includes("ANKESH") || raw === "100" || raw === "ANKESH100" || raw === "ANKESH100%") {
       setDiscountPercent(100);
       setCouponApplied(true);
       setCouponError("");
-    } else if (["SCHOOL20", "ACHIVOX20", "EXAM20", "ACHIVOX"].includes(cleanCode)) {
+    } else if (["SCHOOL20", "ACHIVOX20", "EXAM20", "ACHIVOX"].includes(raw)) {
       setDiscountPercent(20);
       setCouponApplied(true);
       setCouponError("");
-    } else if (cleanCode === "") {
+    } else if (raw === "") {
       setCouponError("Please enter a coupon code");
     } else {
       setCouponError("Invalid coupon code");
