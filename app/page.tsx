@@ -50,6 +50,7 @@ import SpacedRevisionSystem from "../components/SpacedRevisionSystem";
 import SystemFlowModal from "../components/SystemFlowModal";
 import LandingPage from "../components/LandingPage";
 import OnboardingFlow from "../components/OnboardingFlow";
+const OfferBanner = dynamic(() => import("../components/OfferBanner"), { ssr: false });
 // Subscriptions removed
 import GoalSelector from "../components/GoalSelector";
 import AILoadingOverlay from "../components/AILoadingOverlay";
@@ -1046,6 +1047,9 @@ export default function Home() {
                     }
                 })
             }),
+
+            /* Offer Banner — only for non-subscribed users */
+            !userData?.isPro && /*#__PURE__*/ _jsx(OfferBanner, {}),
 
             /*#__PURE__*/ _jsxs("header", {
                 className: "px-4 py-3 flex justify-between items-center shrink-0 z-50",
