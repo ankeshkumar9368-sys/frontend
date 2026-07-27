@@ -28,8 +28,13 @@ export default function SubscriptionPage() {
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponError, setCouponError] = useState("");
 
-  // Ticking Timer State (23:59:18)
-  const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 18 });
+  // Real Persistent Timer — stored in localStorage so it survives page refresh
+  const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 59 });
+  const [offerExpired, setOfferExpired] = useState(false);
+  // Offer prices — increase when timer expires
+  const launchPrice = offerExpired ? 599 : 399;   // was ₹399, becomes ₹599
+  const proAnnualPrice = offerExpired ? 699 : 499; // was ₹499, becomes ₹699
+  const proMonthlyPrice = offerExpired ? 99 : 79;  // was ₹79, becomes ₹99
 
   // Offer Rotator
   const [offerIndex, setOfferIndex] = useState(0);
@@ -54,16 +59,37 @@ export default function SubscriptionPage() {
     return () => unsubscribe();
   }, []);
 
-  // Countdown Timer
+  // Real Persistent Countdown Timer
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
-        if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        return { hours: 23, minutes: 59, seconds: 59 };
-      });
-    }, 1000);
+    const OFFER_KEY = "achivox_offer_deadline";
+    const OFFER_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+    let deadline: number;
+    const stored = localStorage.getItem(OFFER_KEY);
+    if (stored) {
+      deadline = parseInt(stored, 10);
+    } else {
+      deadline = Date.now() + OFFER_DURATION_MS;
+      localStorage.setItem(OFFER_KEY, String(deadline));
+    }
+
+    const updateTimer = () => {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) {
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+        setOfferExpired(true);
+        return;
+      }
+      const totalSecs = Math.floor(remaining / 1000);
+      const hours = Math.floor(totalSecs / 3600);
+      const minutes = Math.floor((totalSecs % 3600) / 60);
+      const seconds = totalSecs % 60;
+      setTimeLeft({ hours, minutes, seconds });
+      setOfferExpired(false);
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -317,16 +343,38 @@ export default function SubscriptionPage() {
 
       {/* 3. LIMITED TIME LAUNCH OFFER (GLOWING FIRE CARD) */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 mb-8 sm:mb-10">
-        <div className="relative rounded-3xl p-1 bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 shadow-2xl shadow-amber-500/20">
+        <div className={`relative rounded-3xl p-1 shadow-2xl ${
+          offerExpired
+            ? "bg-gradient-to-r from-slate-500 via-slate-600 to-slate-500 shadow-slate-500/20"
+            : timeLeft.hours === 0 && timeLeft.minutes < 30
+              ? "bg-gradient-to-r from-rose-600 via-red-500 to-rose-600 shadow-rose-500/30 animate-pulse"
+              : timeLeft.hours < 2
+                ? "bg-gradient-to-r from-orange-500 via-rose-500 to-orange-500 shadow-orange-500/20"
+                : "bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 shadow-amber-500/20"
+        }`}>
           <div className="bg-gradient-to-b from-slate-900 to-slate-950 text-white rounded-[22px] p-5 sm:p-8 relative overflow-hidden">
             
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
               
               <div className="text-center lg:text-left space-y-2 w-full lg:w-auto">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-black uppercase tracking-wider animate-pulse">
-                  <Flame className="w-4 h-4 text-rose-400 fill-rose-400" />
-                  🔥 Launch Offer - Save 60% OFF
-                </div>
+                {offerExpired ? (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-500/30 border border-slate-400/40 text-slate-300 text-xs font-black uppercase tracking-wider">
+                    ⏰ Launch Offer Expired — Standard Price Now Active
+                  </div>
+                ) : (
+                  <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider animate-pulse ${
+                    timeLeft.hours === 0 && timeLeft.minutes < 10
+                      ? "bg-red-500/30 border border-red-400/50 text-red-300"
+                      : timeLeft.hours < 2
+                        ? "bg-orange-500/20 border border-orange-500/40 text-orange-300"
+                        : "bg-rose-500/20 border border-rose-500/40 text-rose-300"
+                  }`}>
+                    <Flame className={`w-4 h-4 fill-current ${
+                      timeLeft.hours === 0 && timeLeft.minutes < 10 ? "text-red-400" : "text-rose-400"
+                    }`} />
+                    🔥 Launch Offer — Save 60% OFF
+                  </div>
+                )}
 
                 <h2 className="text-xl sm:text-3xl font-black text-white">
                   Get Full Year Premium Access
@@ -337,51 +385,93 @@ export default function SubscriptionPage() {
                 </p>
 
                 <div className="flex items-baseline justify-center lg:justify-start gap-3 pt-1">
-                  <span className="text-slate-400 line-through text-base sm:text-lg font-bold">₹999</span>
-                  <span className="text-3xl sm:text-4xl font-black text-amber-400">
-                    ₹{discountPercent > 0 ? Math.round(399 * (1 - discountPercent / 100)) : 399}
+                  {offerExpired ? (
+                    <span className="text-slate-400 line-through text-base sm:text-lg font-bold">₹399</span>
+                  ) : (
+                    <span className="text-slate-400 line-through text-base sm:text-lg font-bold">₹999</span>
+                  )}
+                  <span className={`text-3xl sm:text-4xl font-black ${
+                    offerExpired ? "text-slate-300" : "text-amber-400"
+                  }`}>
+                    ₹{discountPercent > 0 ? Math.round(launchPrice * (1 - discountPercent / 100)) : launchPrice}
                   </span>
-                  <span className="text-[10px] sm:text-xs font-bold text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-                    SAVE ₹600 TODAY
-                  </span>
+                  {!offerExpired && (
+                    <span className="text-[10px] sm:text-xs font-bold text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                      SAVE ₹{999 - launchPrice} TODAY
+                    </span>
+                  )}
+                  {offerExpired && (
+                    <span className="text-[10px] sm:text-xs font-bold text-rose-300 bg-rose-500/20 px-2.5 py-0.5 rounded-full border border-rose-500/30">
+                      OFFER ENDED
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div className="flex flex-col items-center lg:items-end gap-3.5 shrink-0 w-full lg:w-auto">
-                <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-2.5 rounded-2xl text-center w-full sm:w-auto">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-1 flex items-center justify-center gap-1">
-                    <Clock className="w-3 h-3 text-amber-400" /> Offer Expires In
-                  </p>
-                  <div className="flex items-center justify-center gap-1.5 text-lg sm:text-xl font-black font-mono text-amber-300">
-                    <span className="bg-slate-900/80 px-2 py-1 rounded-lg border border-white/10">
-                      {String(timeLeft.hours).padStart(2, "0")}
-                    </span>
-                    <span>:</span>
-                    <span className="bg-slate-900/80 px-2 py-1 rounded-lg border border-white/10">
-                      {String(timeLeft.minutes).padStart(2, "0")}
-                    </span>
-                    <span>:</span>
-                    <span className="bg-slate-900/80 px-2 py-1 rounded-lg border border-white/10">
-                      {String(timeLeft.seconds).padStart(2, "0")}
-                    </span>
+                {offerExpired ? (
+                  <div className="bg-slate-700/50 backdrop-blur-md border border-slate-600/40 px-4 py-3 rounded-2xl text-center w-full sm:w-auto">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">⏰ Offer Status</p>
+                    <p className="text-base font-black text-rose-400">OFFER EXPIRED</p>
+                    <p className="text-[10px] text-slate-500 mt-1">Price has increased to ₹{launchPrice}</p>
                   </div>
-                </div>
+                ) : (
+                  <div className={`backdrop-blur-md border px-4 py-2.5 rounded-2xl text-center w-full sm:w-auto transition-all ${
+                    timeLeft.hours === 0 && timeLeft.minutes < 10
+                      ? "bg-red-900/40 border-red-500/40"
+                      : timeLeft.hours < 2
+                        ? "bg-orange-900/30 border-orange-500/30"
+                        : "bg-white/10 border-white/15"
+                  }`}>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-1 flex items-center justify-center gap-1">
+                      <Clock className={`w-3 h-3 ${
+                        timeLeft.hours === 0 && timeLeft.minutes < 10
+                          ? "text-red-400"
+                          : timeLeft.hours < 2 ? "text-orange-400" : "text-amber-400"
+                      }`} /> Offer Expires In
+                    </p>
+                    <div className={`flex items-center justify-center gap-1.5 text-lg sm:text-xl font-black font-mono ${
+                      timeLeft.hours === 0 && timeLeft.minutes < 10
+                        ? "text-red-400"
+                        : timeLeft.hours < 2 ? "text-orange-300" : "text-amber-300"
+                    }`}>
+                      <span className="bg-slate-900/80 px-2 py-1 rounded-lg border border-white/10">
+                        {String(timeLeft.hours).padStart(2, "0")}
+                      </span>
+                      <span>:</span>
+                      <span className="bg-slate-900/80 px-2 py-1 rounded-lg border border-white/10">
+                        {String(timeLeft.minutes).padStart(2, "0")}
+                      </span>
+                      <span>:</span>
+                      <span className={`px-2 py-1 rounded-lg border border-white/10 ${
+                        timeLeft.hours === 0 && timeLeft.minutes < 10
+                          ? "bg-red-900/60 animate-pulse"
+                          : "bg-slate-900/80"
+                      }`}>
+                        {String(timeLeft.seconds).padStart(2, "0")}
+                      </span>
+                    </div>
+                    {timeLeft.hours < 1 && !offerExpired && (
+                      <p className="text-[9px] font-black text-red-400 mt-1 animate-pulse">⚠️ Price increasing soon!</p>
+                    )}
+                  </div>
+                )}
 
                 <button
-                  onClick={() => handleCheckout("Launch Special (₹399)", 399)}
-                  disabled={payingPlan === "Launch Special (₹399)"}
-                  className="w-full sm:w-auto bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider py-3.5 px-8 rounded-2xl shadow-xl shadow-amber-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                  onClick={() => handleCheckout(`Launch Special (₹${launchPrice})`, launchPrice)}
+                  disabled={payingPlan !== null}
+                  className={`w-full sm:w-auto font-black text-xs sm:text-sm uppercase tracking-wider py-3.5 px-8 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 ${
+                    offerExpired
+                      ? "bg-slate-600 hover:bg-slate-500 text-white shadow-slate-500/20"
+                      : "bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 shadow-amber-500/30"
+                  }`}
                 >
-                  {payingPlan === "Launch Special (₹399)" ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                      Securing Launch Price...
-                    </>
+                  {payingPlan !== null ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+                  ) : offerExpired ? (
+                    <>Get Annual Access (₹{discountPercent > 0 ? Math.round(launchPrice * (1 - discountPercent / 100)) : launchPrice})</>
                   ) : (
-                    <>
-                      <Zap className="w-4 h-4 fill-slate-950" />
-                      Claim Launch Offer (₹{discountPercent > 0 ? Math.round(399 * (1 - discountPercent / 100)) : 399})
-                    </>
+                    <><Zap className="w-4 h-4 fill-slate-950" /> Claim Launch Offer (₹{discountPercent > 0 ? Math.round(launchPrice * (1 - discountPercent / 100)) : launchPrice})</>
                   )}
                 </button>
               </div>
@@ -533,19 +623,19 @@ export default function SubscriptionPage() {
                   <div>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl sm:text-4xl font-black text-white">
-                        ₹{discountPercent > 0 ? Math.round(499 * (1 - discountPercent / 100)) : 499}
+                        ₹{discountPercent > 0 ? Math.round(proAnnualPrice * (1 - discountPercent / 100)) : proAnnualPrice}
                       </span>
                       <span className="text-xs font-bold text-slate-400">/ year</span>
                     </div>
                     <p className="text-[11px] font-bold text-emerald-400 mt-1">
-                      Only ₹1.36/day (Save ₹449 compared to monthly)
+                      {offerExpired ? "Standard price active" : "Only ₹1.36/day (Save ₹449 compared to monthly)"}
                     </p>
                   </div>
                 ) : (
                   <div>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl sm:text-4xl font-black text-white">
-                        ₹{discountPercent > 0 ? Math.round(79 * (1 - discountPercent / 100)) : 79}
+                        ₹{discountPercent > 0 ? Math.round(proMonthlyPrice * (1 - discountPercent / 100)) : proMonthlyPrice}
                       </span>
                       <span className="text-xs font-bold text-slate-400">/ month</span>
                     </div>
@@ -594,8 +684,8 @@ export default function SubscriptionPage() {
 
             <button
               onClick={() => handleCheckout(
-                proCycle === "annual" ? "Pro Annual (₹499)" : "Pro Monthly (₹79)",
-                proCycle === "annual" ? 499 : 79
+                proCycle === "annual" ? `Pro Annual (₹${proAnnualPrice})` : `Pro Monthly (₹${proMonthlyPrice})`,
+                proCycle === "annual" ? proAnnualPrice : proMonthlyPrice
               )}
               disabled={payingPlan !== null}
               className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm uppercase tracking-wider py-4 rounded-2xl shadow-xl shadow-blue-600/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
