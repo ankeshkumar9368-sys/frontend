@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Chrome, User, ShieldAlert, Sparkles, X, BookOpen, Rocket, Mic, Flame, Trophy } from "lucide-react";
+import { Chrome, User, ShieldAlert, Sparkles, X, BookOpen, Rocket, Mic, Flame, Trophy, Clock, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { auth } from "../../lib/firebase";
@@ -13,6 +13,57 @@ export default function Login() {
   const [showWarningModal, setShowWarningModal] = useState(false);
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Real-time Offer Timer (same localStorage key as subscription page)
+  const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 59 });
+  const [offerExpired, setOfferExpired] = useState(false);
+
+  useEffect(() => {
+    const OFFER_KEY = "achivox_offer_deadline";
+    const OFFER_DURATION_MS = 24 * 60 * 60 * 1000;
+    let deadline: number;
+    const stored = localStorage.getItem(OFFER_KEY);
+    if (stored) {
+      deadline = parseInt(stored, 10);
+    } else {
+      deadline = Date.now() + OFFER_DURATION_MS;
+      localStorage.setItem(OFFER_KEY, String(deadline));
+    }
+    const update = () => {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) {
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+        setOfferExpired(true);
+        return;
+      }
+      const t = Math.floor(remaining / 1000);
+      setTimeLeft({ hours: Math.floor(t / 3600), minutes: Math.floor((t % 3600) / 60), seconds: t % 60 });
+    };
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const totalMinutes = timeLeft.hours * 60 + timeLeft.minutes;
+  const bannerBg = offerExpired
+    ? "bg-slate-700"
+    : totalMinutes < 15
+      ? "bg-gradient-to-r from-red-700 via-rose-600 to-red-700"
+      : totalMinutes < 60
+        ? "bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600"
+        : totalMinutes < 240
+          ? "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500"
+          : "bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600";
+  const bannerText = offerExpired
+    ? { emoji: "⏰", label: "Offer Ended", msg: "Standard price now active", textColor: "text-slate-300" }
+    : totalMinutes < 15
+      ? { emoji: "🚨", label: "LAST CHANCE!", msg: "Price increasing in minutes — Get 60% OFF NOW!", textColor: "text-red-100" }
+      : totalMinutes < 60
+        ? { emoji: "⚡", label: "HURRY!", msg: "Less than 1 hour left! Save 60% on Pro", textColor: "text-orange-100" }
+        : totalMinutes < 240
+          ? { emoji: "🔥", label: "FLASH SALE", msg: "60% OFF Launch Offer — ₹399 Full Year Pro", textColor: "text-amber-950" }
+          : { emoji: "🎉", label: "LIMITED OFFER", msg: "Launch Special: Full Year Pro at 60% OFF — ₹399 only!", textColor: "text-emerald-50" };
 
   useEffect(() => {
     const overlayStatusBar = async () => {
@@ -96,9 +147,49 @@ export default function Login() {
   };
 
   return (
+    <div className="flex flex-col w-full min-h-[100dvh]">
+
+      {/* ━━━ REAL-TIME OFFER BANNER ━━━ */}
+      <div className={`w-full ${bannerBg} ${!offerExpired && totalMinutes < 15 ? "animate-pulse" : ""} transition-all duration-1000 z-50 sticky top-0`}>
+        <div className="max-w-6xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shrink-0 ${
+              offerExpired ? "bg-slate-600 text-slate-200" :
+              totalMinutes < 60 ? "bg-white/20 text-white" : "bg-black/20 text-white"
+            }`}>
+              {bannerText.emoji} {bannerText.label}
+            </span>
+            <span className={`text-xs font-bold ${bannerText.textColor}`}>
+              {bannerText.msg}
+            </span>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            {!offerExpired && (
+              <div className={`flex items-center gap-1 font-black font-mono text-sm ${bannerText.textColor}`}>
+                <Clock className="w-3.5 h-3.5 opacity-80" />
+                <span className="bg-black/20 px-1.5 py-0.5 rounded">{pad(timeLeft.hours)}</span>
+                <span>:</span>
+                <span className="bg-black/20 px-1.5 py-0.5 rounded">{pad(timeLeft.minutes)}</span>
+                <span>:</span>
+                <span className={`px-1.5 py-0.5 rounded ${
+                  timeLeft.hours === 0 && timeLeft.minutes < 10 ? "bg-red-900/60 animate-pulse" : "bg-black/20"
+                }`}>{pad(timeLeft.seconds)}</span>
+              </div>
+            )}
+            <button
+              onClick={() => router.push("/subscription")}
+              className="text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full border border-white/30 text-white hover:bg-white/15 transition-all hover:scale-105 active:scale-95 flex items-center gap-1 shrink-0"
+            >
+              <Zap className="w-3 h-3" />
+              {offerExpired ? "Subscribe" : "Grab Deal"}
+            </button>
+          </div>
+        </div>
+      </div>
+
     <div 
       ref={containerRef} 
-      className="w-full relative h-[100dvh] overflow-y-auto flex flex-col lg:flex-row bg-[#070518] text-white"
+      className="w-full relative flex-1 overflow-y-auto flex flex-col lg:flex-row bg-[#070518] text-white"
       style={{
         backgroundImage: "radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%)"
       }}
@@ -428,6 +519,7 @@ export default function Login() {
           </div>
         )}
       </AnimatePresence>
+    </div>
     </div>
   );
 }
