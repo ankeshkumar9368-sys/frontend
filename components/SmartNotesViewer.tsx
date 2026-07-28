@@ -455,12 +455,12 @@ export default function SmartNotesViewer({
               for (let i = 1; i <= totalPages; i++) {
                 pdf.setPage(i);
 
-                // Ultra Faint & Subtle Watermark (transparent, low visibility)
+                // Single Ultra-Subtle & Transparent Vector Watermark (2.5% opacity)
                 try {
-                  pdf.setGState(new pdf.GState({ opacity: 0.03 }));
+                  pdf.setGState(new pdf.GState({ opacity: 0.025 }));
                 } catch (e) {}
-                pdf.setFontSize(26);
-                pdf.setTextColor(245, 245, 248);
+                pdf.setFontSize(24);
+                pdf.setTextColor(150, 160, 175);
                 pdf.setFont('helvetica', 'normal');
                 pdf.text('ACHIVOX AI', pageWidth / 2, pageHeight / 2, { align: 'center', angle: 45 });
                 try {
@@ -733,10 +733,6 @@ export default function SmartNotesViewer({
           )}
         </div>
         
-        {/* PDF Watermark — only visible in export */}
-        <div className="pdf-watermark hidden pointer-events-none select-none">
-          ACHIVOX AI
-        </div>
         {/* Topic Hero — compact */}
         <div className={`mx-4 mt-4 mb-3 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden ${
           mode === "remedial" ? "bg-gradient-to-br from-amber-500 to-orange-600" : "bg-gradient-to-br from-primary/90 to-violet-600"

@@ -165,16 +165,7 @@
   li { margin-bottom: 10px !important; font-weight: 600 !important; }
   button, nav, .header-ui { display: none !important; }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  .pdf-watermark {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    font-size: 45pt; font-weight: 500;
-    color: rgba(0,0,0,0.01) !important;
-    opacity: 0.12 !important;
-    pointer-events: none; z-index: 0;
-    white-space: nowrap; display: block !important;
-    text-transform: uppercase; letter-spacing: 6px;
-  }
+  .pdf-watermark { display: none !important; }
   .pdf-content-area p, 
   .pdf-content-area h1, 
   .pdf-content-area h2, 
@@ -502,12 +493,7 @@
 .premium-pdf-mode .text-slate-800, .premium-pdf-mode .text-white,
 .premium-pdf-mode .text-slate-300, .premium-pdf-mode .text-slate-400 { color: #0f172a !important; }
 .premium-pdf-mode .bg-slate-950, .premium-pdf-mode .bg-slate-900 { background-color: #f8fafc !important; }
-.premium-pdf-mode .pdf-watermark {
-  display: block !important; position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%) rotate(-45deg);
-  font-size: 50px; font-weight: 500; color: rgba(0,0,0,0.01); opacity: 0.12; z-index: 0; pointer-events: none;
-}
+.premium-pdf-mode .pdf-watermark { display: none !important; }
 
 /* ============================================================
    ULTRA PREMIUM 3D NAVIGATION MENU & GLASS SYSTEM
