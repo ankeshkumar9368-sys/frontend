@@ -455,11 +455,17 @@ export default function SmartNotesViewer({
               for (let i = 1; i <= totalPages; i++) {
                 pdf.setPage(i);
 
-                // Watermark
-                pdf.setFontSize(38);
-                pdf.setTextColor(230, 230, 230);
-                pdf.setFont('helvetica', 'bold');
+                // Ultra Faint & Subtle Watermark (transparent, low visibility)
+                try {
+                  pdf.setGState(new pdf.GState({ opacity: 0.03 }));
+                } catch (e) {}
+                pdf.setFontSize(26);
+                pdf.setTextColor(245, 245, 248);
+                pdf.setFont('helvetica', 'normal');
                 pdf.text('ACHIVOX AI', pageWidth / 2, pageHeight / 2, { align: 'center', angle: 45 });
+                try {
+                  pdf.setGState(new pdf.GState({ opacity: 1.0 }));
+                } catch (e) {}
 
                 // Header
                 pdf.setFontSize(8);
@@ -729,7 +735,7 @@ export default function SmartNotesViewer({
         
         {/* PDF Watermark — only visible in export */}
         <div className="pdf-watermark hidden pointer-events-none select-none">
-          ExamHero AI
+          ACHIVOX AI
         </div>
         {/* Topic Hero — compact */}
         <div className={`mx-4 mt-4 mb-3 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden ${

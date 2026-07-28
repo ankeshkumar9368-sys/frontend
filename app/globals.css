@@ -168,11 +168,12 @@
   .pdf-watermark {
     position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%) rotate(-45deg);
-    font-size: 60pt; font-weight: 900;
-    color: rgba(0,0,0,0.03) !important;
+    font-size: 45pt; font-weight: 500;
+    color: rgba(0,0,0,0.01) !important;
+    opacity: 0.12 !important;
     pointer-events: none; z-index: 0;
     white-space: nowrap; display: block !important;
-    text-transform: uppercase; letter-spacing: 10px;
+    text-transform: uppercase; letter-spacing: 6px;
   }
   .pdf-content-area p, 
   .pdf-content-area h1, 
@@ -505,7 +506,7 @@
   display: block !important; position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) rotate(-45deg);
-  font-size: 100px; color: rgba(0,0,0,0.03); z-index: 0; pointer-events: none;
+  font-size: 50px; font-weight: 500; color: rgba(0,0,0,0.01); opacity: 0.12; z-index: 0; pointer-events: none;
 }
 
 /* ============================================================
