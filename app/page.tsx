@@ -6,7 +6,7 @@ import {
   ChevronRight, FileSpreadsheet, Activity, BookText, 
   GraduationCap, Building2, LogOut, TrendingUp, Trophy, 
   CheckCircle2, Zap, RotateCcw, Plus, Clock, Sparkles, X, Loader2, LayoutDashboard, Brain, Lock, Bell, BellOff, ArrowDownRight,
-  Wrench, Info, Map, BarChart2, BarChart3, Star, Shield, Book, Gift, PartyPopper, Heart, Bookmark, Settings, Share2, ShieldCheck, UserPlus, Crown, PenTool
+  Wrench, Info, Map, BarChart2, BarChart3, Star, Shield, Book, Gift, PartyPopper, Heart, Bookmark, Settings, Share2, ShieldCheck, UserPlus, Crown, PenTool, Wallet
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -1248,19 +1248,23 @@ export default function Home() {
                                     })
                                 ]
                             }),
-                            /*#__PURE__*/ _jsx(motion.button, {
-                                whileHover: {
-                                    scale: 1.1,
-                                    translateY: -2
-                                },
-                                whileTap: {
-                                    scale: 0.9
-                                },
+                            /* Sleek Header Referral Wallet Pill Badge */
+                            /*#__PURE__*/ _jsxs(motion.div, {
                                 onClick: ()=>setShowReferralCenter(true),
-                                className: "glass-icon-3d w-9 h-9 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400",
-                                children: /*#__PURE__*/ _jsx(UserPlus, {
-                                    className: "w-4 h-4"
-                                })
+                                whileHover: { scale: 1.05, translateY: -2 },
+                                whileTap: { scale: 0.95 },
+                                className: "glass-icon-3d flex items-center gap-1.5 px-3 py-1.5 rounded-2xl cursor-pointer bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-black text-xs shadow-sm",
+                                children: [
+                                    /*#__PURE__*/ _jsx(Wallet, {
+                                        className: "w-4 h-4 text-emerald-500"
+                                    }),
+                                    /*#__PURE__*/ _jsxs("span", {
+                                        children: [
+                                            "₹",
+                                            userData?.referralEarnings || 0
+                                        ]
+                                    })
+                                ]
                             }),
                             /*#__PURE__*/ _jsx(motion.button, {
                                 whileHover: {
