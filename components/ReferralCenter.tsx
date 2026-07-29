@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, Gift, Share2, Copy, CheckCircle, Award, Sparkles, UserPlus, 
-  Clock, CheckCircle2, Wallet, ArrowRight, ShieldAlert, AlertCircle, Info, ChevronRight, TrendingUp
+  Clock, CheckCircle2, Wallet, ArrowRight, ShieldAlert, AlertCircle, Info, ChevronRight, TrendingUp, Send
 } from "lucide-react";
 import { getReferralCode, processReferralCode, ReferralItem } from "../lib/referral";
+import { requestPayout, getUserPayoutHistory, PayoutRequest } from "../lib/payouts";
 
 interface ReferralCenterProps {
   userData: any;
@@ -20,7 +21,16 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"refer" | "tracking" | "terms">("refer");
+  const [activeTab, setActiveTab] = useState<"refer" | "tracking" | "payouts" | "terms">("refer");
+
+  // Payout Modal States
+  const [showPayoutModal, setShowPayoutModal] = useState(false);
+  const [upiId, setUpiId] = useState("");
+  const [payoutAmount, setPayoutAmount] = useState<string>("");
+  const [payoutLoading, setPayoutLoading] = useState(false);
+  const [payoutError, setPayoutError] = useState("");
+  const [payoutSuccess, setPayoutSuccess] = useState("");
+  const [payoutHistory, setPayoutHistory] = useState<PayoutRequest[]>([]);
 
   const userId = userData?.id || "";
   const myCode = getReferralCode(userId);
@@ -33,6 +43,12 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
   const rawReferrals: ReferralItem[] = userData?.referrals || [];
   const pendingReferrals = rawReferrals.filter(r => r.status === "pending");
   const completedReferrals = rawReferrals.filter(r => r.status === "completed");
+
+  useEffect(() => {
+    if (userId) {
+      getUserPayoutHistory(userId).then(setPayoutHistory);
+    }
+  }, [userId]);
 
   const handleCopy = (textToCopy: string) => {
     navigator.clipboard.writeText(textToCopy);
@@ -79,6 +95,50 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
     }
   };
 
+  const handlePayoutSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPayoutError("");
+    setPayoutSuccess("");
+
+    const numAmount = Number(payoutAmount);
+    if (!upiId || !upiId.includes("@")) {
+      setPayoutError("Please enter a valid UPI ID (e.g. name@upi or phone@paytm).");
+      return;
+    }
+    if (!numAmount || numAmount < 50) {
+      setPayoutError("Minimum withdrawal amount is ₹50.");
+      return;
+    }
+    if (numAmount > referralEarnings) {
+      setPayoutError(`Amount exceeds available balance of ₹${referralEarnings}.`);
+      return;
+    }
+
+    setPayoutLoading(true);
+    try {
+      const res = await requestPayout(
+        userId,
+        userData.name || "Student",
+        userData.email || "Student",
+        upiId,
+        numAmount
+      );
+      setPayoutSuccess(res.message);
+      // Refresh history
+      const updatedHistory = await getUserPayoutHistory(userId);
+      setPayoutHistory(updatedHistory);
+      setTimeout(() => {
+        setShowPayoutModal(false);
+        setPayoutSuccess("");
+        setPayoutAmount("");
+      }, 3000);
+    } catch (err: any) {
+      setPayoutError(err.message || "Failed to submit payout request.");
+    } finally {
+      setPayoutLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[300] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <motion.div
@@ -111,10 +171,10 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-black text-white tracking-tight">Refer & Earn ₹50</h2>
                 <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  Per Subscription
+                  1-Yr Pro Sub
                 </span>
               </div>
-              <p className="text-xs text-slate-400 font-medium">Earn ₹50 cash for every friend who subscribes!</p>
+              <p className="text-xs text-slate-400 font-medium">Earn ₹50 cash for every friend who subscribes to 1-Yr Pro!</p>
             </div>
           </div>
 
@@ -131,9 +191,16 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
                 </div>
               </div>
               
-              <div className="text-right">
-                <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-lg bg-amber-400/10 text-amber-400 border border-amber-400/20">
-                  {isMaxReached ? "Max Cap Reached" : `Cap: ₹${MAX_PAYOUT}`}
+              <div className="text-right flex flex-col items-end gap-1.5">
+                <button
+                  onClick={() => setShowPayoutModal(true)}
+                  disabled={referralEarnings < 50}
+                  className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-black text-xs px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-md transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Wallet className="w-3.5 h-3.5" /> Withdraw (UPI)
+                </button>
+                <span className="text-[9px] font-black uppercase text-amber-400">
+                  {referralEarnings < 50 ? "Min ₹50 required" : "Processed in 72h"}
                 </span>
               </div>
             </div>
@@ -171,30 +238,38 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
           </div>
 
           {/* Tabs Navigation */}
-          <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+          <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px]">
             <button
               onClick={() => setActiveTab("refer")}
-              className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-2 rounded-lg font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 ${
                 activeTab === "refer" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-white"
               }`}
             >
-              <Share2 className="w-3.5 h-3.5" /> Share & Link
+              <Share2 className="w-3.5 h-3.5" /> Share
             </button>
             <button
               onClick={() => setActiveTab("tracking")}
-              className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-2 rounded-lg font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 ${
                 activeTab === "tracking" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-white"
               }`}
             >
               <UserPlus className="w-3.5 h-3.5" /> Friends ({rawReferrals.length})
             </button>
             <button
+              onClick={() => setActiveTab("payouts")}
+              className={`flex-1 py-2 rounded-lg font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 ${
+                activeTab === "payouts" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <Wallet className="w-3.5 h-3.5" /> Payouts ({payoutHistory.length})
+            </button>
+            <button
               onClick={() => setActiveTab("terms")}
-              className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-2 rounded-lg font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 ${
                 activeTab === "terms" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-white"
               }`}
             >
-              <Info className="w-3.5 h-3.5" /> Rules & T&C
+              <Info className="w-3.5 h-3.5" /> Rules
             </button>
           </div>
 
@@ -329,7 +404,53 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
             </div>
           )}
 
-          {/* TAB 3: TERMS & CONDITIONS */}
+          {/* TAB 3: PAYOUT HISTORY */}
+          {activeTab === "payouts" && (
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-1 scrollbar-thin">
+              <div className="flex justify-between items-center px-1 text-xs text-slate-400 font-bold">
+                <span>Requested Date / UPI</span>
+                <span>Amount & Status</span>
+              </div>
+
+              {payoutHistory.length === 0 ? (
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center space-y-2">
+                  <Wallet className="w-10 h-10 text-slate-600 mx-auto" />
+                  <p className="text-sm font-black text-slate-300">No payout requests yet</p>
+                  <p className="text-xs text-slate-400 font-medium">When you withdraw earnings, your UPI requests will be tracked here!</p>
+                </div>
+              ) : (
+                payoutHistory.map((pay, idx) => (
+                  <div key={idx} className="bg-slate-950 border border-slate-800 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black text-white font-mono">{pay.upiId}</p>
+                      <p className="text-[10px] font-medium text-slate-400 mt-0.5">
+                        Requested: {new Date(pay.requestedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    <div className="text-right">
+                      <p className="text-sm font-black text-white">₹{pay.amount}</p>
+                      {pay.status === "approved" ? (
+                        <span className="text-[9px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                          Paid & Approved ✅
+                        </span>
+                      ) : pay.status === "rejected" ? (
+                        <span className="text-[9px] font-black text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                          Rejected ❌
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                          Pending (Within 72h) ⏳
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {/* TAB 4: TERMS & CONDITIONS */}
           {activeTab === "terms" && (
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-xs space-y-3 text-slate-300 max-h-64 overflow-y-auto">
               <h4 className="font-black text-white text-sm flex items-center gap-2 border-b border-white/10 pb-2">
@@ -347,11 +468,11 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
                 </div>
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">3.</span>
-                  <p><strong className="text-white">Maximum Cap Limit:</strong> The maximum total payout per user account is <strong className="text-amber-300">₹1,000</strong> (max 20 paid 1-year referrals).</p>
+                  <p><strong className="text-white">72-Hour Payout SLA:</strong> Payout requests submitted to your UPI ID are verified and transferred by Admin within <strong className="text-emerald-400">72 hours</strong>.</p>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">4.</span>
-                  <p><strong className="text-white">Automatic Wallet Credit:</strong> Referral earnings are automatically credited to your profile wallet upon payment verification.</p>
+                  <p><strong className="text-white">Maximum Cap Limit:</strong> The maximum total payout per user account is <strong className="text-amber-300">₹1,000</strong> (max 20 paid 1-year referrals).</p>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">5.</span>
@@ -363,6 +484,96 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
 
         </div>
       </motion.div>
+
+      {/* PAYOUT REQUEST MODAL OVERLAY */}
+      <AnimatePresence>
+        {showPayoutModal && (
+          <div className="fixed inset-0 z-[400] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-[32px] p-6 shadow-2xl relative space-y-4"
+            >
+              <button 
+                onClick={() => setShowPayoutModal(false)}
+                className="absolute top-4 right-4 p-2 bg-slate-800 rounded-full text-slate-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                  <Send className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white">Withdraw Referral Earnings</h3>
+                  <p className="text-xs text-slate-400 font-medium">Available Balance: <strong className="text-emerald-400">₹{referralEarnings}</strong></p>
+                </div>
+              </div>
+
+              {/* 72h SLA Banner */}
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 flex items-start gap-2.5">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5 animate-pulse" />
+                <p className="text-xs text-amber-200/90 font-medium leading-snug">
+                  Payouts are verified and transferred to your UPI ID within <strong>72 hours</strong>. Balance is deducted upon Admin approval.
+                </p>
+              </div>
+
+              <form onSubmit={handlePayoutSubmit} className="space-y-3 pt-1">
+                <div>
+                  <label className="text-[11px] font-black uppercase text-slate-400 tracking-wider block mb-1">
+                    Your UPI ID (e.g. name@upi, phone@paytm)
+                  </label>
+                  <input 
+                    type="text"
+                    required
+                    value={upiId}
+                    onChange={(e) => setUpiId(e.target.value.toLowerCase())}
+                    placeholder="e.g. 9876543210@paytm"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm font-mono font-bold text-white placeholder:text-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-black uppercase text-slate-400 tracking-wider block mb-1">
+                    Amount to Withdraw (₹)
+                  </label>
+                  <input 
+                    type="number"
+                    required
+                    min={50}
+                    max={referralEarnings}
+                    value={payoutAmount}
+                    onChange={(e) => setPayoutAmount(e.target.value)}
+                    placeholder={`Enter amount (Min ₹50, Max ₹${referralEarnings})`}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                  />
+                </div>
+
+                {payoutError && (
+                  <p className="text-red-400 text-xs font-bold text-center">{payoutError}</p>
+                )}
+
+                {payoutSuccess && (
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-emerald-400 text-xs font-bold text-center flex items-center justify-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>{payoutSuccess}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={payoutLoading || !upiId || !payoutAmount}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-black py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-all disabled:opacity-50"
+                >
+                  {payoutLoading ? <Sparkles className="w-5 h-5 animate-spin" /> : "Submit Payout Request"}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

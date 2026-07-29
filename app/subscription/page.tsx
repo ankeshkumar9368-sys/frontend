@@ -109,32 +109,26 @@ export default function SubscriptionPage() {
     return () => clearInterval(countTimer);
   }, []);
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError("");
-    // Strip ALL non-alphanumeric characters and uppercase for bulletproof matching
     const raw = coupon.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
-    console.log("[Coupon Debug] Entered:", coupon, "| Cleaned:", raw);
 
-    // SECRET 100% coupon — ANKESH100
-    if (
-      raw === "ANKESH100" ||
-      raw === "ANKESH" ||
-      raw.startsWith("ANKESH") ||
-      raw.includes("ANKESH100") ||
-      raw.includes("ANKESH")
-    ) {
-      setDiscountPercent(100);
-      setCouponApplied(true);
-      setCouponError("");
-    } else if (["SCHOOL20", "ACHIVOX20", "EXAM20", "ACHIVOX"].includes(raw)) {
-      setDiscountPercent(20);
-      setCouponApplied(true);
-      setCouponError("");
-    } else if (raw === "") {
+    if (!raw) {
       setCouponError("Please enter a coupon code");
-    } else {
-      setCouponError(`Invalid coupon code. Entered: "${raw}"`);
+      return;
+    }
+
+    try {
+      const { validateAndApplyCoupon } = await import("../../lib/coupons");
+      const result = await validateAndApplyCoupon(raw, user?.uid || "", user?.email || "");
+      if (result.success) {
+        setDiscountPercent(result.discountPercent);
+        setCouponApplied(true);
+        setCouponError("");
+      }
+    } catch (err: any) {
+      setCouponError(err.message || `Invalid coupon code: "${raw}"`);
     }
   };
 

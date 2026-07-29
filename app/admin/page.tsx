@@ -1,3 +1,5 @@
+import { approvePayoutRequest, rejectPayoutRequest } from "../../lib/payouts";
+import { createCouponCode, deleteCouponCode } from "../../lib/coupons";
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,7 +11,7 @@ import {
   ShieldCheck, Zap, Activity, Globe, Eye, 
   MoreVertical, AlertTriangle, Key, User, 
   ArrowUpRight, ArrowDownRight, Wallet, Cpu, Plus, Star, Gift, Ticket, Send,
-  MessageSquare, Trash2, X, ShoppingBag, Target, Truck, MapPin, Phone, Coins
+  MessageSquare, Trash2, X, ShoppingBag, Target, Truck, MapPin, Phone, Coins, UserPlus, Percent
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth, db } from "../../lib/firebase";
@@ -134,6 +136,16 @@ export default function AdminDashboard() {
     }
   };
   
+
+  // NEW ADMIN TABS STATES (Payouts, Lineage, Coupons)
+  const [payoutRequests, setPayoutRequests] = useState<any[]>([]);
+  const [couponsList, setCouponsList] = useState<any[]>([]);
+  const [referralSearch, setReferralSearch] = useState("");
+  const [newCouponCode, setNewCouponCode] = useState("");
+  const [newCouponDiscount, setNewCouponDiscount] = useState("100");
+  const [newCouponPlan, setNewCouponPlan] = useState("Achivox Pro 1-Year");
+  const [newCouponMaxUses, setNewCouponMaxUses] = useState("500");
+
   // PAYMENTS STATES
   const [payments, setPayments] = useState<any[]>([]);
   const [resolvingPayment, setResolvingPayment] = useState<any>(null);
@@ -427,6 +439,21 @@ export default function AdminDashboard() {
     if (isAdmin) {
       fetchApiKey();
       
+      
+      // Listen to Payout Requests
+      const unsubscribePayouts = onSnapshot(collection(db, "payouts"), (snap) => {
+        const list: any[] = [];
+        snap.forEach((docSnap) => list.push({ id: docSnap.id, ...docSnap.data() }));
+        setPayoutRequests(list.sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime()));
+      });
+
+      // Listen to Coupons
+      const unsubscribeCoupons = onSnapshot(collection(db, "coupons"), (snap) => {
+        const list: any[] = [];
+        snap.forEach((docSnap) => list.push({ id: docSnap.id, ...docSnap.data() }));
+        setCouponsList(list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+      });
+
       // 1. Real-time Users & DAU
       const usersQuery = collection(db, "users");
       const unsubscribeUsers = onSnapshot(usersQuery, (snapshot) => {
@@ -679,6 +706,79 @@ export default function AdminDashboard() {
   };
 
   const [deletingGuests, setDeletingGuests] = useState(false);
+
+
+  // PAYOUT REQUEST HANDLERS
+  const handleApprovePayout = async (payoutId: string, userId: string, amount: number, upiId: string) => {
+    if (!confirm(`Approve payout request of ₹${amount} for UPI ID ${upiId}? This will automatically deduct ₹${amount} from user's wallet.`)) return;
+    try {
+      await approvePayoutRequest(payoutId, userId, amount, upiId);
+      alert(`Payout of ₹${amount} approved successfully! Wallet balance deducted.`);
+    } catch (e: any) {
+      alert("Error approving payout: " + e.message);
+    }
+  };
+
+  const handleRejectPayout = async (payoutId: string, userId: string) => {
+    const reason = prompt("Enter reason for rejection:", "Invalid UPI ID");
+    if (reason === null) return;
+    try {
+      await rejectPayoutRequest(payoutId, userId, reason);
+      alert("Payout request rejected.");
+    } catch (e: any) {
+      alert("Error rejecting payout: " + e.message);
+    }
+  };
+
+  // COUPON HANDLERS
+  const handleCreateCoupon = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCouponCode || !newCouponDiscount) return alert("Code and Discount % are required");
+    try {
+      await createCouponCode(newCouponCode, Number(newCouponDiscount), newCouponPlan, Number(newCouponMaxUses));
+      alert(`Coupon code ${newCouponCode.toUpperCase()} created successfully!`);
+      setNewCouponCode("");
+      setNewCouponDiscount("100");
+    } catch (e: any) {
+      alert("Error creating coupon: " + e.message);
+    }
+  };
+
+  const handleDeleteCoupon = async (code: string) => {
+    if (!confirm(`Delete coupon code ${code}?`)) return;
+    try {
+      await deleteCouponCode(code);
+      alert(`Coupon ${code} deleted.`);
+    } catch (e: any) {
+      alert("Error deleting coupon: " + e.message);
+    }
+  };
+
+  // REFERRAL LINEAGE CALCULATOR
+  const getReferralLineageList = () => {
+    const list: any[] = [];
+    realUsers.forEach((u) => {
+      if (u.referrals && Array.isArray(u.referrals)) {
+        u.referrals.forEach((ref: any) => {
+          const friend = realUsers.find(ru => ru.id === ref.userId || ru.name === ref.name);
+          const is1Year = friend ? (friend.isSubscribed && (friend.planType === "pro" || (friend.plan && (friend.plan.includes("Pro") || friend.plan.includes("1-Year") || friend.plan.includes("Annual") || friend.plan.includes("Coupon"))))) : false;
+          list.push({
+            referrerId: u.id,
+            referrerName: u.name || "Student",
+            referrerEmail: u.email || "Student",
+            friendUserId: ref.userId,
+            friendName: ref.name || "Friend",
+            friendEmail: friend?.email || "Student",
+            joinedAt: ref.joinedAt || new Date().toISOString(),
+            status: ref.status,
+            isFriendSubscribed: friend?.isSubscribed || false,
+            isFriend1YearSub: is1Year
+          });
+        });
+      }
+    });
+    return list;
+  };
 
   const handleDeleteGuests = async () => {
     if (!confirm("Are you sure you want to delete all guest accounts? This will remove users without a linked email or student ID.")) return;
@@ -942,6 +1042,9 @@ export default function AdminDashboard() {
           {[
             { id: "Overview", icon: BarChart3, color: "text-indigo-600" },
             { id: "Payments", icon: Wallet, color: "text-emerald-500", badge: payments.filter(p => !p.resolved).length },
+            { id: "Payout Requests", icon: Wallet, color: "text-emerald-600", badge: payoutRequests.filter(p => p.status === "pending").length },
+            { id: "Referral Lineage", icon: UserPlus, color: "text-indigo-600" },
+            { id: "Coupons Manager", icon: Percent, color: "text-purple-600" },
             { id: "Live Radar", icon: Eye, color: "text-emerald-500" },
             { id: "User Activity", icon: Activity, color: "text-emerald-600" },
             { id: "Feature Performance", icon: BarChart3, color: "text-violet-600" },
@@ -1254,6 +1357,346 @@ export default function AdminDashboard() {
                 )}
               </motion.div>
             )}
+
+            {/* PAYOUT REQUESTS TAB */}
+            {activeTab === "Payout Requests" && (
+              <motion.div key="payouts" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 max-w-6xl">
+                {/* Stats Header */}
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="bg-white p-8 rounded-[36px] border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Total Payouts Requested</span>
+                      <h3 className="text-3xl font-black text-slate-800 leading-none">
+                        ₹{payoutRequests.reduce((acc: number, p: any) => acc + (p.amount || 0), 0).toLocaleString("en-IN")}
+                      </h3>
+                    </div>
+                    <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-md uppercase tracking-wider w-max mt-4">
+                      {payoutRequests.length} Total Requests
+                    </span>
+                  </div>
+
+                  <div className="bg-white p-8 rounded-[36px] border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest block mb-2">Pending Payouts (Within 72h)</span>
+                      <h3 className="text-3xl font-black text-amber-600 leading-none">
+                        {payoutRequests.filter((p: any) => p.status === "pending").length}
+                      </h3>
+                    </div>
+                    <span className="text-[9px] font-black text-amber-600 bg-amber-50 border border-amber-100 px-3 py-1 rounded-md uppercase tracking-wider w-max mt-4">
+                      Needs Admin UPI Transfer
+                    </span>
+                  </div>
+
+                  <div className="bg-white p-8 rounded-[36px] border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest block mb-2">Approved & Paid Out</span>
+                      <h3 className="text-3xl font-black text-emerald-600 leading-none">
+                        ₹{payoutRequests.filter((p: any) => p.status === "approved").reduce((acc: number, p: any) => acc + (p.amount || 0), 0).toLocaleString("en-IN")}
+                      </h3>
+                    </div>
+                    <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md uppercase tracking-wider w-max mt-4">
+                      {payoutRequests.filter((p: any) => p.status === "approved").length} Completed Payouts
+                    </span>
+                  </div>
+                </div>
+
+                {/* Payout Requests Table */}
+                <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h3 className="text-2xl font-black text-slate-800 tracking-tight">Referral Wallet Payout Requests</h3>
+                      <p className="text-slate-500 font-medium text-xs">Verify student UPI IDs and approve payout requests (SLA: 72 hours)</p>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <th className="py-4 px-4">Student</th>
+                          <th className="py-4 px-4">UPI ID</th>
+                          <th className="py-4 px-4">Requested Amount</th>
+                          <th className="py-4 px-4">Date</th>
+                          <th className="py-4 px-4">Status</th>
+                          <th className="py-4 px-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50">
+                        {payoutRequests.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="text-center py-12 text-slate-400 font-bold text-sm">No payout requests found.</td>
+                          </tr>
+                        ) : (
+                          payoutRequests.map((pay: any) => (
+                            <tr key={pay.id} className="hover:bg-slate-50/80 transition-colors">
+                              <td className="py-4 px-4">
+                                <div className="font-black text-slate-800 text-sm">{pay.userName}</div>
+                                <div className="text-xs text-slate-400">{pay.userEmail}</div>
+                              </td>
+                              <td className="py-4 px-4 font-mono text-sm font-black text-indigo-600">
+                                {pay.upiId}
+                              </td>
+                              <td className="py-4 px-4 font-black text-base text-slate-900">
+                                ₹{pay.amount}
+                              </td>
+                              <td className="py-4 px-4 text-xs font-bold text-slate-500">
+                                {pay.requestedAt ? new Date(pay.requestedAt).toLocaleString() : 'Recent'}
+                              </td>
+                              <td className="py-4 px-4">
+                                {pay.status === "approved" ? (
+                                  <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                    Paid & Approved ✅
+                                  </span>
+                                ) : pay.status === "rejected" ? (
+                                  <span className="bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                    Rejected ❌
+                                  </span>
+                                ) : (
+                                  <span className="bg-amber-50 text-amber-600 border border-amber-200 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
+                                    Pending (72h SLA) ⏳
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-4 px-4 text-right space-x-2">
+                                {pay.status === "pending" && (
+                                  <>
+                                    <button
+                                      onClick={() => handleApprovePayout(pay.id, pay.userId, pay.amount, pay.upiId)}
+                                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-black shadow-md shadow-emerald-600/20 transition-all"
+                                    >
+                                      Approve & Pay (Deduct ₹{pay.amount})
+                                    </button>
+                                    <button
+                                      onClick={() => handleRejectPayout(pay.id, pay.userId)}
+                                      className="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-xl text-xs font-black transition-all"
+                                    >
+                                      Reject
+                                    </button>
+                                  </>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* REFERRAL LINEAGE TAB */}
+            {activeTab === "Referral Lineage" && (
+              <motion.div key="referrallineage" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 max-w-6xl">
+                <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm">
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h3 className="text-2xl font-black text-slate-800 tracking-tight">Referral Lineage & Tree Tracker</h3>
+                      <p className="text-slate-500 font-medium text-xs">Track which student brought which user, their subscription status & ₹50 reward eligibility</p>
+                    </div>
+                    <input 
+                      type="text" 
+                      placeholder="Search Referrer or Friend Name..."
+                      value={referralSearch}
+                      onChange={(e) => setReferralSearch(e.target.value)}
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-500 w-64"
+                    />
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <th className="py-4 px-4">Referrer (Inviter)</th>
+                          <th className="py-4 px-4">Referred Friend (Joined)</th>
+                          <th className="py-4 px-4">Friend Subscription Status</th>
+                          <th className="py-4 px-4">Joined Date</th>
+                          <th className="py-4 px-4 text-right">Referral Reward (₹50)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50">
+                        {getReferralLineageList().length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="text-center py-12 text-slate-400 font-bold text-sm">No referral relationships recorded yet.</td>
+                          </tr>
+                        ) : (
+                          getReferralLineageList()
+                            .filter((item: any) => 
+                              item.referrerName.toLowerCase().includes(referralSearch.toLowerCase()) || 
+                              item.friendName.toLowerCase().includes(referralSearch.toLowerCase())
+                            )
+                            .map((item: any, idx: number) => (
+                              <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                                <td className="py-4 px-4">
+                                  <div className="font-black text-slate-800 text-sm flex items-center gap-2">
+                                    <UserPlus className="w-4 h-4 text-indigo-600 shrink-0" />
+                                    {item.referrerName}
+                                  </div>
+                                  <div className="text-xs text-slate-400 font-medium pl-6">{item.referrerEmail}</div>
+                                </td>
+                                <td className="py-4 px-4">
+                                  <div className="font-black text-slate-900 text-sm">{item.friendName}</div>
+                                  <div className="text-xs text-slate-400 font-medium">{item.friendEmail}</div>
+                                </td>
+                                <td className="py-4 px-4">
+                                  {item.isFriend1YearSub ? (
+                                    <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                      🌟 1-Year Pro Active
+                                    </span>
+                                  ) : item.isFriendSubscribed ? (
+                                    <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                      Pro (Short Term)
+                                    </span>
+                                  ) : (
+                                    <span className="bg-slate-100 text-slate-500 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                      Free Tier Student
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-4 px-4 text-xs font-bold text-slate-500">
+                                  {new Date(item.joinedAt).toLocaleDateString()}
+                                </td>
+                                <td className="py-4 px-4 text-right">
+                                  {item.status === "completed" ? (
+                                    <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                      Credited ₹50 🎉
+                                    </span>
+                                  ) : (
+                                    <span className="bg-amber-50 text-amber-600 border border-amber-200 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                      Pending (Needs 1-Yr Sub) ⏳
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* COUPONS MANAGER TAB */}
+            {activeTab === "Coupons Manager" && (
+              <motion.div key="coupons" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 max-w-6xl">
+                {/* Create Coupon Form */}
+                <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm">
+                  <h3 className="text-2xl font-black text-slate-800 tracking-tight mb-2">Create New Coupon Code</h3>
+                  <p className="text-xs text-slate-500 font-medium mb-6">Generate discount codes for marketing campaigns, schools, or 100% free giveaways</p>
+
+                  <form onSubmit={handleCreateCoupon} className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-1">Coupon Code</label>
+                      <input 
+                        type="text"
+                        required
+                        placeholder="e.g. NEET100"
+                        value={newCouponCode}
+                        onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-mono font-black text-slate-900 outline-none focus:border-indigo-600"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-1">Discount %</label>
+                      <input 
+                        type="number"
+                        required
+                        min={1}
+                        max={100}
+                        placeholder="e.g. 100 or 50"
+                        value={newCouponDiscount}
+                        onChange={(e) => setNewCouponDiscount(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:border-indigo-600"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-1">Max Uses Limit</label>
+                      <input 
+                        type="number"
+                        required
+                        value={newCouponMaxUses}
+                        onChange={(e) => setNewCouponMaxUses(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:border-indigo-600"
+                      />
+                    </div>
+
+                    <div className="flex items-end">
+                      <button
+                        type="submit"
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3.5 rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider"
+                      >
+                        <Plus className="w-4 h-4" /> Generate Coupon
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* Coupons Analytics Table */}
+                <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
+                  <h3 className="text-2xl font-black text-slate-800 tracking-tight mb-6">Active Coupon Codes & Usage Analytics</h3>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <th className="py-4 px-4">Coupon Code</th>
+                          <th className="py-4 px-4">Discount</th>
+                          <th className="py-4 px-4">Total Users Who Used Code</th>
+                          <th className="py-4 px-4">Created Date</th>
+                          <th className="py-4 px-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50">
+                        {couponsList.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="text-center py-12 text-slate-400 font-bold text-sm">No custom coupons generated yet. (Secret code ANKESH100 is built-in).</td>
+                          </tr>
+                        ) : (
+                          couponsList.map((c: any) => (
+                            <tr key={c.code} className="hover:bg-slate-50/80 transition-colors">
+                              <td className="py-4 px-4 font-mono font-black text-base text-indigo-600">
+                                {c.code}
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className="bg-purple-50 text-purple-700 border border-purple-200 text-xs font-black px-3 py-1 rounded-full">
+                                  {c.discountPercent}% OFF
+                                </span>
+                              </td>
+                              <td className="py-4 px-4">
+                                <div className="font-black text-slate-900 text-sm flex items-center gap-2">
+                                  <Users className="w-4 h-4 text-slate-400" />
+                                  {c.usedCount || 0} Students
+                                </div>
+                                {c.usedBy && c.usedBy.length > 0 && (
+                                  <div className="text-[10px] text-slate-400 font-medium mt-0.5 max-w-xs truncate">
+                                    Users: {c.usedBy.map((u: any) => u.userEmail || u.userId).join(", ")}
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-4 px-4 text-xs font-bold text-slate-500">
+                                {new Date(c.createdAt).toLocaleDateString()}
+                              </td>
+                              <td className="py-4 px-4 text-right">
+                                <button
+                                  onClick={() => handleDeleteCoupon(c.code)}
+                                  className="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-xl text-xs font-black transition-all"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {activeTab === "Live Radar" && (
               <motion.div key="radar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8">
                 <div className="bg-white rounded-[48px] border border-slate-100 p-10 shadow-sm">
