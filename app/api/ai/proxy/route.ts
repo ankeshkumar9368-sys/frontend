@@ -43,19 +43,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "prompt is required" }, { status: 400 });
     }
 
-    // 5. Call Gemini — fast, accurate, cost-effective gemini-1.5-flash
+    // 5. Call Gemini — 10X Fast, Highly Accurate gemini-2.0-flash with fallback
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const aiModel = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        temperature: isJsonMode ? 0.1 : 0.7,
-        maxOutputTokens: isJsonMode ? 16000 : 8192,
-      },
-    });
+    const generationConfig = {
+      temperature: isJsonMode ? 0.1 : 0.7,
+      maxOutputTokens: isJsonMode ? 16000 : 8192,
+      ...(isJsonMode ? { responseMimeType: "application/json" } : {})
+    };
 
-    const result = await aiModel.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    let text = "";
+    let usageMetadata: any = null;
+
+    try {
+      // Primary attempt: gemini-2.0-flash (10X Fast Sub-Second AI)
+      const fastModel = genAI.getGenerativeModel({
+        model: "gemini-2.0-flash",
+        generationConfig
+      });
+      const result = await fastModel.generateContent(prompt);
+      const response = await result.response;
+      text = response.text();
+      usageMetadata = response.usageMetadata;
+    } catch (primaryErr) {
+      console.warn("[proxy] gemini-2.0-flash call failed, falling back to gemini-1.5-flash:", primaryErr);
+      // Fallback attempt: gemini-1.5-flash
+      const fallbackModel = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        generationConfig
+      });
+      const result = await fallbackModel.generateContent(prompt);
+      const response = await result.response;
+      text = response.text();
+      usageMetadata = response.usageMetadata;
+    }
 
     if (!text || text.trim() === "") {
       return NextResponse.json({ error: "AI returned empty response" }, { status: 500 });
@@ -63,7 +83,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       text,
-      usageMetadata: response.usageMetadata,
+      usageMetadata,
     });
 
   } catch (err: any) {
