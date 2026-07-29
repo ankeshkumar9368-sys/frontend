@@ -2686,10 +2686,67 @@ export default function Home() {
                                             })
                                         ]
                                     }),
-
                                     /*#__PURE__*/ _jsxs("div", {
                                         className: "bg-white dark:bg-slate-900 rounded-[32px] border border-border overflow-hidden shadow-sm",
                                         children: [
+                                            /*#__PURE__*/ _jsxs("button", {
+                                                onClick: () => setShowReferralCenter(true),
+                                                className: "w-full flex items-center justify-between p-5 border-b border-border hover:bg-emerald-500/5 transition-colors bg-gradient-to-r from-emerald-500/10 via-transparent to-transparent",
+                                                children: [
+                                                    /*#__PURE__*/ _jsxs("div", {
+                                                        className: "flex items-center gap-4",
+                                                        children: [
+                                                            /*#__PURE__*/ _jsx("div", {
+                                                                className: "w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-sm",
+                                                                children: /*#__PURE__*/ _jsx(Gift, {
+                                                                    className: "w-5 h-5"
+                                                                })
+                                                            }),
+                                                            /*#__PURE__*/ _jsxs("div", {
+                                                                className: "text-left",
+                                                                children: [
+                                                                    /*#__PURE__*/ _jsxs("div", {
+                                                                        className: "flex items-center gap-2",
+                                                                        children: [
+                                                                            /*#__PURE__*/ _jsx("p", {
+                                                                                className: "text-sm font-black text-foreground",
+                                                                                children: "Refer & Earn Cash"
+                                                                            }),
+                                                                            /*#__PURE__*/ _jsx("span", {
+                                                                                className: "text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+                                                                                children: "₹50 / 1-Yr Sub"
+                                                                            })
+                                                                        ]
+                                                                    }),
+                                                                    /*#__PURE__*/ _jsxs("p", {
+                                                                        className: "text-[10px] font-bold text-slate-400 mt-0.5",
+                                                                        children: [
+                                                                            "Wallet: ₹",
+                                                                            userData?.referralEarnings || 0,
+                                                                            " / ₹1,000 • Invite friends & earn!"
+                                                                        ]
+                                                                    })
+                                                                ]
+                                                            })
+                                                        ]
+                                                    }),
+                                                    /*#__PURE__*/ _jsxs("div", {
+                                                        className: "flex items-center gap-2",
+                                                        children: [
+                                                            /*#__PURE__*/ _jsxs("span", {
+                                                                className: "text-xs font-black text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20",
+                                                                children: [
+                                                                    "₹",
+                                                                    userData?.referralEarnings || 0
+                                                                ]
+                                                            }),
+                                                            /*#__PURE__*/ _jsx(ChevronRight, {
+                                                                className: "w-5 h-5 text-slate-300"
+                                                            })
+                                                        ]
+                                                    })
+                                                ]
+                                            }),
                                             /*#__PURE__*/ _jsxs("button", {
                                                 onClick: ()=>setActiveTab("Analysis"),
                                                 className: "w-full flex items-center justify-between p-5 border-b border-border hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors",

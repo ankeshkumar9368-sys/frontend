@@ -147,6 +147,22 @@ export const processReferralRewardOnSubscription = async (subscribedUserId: stri
     // Check if referral reward for this subscription was already processed
     if (userData.referralRewardProcessed) return;
 
+    // Check if user has an active 1-Year Pro Subscription
+    const is1YearSub = userData.isSubscribed && (
+      userData.planType === "pro" || 
+      (userData.plan && (
+        userData.plan.toLowerCase().includes("pro") || 
+        userData.plan.toLowerCase().includes("year") || 
+        userData.plan.toLowerCase().includes("annual") || 
+        userData.plan.toLowerCase().includes("coupon")
+      ))
+    );
+
+    if (!is1YearSub) {
+      console.log(`[Referral] User ${subscribedUserId} subscription is not 1-Year Pro. Referral pending 1-Year purchase.`);
+      return;
+    }
+
     const referrerRef = doc(db, "users", referrerId);
     const referrerSnap = await getDoc(referrerRef);
 

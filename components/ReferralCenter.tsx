@@ -314,12 +314,12 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
                       {item.status === "completed" ? (
                         <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2.5 py-1 rounded-xl text-[10px] font-black flex items-center gap-1">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Earned ₹50 🎉</span>
+                          <span>Earned ₹50 (1-Yr) 🎉</span>
                         </div>
                       ) : (
-                        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-2.5 py-1 rounded-xl text-[10px] font-black flex items-center gap-1" title="User joined, waiting for subscription">
+                        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-2.5 py-1 rounded-xl text-[10px] font-black flex items-center gap-1" title="User joined, waiting for 1-Year subscription">
                           <Clock className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                          <span>Pending (Sub req.)</span>
+                          <span>Pending (1-Yr Sub)</span>
                         </div>
                       )}
                     </div>
@@ -339,19 +339,19 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
               <div className="space-y-2 font-medium leading-relaxed">
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">1.</span>
-                  <p><strong className="text-white">Reward Amount:</strong> You earn <strong className="text-emerald-400">₹50 cash reward</strong> for every unique friend who subscribes to Achivox Pro using your invite link/code.</p>
+                  <p><strong className="text-white">Reward Validity:</strong> You earn <strong className="text-emerald-400">₹50 cash reward</strong> when your referred friend purchases a <strong className="text-amber-300">1-Year Achivox Pro Subscription</strong>.</p>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">2.</span>
-                  <p><strong className="text-white">Real-Time Status:</strong> When a friend joins using your code, they will show as <strong className="text-amber-300">Pending</strong> until they purchase a subscription. Once paid, status updates to <strong className="text-emerald-400">Completed</strong> & ₹50 is credited.</p>
+                  <p><strong className="text-white">Real-Time Status:</strong> When a friend joins using your code, status displays <strong className="text-amber-300">Pending (1-Yr Sub)</strong> until they complete the 1-Year subscription. Once verified, ₹50 is credited instantly.</p>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">3.</span>
-                  <p><strong className="text-white">Maximum Cap Limit:</strong> The maximum total payout per user account is <strong className="text-amber-300">₹1,000</strong> (max 20 paid referrals).</p>
+                  <p><strong className="text-white">Maximum Cap Limit:</strong> The maximum total payout per user account is <strong className="text-amber-300">₹1,000</strong> (max 20 paid 1-year referrals).</p>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">4.</span>
-                  <p><strong className="text-white">Automatic Credit:</strong> Referral earnings are automatically credited to your profile wallet upon payment verification.</p>
+                  <p><strong className="text-white">Automatic Wallet Credit:</strong> Referral earnings are automatically credited to your profile wallet upon payment verification.</p>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-amber-400 font-bold">5.</span>
