@@ -1446,6 +1446,66 @@ export default function Home() {
                                                 })
                                             ]
                                         }),
+                                        /* Refer & Earn Home Banner Card */
+                                        /*#__PURE__*/ _jsxs(motion.div, {
+                                            onClick: () => setShowReferralCenter(true),
+                                            className: "relative overflow-hidden rounded-2xl p-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-lg cursor-pointer border border-emerald-400/30 transition-all hover:scale-[1.01] active:scale-[0.98] mb-3",
+                                            initial: { opacity: 0, y: 15 },
+                                            animate: { opacity: 1, y: 0 },
+                                            children: [
+                                                /*#__PURE__*/ _jsxs("div", {
+                                                    className: "flex items-center justify-between gap-3 relative z-10",
+                                                    children: [
+                                                        /*#__PURE__*/ _jsxs("div", {
+                                                            className: "flex items-center gap-3",
+                                                            children: [
+                                                                /*#__PURE__*/ _jsx("div", {
+                                                                    className: "w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20 shadow-inner",
+                                                                    children: /*#__PURE__*/ _jsx(Gift, {
+                                                                        className: "w-5 h-5 text-white"
+                                                                    })
+                                                                }),
+                                                                /*#__PURE__*/ _jsxs("div", {
+                                                                    children: [
+                                                                        /*#__PURE__*/ _jsxs("div", {
+                                                                            className: "flex items-center gap-2",
+                                                                            children: [
+                                                                                /*#__PURE__*/ _jsx("h4", {
+                                                                                    className: "text-sm font-black text-white leading-tight",
+                                                                                    children: "Refer & Earn Cash"
+                                                                                }),
+                                                                                /*#__PURE__*/ _jsx("span", {
+                                                                                    className: "text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 shadow-sm",
+                                                                                    children: "₹50 / 1-Yr Sub"
+                                                                                })
+                                                                            ]
+                                                                        }),
+                                                                        /*#__PURE__*/ _jsxs("p", {
+                                                                            className: "text-[11px] text-emerald-100 font-bold mt-0.5",
+                                                                            children: [
+                                                                                "Earn ₹50 per friend who buys 1-Year Pro! (Wallet: ₹",
+                                                                                userData?.referralEarnings || 0,
+                                                                                " / ₹1,000)"
+                                                                            ]
+                                                                        })
+                                                                    ]
+                                                                })
+                                                            ]
+                                                        }),
+                                                        /*#__PURE__*/ _jsxs("div", {
+                                                            className: "flex items-center gap-1 bg-white text-emerald-700 px-3 py-1.5 rounded-xl text-xs font-black shadow-md shrink-0",
+                                                            children: [
+                                                                "Invite",
+                                                                /*#__PURE__*/ _jsx(ChevronRight, {
+                                                                    className: "w-3.5 h-3.5"
+                                                                })
+                                                            ]
+                                                        })
+                                                    ]
+                                                })
+                                            ]
+                                        }),
+
                                         /*#__PURE__*/ _jsxs("div", {
                                             className: "grid grid-cols-2 gap-3",
                                             children: [
@@ -2963,7 +3023,14 @@ export default function Home() {
                 ].map((item, i)=>{
                     const isActive = activeTab === item.label;
                     return /*#__PURE__*/ _jsxs(motion.div, {
-                        onClick: ()=>setActiveTab(item.label),
+                        onClick: () => {
+                        setActiveTab(item.label);
+                        if (item.label === "Profile") router.push("/profile");
+                        else if (item.label === "Home") router.push("/");
+                        else if (item.label === "Explore") router.push("/explore");
+                        else if (item.label === "Tools") router.push("/tools");
+                        else if (item.label === "Analysis") router.push("/analysis");
+                    },
                         whileHover: {
                             scale: 1.05,
                             y: -2
