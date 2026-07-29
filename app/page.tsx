@@ -1124,53 +1124,6 @@ export default function Home() {
                                             color: "#8b5cf6"
                                         },
                                         children: "🎓 Academic Core"
-                                    }),
-
-                                    /* Referral Wallet & Invite Center Card */
-                                    /*#__PURE__*/ _jsxs("div", {
-                                        className: "mt-3 w-full max-w-xs overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 p-[1.5px] shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                                        onClick: () => setShowReferralCenter(true),
-                                        children: [
-                                            /*#__PURE__*/ _jsxs("div", {
-                                                className: "flex items-center justify-between gap-3 rounded-[15px] bg-slate-950 px-4 py-3 text-left text-white",
-                                                children: [
-                                                    /*#__PURE__*/ _jsxs("div", {
-                                                        className: "space-y-0.5",
-                                                        children: [
-                                                            /*#__PURE__*/ _jsxs("div", {
-                                                                className: "flex items-center gap-1.5",
-                                                                children: [
-                                                                    /*#__PURE__*/ _jsx(Gift, {
-                                                                        className: "h-4 w-4 text-emerald-400"
-                                                                    }),
-                                                                    /*#__PURE__*/ _jsx("span", {
-                                                                        className: "text-[10px] font-black uppercase tracking-wider text-emerald-400",
-                                                                        children: "EARN ₹50 PER REFERRAL"
-                                                                    })
-                                                                ]
-                                                            }),
-                                                            /*#__PURE__*/ _jsxs("p", {
-                                                                className: "text-xs font-black text-white",
-                                                                children: [
-                                                                    "Referral Wallet: ₹",
-                                                                    userData?.referralEarnings || 0,
-                                                                    " / ₹1,000"
-                                                                ]
-                                                            })
-                                                        ]
-                                                    }),
-                                                    /*#__PURE__*/ _jsxs("div", {
-                                                        className: "flex items-center gap-1 rounded-xl bg-emerald-400 px-3 py-1.5 text-xs font-black text-slate-950 shadow-md shrink-0",
-                                                        children: [
-                                                            "Refer",
-                                                            /*#__PURE__*/ _jsx(ChevronRight, {
-                                                                className: "h-3.5 w-3.5"
-                                                            })
-                                                        ]
-                                                    })
-                                                ]
-                                            })
-                                        ]
                                     })
                                 ]
                             })
