@@ -57,8 +57,12 @@ export default function VerifyPaymentPage() {
               planType: "pro",
               plan: "Achivox Pro"
             });
-            const { processReferralRewardOnSubscription } = await import("../../../lib/referral");
-            await processReferralRewardOnSubscription(auth.currentUser.uid);
+            // ✅ Use server-side API to credit referrer (bypasses Firestore security rules)
+            await fetch("/api/referral/credit", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ subscribedUserId: auth.currentUser.uid })
+            });
           }
         } catch (e) {
           console.warn("Client Firestore update fallback:", e);

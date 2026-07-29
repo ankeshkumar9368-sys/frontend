@@ -78,19 +78,25 @@ export const requestPayout = async (
 
   const docRef = await addDoc(collection(db, "payouts"), payoutData);
 
+  // ✅ Immediately deduct from wallet when user submits (not on admin approval)
+  await updateDoc(userRef, {
+    referralEarnings: increment(-amount)
+  });
+
   // Send confirmation notification to User
   await sendPrivateNotification(
     userId,
     "⌛ Payout Request Submitted",
-    `Your request for ₹${amount} to UPI ID ${cleanUpi} has been submitted! Payment will be processed within 72 hours.`,
+    `Your request for ₹${amount} to UPI ID ${cleanUpi} has been submitted! ₹${amount} has been deducted from your wallet. Payment will be processed within 72 hours.`,
     "info"
   );
 
   return {
     success: true,
     id: docRef.id,
-    message: `Payout request of ₹${amount} submitted! Processing to ${cleanUpi} within 72 hours.`
+    message: `Payout request of ₹${amount} submitted! ₹${amount} deducted from wallet. Processing to ${cleanUpi} within 72 hours.`
   };
+
 };
 
 /**
@@ -131,20 +137,17 @@ export const approvePayoutRequest = async (
     throw new Error("Missing payout ID or user ID.");
   }
 
-  // 1. Update payout document status
+  // 1. Update payout document status to approved
   const payoutRef = doc(db, "payouts", payoutId);
   await updateDoc(payoutRef, {
     status: "approved",
     approvedAt: new Date().toISOString()
   });
 
-  // 2. Deduct amount from User's referralEarnings balance
-  const userRef = doc(db, "users", userId);
-  await updateDoc(userRef, {
-    referralEarnings: increment(-amount)
-  });
+  // NOTE: Wallet was already deducted when user submitted the payout request.
+  // Do NOT deduct again here to avoid double-deduction.
 
-  // 3. Send high-priority notification to student
+  // 2. Send high-priority notification to student
   await sendPrivateNotification(
     userId,
     "🎉 Payout Processed Successfully!",
@@ -152,8 +155,9 @@ export const approvePayoutRequest = async (
     "success"
   );
 
-  return { success: true, message: `Approved payout ₹${amount} for user ${userId}. Balance deducted.` };
+  return { success: true, message: `Approved payout ₹${amount} for user ${userId}.` };
 };
+
 
 /**
  * Reject Payout Request (Called by Admin).

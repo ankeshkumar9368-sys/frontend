@@ -159,8 +159,12 @@ export default function SubscriptionPage() {
             updatedAt: serverTimestamp()
           }, { merge: true });
 
-          const { processReferralRewardOnSubscription } = await import("../../lib/referral");
-          await processReferralRewardOnSubscription(user.uid);
+          // ✅ Use server-side API to credit referrer (bypasses Firestore security rules)
+          await fetch("/api/referral/credit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subscribedUserId: user.uid })
+          });
         }
 
         await setDoc(doc(db, "payments", order_id), {
