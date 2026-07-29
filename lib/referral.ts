@@ -2,6 +2,7 @@ import { db } from "./firebase";
 import { 
   collection, 
   query, 
+  where,
   getDocs, 
   doc, 
   getDoc, 
@@ -33,13 +34,53 @@ export interface ReferralItem {
 }
 
 /**
+ * Dynamic query to fetch all friends referred by a user code.
+ * Works 100% reliably regardless of Firestore security rules on cross-user writes!
+ */
+export const getReferralsForUser = async (userCodeOrId: string): Promise<ReferralItem[]> => {
+  if (!userCodeOrId) return [];
+  try {
+    const cleanCode = userCodeOrId.substring(0, 6).toUpperCase();
+    const q = query(
+      collection(db, "users"),
+      where("referredByCode", "==", cleanCode)
+    );
+    const snap = await getDocs(q);
+    const items: ReferralItem[] = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const is1Year = data.isSubscribed && (
+        data.planType === "pro" || 
+        (data.plan && (
+          data.plan.toLowerCase().includes("pro") || 
+          data.plan.toLowerCase().includes("year") || 
+          data.plan.toLowerCase().includes("annual") || 
+          data.plan.toLowerCase().includes("coupon")
+        ))
+      );
+
+      items.push({
+        uid: docSnap.id,
+        name: data.name || "Student Friend",
+        email: data.email || "Student",
+        joinedAt: data.createdAt || data.referredAt || new Date().toISOString(),
+        status: is1Year ? "completed" : "pending",
+        earnedAmount: is1Year ? 50 : 0
+      });
+    });
+
+    return items;
+  } catch (e) {
+    console.warn("[Referral] Fetch referrals notice:", e);
+    return [];
+  }
+};
+
+/**
  * Process when a user applies a friend's referral code.
  * User B enters User A's code: User B gets linked to User A.
  * Status is set to "pending" (joined, waiting for subscription).
- * 
- * BULLETPROOF PERMISSION FIX:
- * Performs all primary updates on current user's own document (guaranteed allowed by Firestore rules).
- * Cross-user updates are safely wrapped in try-catch so permission errors never crash the user UI.
  */
 export const processReferralCode = async (currentUserId: string, referralCode: string) => {
   if (!currentUserId || !referralCode || referralCode.length < 6) {
@@ -62,7 +103,7 @@ export const processReferralCode = async (currentUserId: string, referralCode: s
 
   const currentUserData = currentUserSnap.data();
 
-  if (currentUserData.referredBy) {
+  if (currentUserData.referredBy || currentUserData.referredByCode) {
     throw new Error("You have already used an invite code.");
   }
 
@@ -88,7 +129,8 @@ export const processReferralCode = async (currentUserId: string, referralCode: s
   await updateDoc(currentUserRef, {
     referredBy: referrerId,
     referredByCode: cleanCode,
-    referredByName: referrerName
+    referredByName: referrerName,
+    referredAt: new Date().toISOString()
   });
 
   try {

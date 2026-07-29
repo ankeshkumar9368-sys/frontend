@@ -757,26 +757,67 @@ export default function AdminDashboard() {
   // REFERRAL LINEAGE CALCULATOR
   const getReferralLineageList = () => {
     const list: any[] = [];
-    realUsers.forEach((u) => {
-      if (u.referrals && Array.isArray(u.referrals)) {
-        u.referrals.forEach((ref: any) => {
-          const friend = realUsers.find(ru => ru.id === ref.userId || ru.name === ref.name);
-          const is1Year = friend ? (friend.isSubscribed && (friend.planType === "pro" || (friend.plan && (friend.plan.includes("Pro") || friend.plan.includes("1-Year") || friend.plan.includes("Annual") || friend.plan.includes("Coupon"))))) : false;
-          list.push({
-            referrerId: u.id,
-            referrerName: u.name || "Student",
-            referrerEmail: u.email || "Student",
-            friendUserId: ref.userId,
-            friendName: ref.name || "Friend",
-            friendEmail: friend?.email || "Student",
-            joinedAt: ref.joinedAt || new Date().toISOString(),
-            status: ref.status,
-            isFriendSubscribed: friend?.isSubscribed || false,
-            isFriend1YearSub: is1Year
-          });
+    const processedKeys = new Set<string>();
+
+    // 1. Scan via referredBy & referredByCode on each student
+    realUsers.forEach((student) => {
+      const refCode = student.referredByCode || (student.referredBy ? student.referredBy.substring(0, 6).toUpperCase() : null);
+      if (refCode) {
+        const referrer = realUsers.find(r => r.id.toUpperCase().startsWith(refCode) || (r.id.length >= 6 && r.id.substring(0, 6).toUpperCase() === refCode));
+        const is1Year = student.isSubscribed && (
+          student.planType === "pro" || 
+          (student.plan && (
+            student.plan.toLowerCase().includes("pro") || 
+            student.plan.toLowerCase().includes("year") || 
+            student.plan.toLowerCase().includes("annual") || 
+            student.plan.toLowerCase().includes("coupon")
+          ))
+        );
+
+        const key = `${referrer?.id || refCode}_${student.id}`;
+        processedKeys.add(key);
+
+        list.push({
+          referrerId: referrer?.id || refCode,
+          referrerName: referrer?.name || `User (${refCode})`,
+          referrerEmail: referrer?.email || "Student",
+          friendUserId: student.id,
+          friendName: student.name || "Referred Student",
+          friendEmail: student.email || "Student",
+          joinedAt: student.createdAt || student.referredAt || new Date().toISOString(),
+          status: is1Year ? "completed" : "pending",
+          isFriendSubscribed: student.isSubscribed || false,
+          isFriend1YearSub: is1Year
         });
       }
     });
+
+    // 2. Also check any referrals arrays stored on referrers
+    realUsers.forEach((u) => {
+      if (u.referrals && Array.isArray(u.referrals)) {
+        u.referrals.forEach((ref: any) => {
+          const friend = realUsers.find(ru => ru.id === ref.uid || ru.id === ref.userId || ru.name === ref.name);
+          const key = `${u.id}_${friend?.id || ref.uid}`;
+          if (!processedKeys.has(key)) {
+            processedKeys.add(key);
+            const is1Year = friend ? (friend.isSubscribed && (friend.planType === "pro" || (friend.plan && (friend.plan.toLowerCase().includes("pro") || friend.plan.toLowerCase().includes("year") || friend.plan.toLowerCase().includes("annual") || friend.plan.toLowerCase().includes("coupon"))))) : false;
+            list.push({
+              referrerId: u.id,
+              referrerName: u.name || "Student",
+              referrerEmail: u.email || "Student",
+              friendUserId: friend?.id || ref.uid,
+              friendName: friend?.name || ref.name || "Friend",
+              friendEmail: friend?.email || ref.email || "Student",
+              joinedAt: ref.joinedAt || new Date().toISOString(),
+              status: ref.status || (is1Year ? "completed" : "pending"),
+              isFriendSubscribed: friend?.isSubscribed || false,
+              isFriend1YearSub: is1Year
+            });
+          }
+        });
+      }
+    });
+
     return list;
   };
 

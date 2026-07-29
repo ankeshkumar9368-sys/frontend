@@ -31,6 +31,7 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
   const [payoutError, setPayoutError] = useState("");
   const [payoutSuccess, setPayoutSuccess] = useState("");
   const [payoutHistory, setPayoutHistory] = useState<PayoutRequest[]>([]);
+  const [dynamicReferrals, setDynamicReferrals] = useState<ReferralItem[]>([]);
 
   const userId = userData?.id || "";
   const myCode = getReferralCode(userId);
@@ -40,15 +41,22 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
   const MAX_PAYOUT = 1000;
   const isMaxReached = referralEarnings >= MAX_PAYOUT;
 
-  const rawReferrals: ReferralItem[] = userData?.referrals || [];
+  const rawReferrals: ReferralItem[] = dynamicReferrals.length > 0 ? dynamicReferrals : (userData?.referrals || []);
   const pendingReferrals = rawReferrals.filter(r => r.status === "pending");
   const completedReferrals = rawReferrals.filter(r => r.status === "completed");
 
   useEffect(() => {
     if (userId) {
       getUserPayoutHistory(userId).then(setPayoutHistory);
+      const { getReferralsForUser } = require("../lib/referral");
+      getReferralsForUser(myCode).then((items: ReferralItem[]) => {
+        const mergedMap = new Map<string, ReferralItem>();
+        (userData?.referrals || []).forEach((r: ReferralItem) => mergedMap.set(r.uid, r));
+        items.forEach((r: ReferralItem) => mergedMap.set(r.uid, r));
+        setDynamicReferrals(Array.from(mergedMap.values()));
+      });
     }
-  }, [userId]);
+  }, [userId, myCode]);
 
   const handleCopy = (textToCopy: string) => {
     navigator.clipboard.writeText(textToCopy);
