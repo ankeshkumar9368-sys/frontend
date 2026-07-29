@@ -164,6 +164,9 @@ export default function SubscriptionPage() {
             plan: "Achivox Pro (100% Coupon)",
             updatedAt: serverTimestamp()
           }, { merge: true });
+
+          const { processReferralRewardOnSubscription } = await import("../../lib/referral");
+          await processReferralRewardOnSubscription(user.uid);
         }
 
         await setDoc(doc(db, "payments", order_id), {

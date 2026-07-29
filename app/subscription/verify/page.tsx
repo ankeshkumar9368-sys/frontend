@@ -57,6 +57,8 @@ export default function VerifyPaymentPage() {
               planType: "pro",
               plan: "Achivox Pro"
             });
+            const { processReferralRewardOnSubscription } = await import("../../../lib/referral");
+            await processReferralRewardOnSubscription(auth.currentUser.uid);
           }
         } catch (e) {
           console.warn("Client Firestore update fallback:", e);

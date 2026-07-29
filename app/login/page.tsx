@@ -27,6 +27,15 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
+    // Capture referral link parameter from URL (e.g. /login?ref=ANKESH1)
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const refCode = urlParams.get("ref");
+      if (refCode && refCode.length >= 6) {
+        localStorage.setItem("achivox_pending_ref", refCode.toUpperCase());
+      }
+    }
+
     const checkRedirect = async () => {
       try {
         const result = await getRedirectResult(auth);
@@ -38,10 +47,24 @@ export default function Login() {
     };
     checkRedirect();
 
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       console.log("[Auth] onAuthStateChanged fired. user:", user?.email ?? "null");
       if (user) {
         console.log("[Auth] User detected, pushing to /");
+        
+        // Auto-process referral if user arrived via a referral link
+        const pendingRef = localStorage.getItem("achivox_pending_ref");
+        if (pendingRef) {
+          try {
+            const { processReferralCode } = await import("../../lib/referral");
+            await processReferralCode(user.uid, pendingRef);
+            localStorage.removeItem("achivox_pending_ref");
+          } catch (refErr) {
+            console.warn("Auto referral link notice:", refErr);
+            localStorage.removeItem("achivox_pending_ref");
+          }
+        }
+
         // Set offer deadline when user first logs in (24 hours from now)
         const OFFER_KEY = "achivox_offer_deadline";
         if (!localStorage.getItem(OFFER_KEY)) {
