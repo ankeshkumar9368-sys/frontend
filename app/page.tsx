@@ -2684,22 +2684,23 @@ export default function Home() {
                                                     })
                                                 ]
                                             })
-                                        ]
+                                         ]
                                     }),
                                     /*#__PURE__*/ _jsxs("div", {
                                         className: "bg-white dark:bg-slate-900 rounded-[32px] border border-border overflow-hidden shadow-sm",
                                         children: [
+                                            /* Refer & Earn List Item */
                                             /*#__PURE__*/ _jsxs("button", {
                                                 onClick: () => setShowReferralCenter(true),
-                                                className: "w-full flex items-center justify-between p-5 border-b border-border hover:bg-emerald-500/5 transition-colors bg-gradient-to-r from-emerald-500/10 via-transparent to-transparent",
+                                                className: "w-full flex items-center justify-between p-5 border-b border-border hover:bg-emerald-500/10 transition-colors bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent",
                                                 children: [
                                                     /*#__PURE__*/ _jsxs("div", {
                                                         className: "flex items-center gap-4",
                                                         children: [
                                                             /*#__PURE__*/ _jsx("div", {
-                                                                className: "w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-sm",
+                                                                className: "w-5 h-5 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0",
                                                                 children: /*#__PURE__*/ _jsx(Gift, {
-                                                                    className: "w-5 h-5"
+                                                                    className: "w-5 h-5 text-emerald-600 dark:text-emerald-400"
                                                                 })
                                                             }),
                                                             /*#__PURE__*/ _jsxs("div", {
@@ -2713,7 +2714,7 @@ export default function Home() {
                                                                                 children: "Refer & Earn Cash"
                                                                             }),
                                                                             /*#__PURE__*/ _jsx("span", {
-                                                                                className: "text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+                                                                                className: "text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30",
                                                                                 children: "₹50 / 1-Yr Sub"
                                                                             })
                                                                         ]
@@ -2721,9 +2722,7 @@ export default function Home() {
                                                                     /*#__PURE__*/ _jsxs("p", {
                                                                         className: "text-[10px] font-bold text-slate-400 mt-0.5",
                                                                         children: [
-                                                                            "Wallet: ₹",
-                                                                            userData?.referralEarnings || 0,
-                                                                            " / ₹1,000 • Invite friends & earn!"
+                                                                            "Earn ₹50 per friend who buys 1-Year Pro (Max ₹1,000)"
                                                                         ]
                                                                     })
                                                                 ]
@@ -2734,7 +2733,7 @@ export default function Home() {
                                                         className: "flex items-center gap-2",
                                                         children: [
                                                             /*#__PURE__*/ _jsxs("span", {
-                                                                className: "text-xs font-black text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20",
+                                                                className: "text-xs font-black text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20",
                                                                 children: [
                                                                     "₹",
                                                                     userData?.referralEarnings || 0
