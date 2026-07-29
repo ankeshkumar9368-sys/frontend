@@ -16,7 +16,7 @@ import { auth, db } from "../../lib/firebase";
 import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { clearLocalAnalytics } from "../../lib/analytics";
 import { useRouter } from "next/navigation";
-import { collection, query, orderBy, onSnapshot, limit, doc, getDoc, setDoc, where, Timestamp, getDocs, updateDoc, serverTimestamp, addDoc, deleteDoc, arrayUnion, deleteField } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, limit, doc, getDoc, setDoc, where, Timestamp, getDocs, updateDoc, serverTimestamp, addDoc, deleteDoc, arrayUnion, deleteField, increment } from "firebase/firestore";
 import { approvePayoutRequest, rejectPayoutRequest } from "../../lib/payouts";
 import { createCouponCode, deleteCouponCode } from "../../lib/coupons";
 import { 
@@ -826,32 +826,92 @@ export default function AdminDashboard() {
   const [resyncing, setResyncing] = useState(false);
 
   const handleResyncReferralRewards = async () => {
-    if (!confirm("This will scan all subscribed users, find who referred them, and credit ₹50 to referrers who didn't get paid yet. Continue?")) return;
+    if (!confirm("FORCE RESYNC: This will scan ALL subscribed users and credit ₹50 to any referrer who was missed. Even already-processed users will be re-checked. Continue?")) return;
     setResyncing(true);
-    setResyncStatus("🔄 Scanning users...");
+    setResyncStatus("🔄 Scanning all users...");
     let credited = 0;
-    let skipped = 0;
+    let alreadyHad = 0;
+    let noReferrer = 0;
+    let errors = 0;
 
     try {
-      const { processReferralRewardOnSubscription } = await import("../../lib/referral");
       const allSnap = await getDocs(collection(db, "users"));
+      const allUsers = allSnap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
 
-      for (const docSnap of allSnap.docs) {
-        const u = docSnap.data();
-        // Process users who: are subscribed, have a referredByCode, but haven't been processed yet
-        if (u.isSubscribed && (u.referredBy || u.referredByCode) && !u.referralRewardProcessed) {
-          try {
-            await processReferralRewardOnSubscription(docSnap.id);
-            credited++;
-            setResyncStatus(`✅ Processing... ${credited} credited so far`);
-          } catch (e) {
-            skipped++;
+      for (const subscriber of allUsers) {
+        // Only process subscribed users who have a referral code
+        if (!subscriber.isSubscribed || (!subscriber.referredBy && !subscriber.referredByCode)) {
+          noReferrer++;
+          continue;
+        }
+
+        const refCode = (subscriber.referredByCode || subscriber.referredBy || "").substring(0, 6).toUpperCase();
+        
+        // Find actual referrer UID from code
+        const referrer = allUsers.find(u => u.id.toUpperCase().startsWith(refCode));
+        if (!referrer) {
+          setResyncStatus(`⚠️ No referrer found for code ${refCode} (subscriber: ${subscriber.name || subscriber.id})`);
+          noReferrer++;
+          continue;
+        }
+
+        // Check if this specific subscriber was already credited
+        const subscriberRef = doc(db, "users", subscriber.id);
+        const subscriberSnap = await getDoc(subscriberRef);
+        const subscriberData = subscriberSnap.data() || {};
+
+        // Check if referrer already has earnings for this person
+        // We track by checking if referrer's referralEarnings already accounts for it
+        // AND subscriber has referralRewardProcessed:true AND referralRewardAmount>0
+        const alreadyCredited = subscriberData.referralRewardProcessed === true && 
+                                 subscriberData.referralRewardAmount > 0;
+
+        if (alreadyCredited) {
+          // Double-check referrer actually has the earnings
+          const referrerRef = doc(db, "users", referrer.id);
+          const referrerSnap = await getDoc(referrerRef);
+          const referrerEarnings = Number(referrerSnap.data()?.referralEarnings || 0);
+          
+          if (referrerEarnings > 0) {
+            alreadyHad++;
+            continue; // Genuinely already credited
           }
-        } else {
-          skipped++;
+          // Referrer has 0 earnings despite subscriber being marked processed — re-credit!
+          setResyncStatus(`🔄 Re-crediting missed ₹50 for ${referrer.name || referrer.id}...`);
+        }
+
+        // Credit ₹50 to referrer
+        try {
+          const MAX_PAYOUT = 1000;
+          const referrerRef = doc(db, "users", referrer.id);
+          const referrerSnap = await getDoc(referrerRef);
+          const referrerData = referrerSnap.data() || {};
+          const currentEarnings = Number(referrerData.referralEarnings || 0);
+          const actualReward = Math.max(0, Math.min(50, MAX_PAYOUT - currentEarnings));
+
+          if (actualReward > 0) {
+            await updateDoc(referrerRef, {
+              referralEarnings: increment(actualReward),
+              referralCount: increment(1),
+            });
+          }
+
+          // Mark subscriber as processed
+          await updateDoc(subscriberRef, {
+            referralRewardProcessed: true,
+            referralRewardAmount: actualReward,
+            referralRewardAt: new Date().toISOString()
+          });
+
+          credited++;
+          setResyncStatus(`✅ Credited ₹${actualReward} to ${referrer.name || referrer.id} (for ${subscriber.name || subscriber.id})`);
+        } catch (e) {
+          console.error("Credit error:", e);
+          errors++;
         }
       }
-      setResyncStatus(`✅ Done! Credited: ${credited} referrers, Skipped: ${skipped} (already processed or no referrer)`);
+
+      setResyncStatus(`✅ DONE! Credited: ${credited} | Already Had: ${alreadyHad} | No Referrer: ${noReferrer} | Errors: ${errors}`);
     } catch (err) {
       setResyncStatus("❌ Error during resync. Check console.");
       console.error("Resync error:", err);
@@ -859,6 +919,7 @@ export default function AdminDashboard() {
       setResyncing(false);
     }
   };
+
 
     const handleDeleteGuests = async () => {
     if (!confirm("Are you sure you want to delete all guest accounts? This will remove users without a linked email or student ID.")) return;
