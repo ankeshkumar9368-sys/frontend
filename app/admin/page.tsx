@@ -821,7 +821,46 @@ export default function AdminDashboard() {
     return list;
   };
 
-  const handleDeleteGuests = async () => {
+  // RESYNC REFERRAL REWARDS - Credit missed ₹50 to referrers whose friends already subscribed
+  const [resyncStatus, setResyncStatus] = useState<string>("");
+  const [resyncing, setResyncing] = useState(false);
+
+  const handleResyncReferralRewards = async () => {
+    if (!confirm("This will scan all subscribed users, find who referred them, and credit ₹50 to referrers who didn't get paid yet. Continue?")) return;
+    setResyncing(true);
+    setResyncStatus("🔄 Scanning users...");
+    let credited = 0;
+    let skipped = 0;
+
+    try {
+      const { processReferralRewardOnSubscription } = await import("../../lib/referral");
+      const allSnap = await getDocs(collection(db, "users"));
+
+      for (const docSnap of allSnap.docs) {
+        const u = docSnap.data();
+        // Process users who: are subscribed, have a referredByCode, but haven't been processed yet
+        if (u.isSubscribed && (u.referredBy || u.referredByCode) && !u.referralRewardProcessed) {
+          try {
+            await processReferralRewardOnSubscription(docSnap.id);
+            credited++;
+            setResyncStatus(`✅ Processing... ${credited} credited so far`);
+          } catch (e) {
+            skipped++;
+          }
+        } else {
+          skipped++;
+        }
+      }
+      setResyncStatus(`✅ Done! Credited: ${credited} referrers, Skipped: ${skipped} (already processed or no referrer)`);
+    } catch (err) {
+      setResyncStatus("❌ Error during resync. Check console.");
+      console.error("Resync error:", err);
+    } finally {
+      setResyncing(false);
+    }
+  };
+
+    const handleDeleteGuests = async () => {
     if (!confirm("Are you sure you want to delete all guest accounts? This will remove users without a linked email or student ID.")) return;
     setDeletingGuests(true);
     try {
@@ -1542,7 +1581,20 @@ export default function AdminDashboard() {
                       onChange={(e) => setReferralSearch(e.target.value)}
                       className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-500 w-64"
                     />
+                    <button
+                      onClick={handleResyncReferralRewards}
+                      disabled={resyncing}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white text-xs font-black rounded-xl shadow transition-colors"
+                    >
+                      {resyncing ? "⏳ Syncing..." : "🔄 Resync ₹50 Rewards"}
+                    </button>
                   </div>
+                  {resyncStatus && (
+                    <div className="mt-3 px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700">
+                      {resyncStatus}
+                    </div>
+                  )}
+
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">

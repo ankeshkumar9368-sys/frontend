@@ -198,31 +198,47 @@ export const processReferralRewardOnSubscription = async (subscribedUserId: stri
     if (!userSnap.exists()) return;
 
     const userData = userSnap.data();
-    const referrerId = userData.referredBy || userData.referredByCode;
 
-    // If user was not referred by anyone, no referral reward to credit
-    if (!referrerId) return;
+    // Get the referral code stored on this user
+    const rawReferredBy = userData.referredBy || userData.referredByCode;
+    if (!rawReferredBy) return;
 
     // Check if referral reward for this subscription was already processed
     if (userData.referralRewardProcessed) return;
 
-    // Check if user has an active 1-Year Pro Subscription
-    const is1YearSub = userData.isSubscribed && (
-      userData.planType === "pro" || 
-      (userData.plan && (
-        userData.plan.toLowerCase().includes("pro") || 
-        userData.plan.toLowerCase().includes("year") || 
-        userData.plan.toLowerCase().includes("annual") || 
-        userData.plan.toLowerCase().includes("coupon")
-      ))
-    );
+    // Check if user has an active Subscription (any paid plan = valid)
+    const isValidSub = userData.isSubscribed === true;
 
-    if (!is1YearSub) {
-      console.log(`[Referral] User ${subscribedUserId} subscription is not 1-Year Pro. Referral pending 1-Year purchase.`);
+    if (!isValidSub) {
+      console.log(`[Referral] User ${subscribedUserId} not yet subscribed. Skipping reward.`);
       return;
     }
 
-    // Attempt to credit referrer's document (safely caught if restricted)
+    // Resolve the referrer's actual UID from the 6-char code
+    // referredByCode/referredBy is stored as first 6 chars of UID
+    const refCode = rawReferredBy.substring(0, 6).toUpperCase();
+    let referrerId: string | null = null;
+
+    try {
+      // Query all users to find the one whose UID starts with refCode
+      const allUsersSnap = await getDocs(collection(db, "users"));
+      allUsersSnap.forEach((docSnap) => {
+        if (docSnap.id.toUpperCase().startsWith(refCode)) {
+          referrerId = docSnap.id;
+        }
+      });
+    } catch (e) {
+      console.warn("[Referral] Could not query users collection:", e);
+    }
+
+    if (!referrerId) {
+      console.warn("[Referral] Referrer UID not found for code:", refCode);
+      // Still mark as processed so we don't retry forever
+      await updateDoc(userRef, { referralRewardProcessed: true });
+      return;
+    }
+
+    // Attempt to credit referrer's document
     try {
       const referrerRef = doc(db, "users", referrerId);
       const referrerSnap = await getDoc(referrerRef);
@@ -235,52 +251,38 @@ export const processReferralRewardOnSubscription = async (subscribedUserId: stri
         const potentialReward = 50;
         const actualReward = Math.max(0, Math.min(potentialReward, MAX_PAYOUT - currentEarnings));
 
-        const currentReferrals: ReferralItem[] = referrerData.referrals || [];
-        let updatedReferrals = [...currentReferrals];
-
-        const targetIdx = updatedReferrals.findIndex(r => r.uid === subscribedUserId);
-
-        if (targetIdx !== -1) {
-          if (updatedReferrals[targetIdx].status === "completed") return;
-
-          updatedReferrals[targetIdx] = {
-            ...updatedReferrals[targetIdx],
-            status: "completed",
-            earnedAmount: actualReward,
-            completedAt: new Date().toISOString()
-          };
+        if (actualReward <= 0) {
+          console.log("[Referral] Max payout reached for referrer:", referrerId);
         } else {
-          updatedReferrals.push({
-            uid: subscribedUserId,
-            name: userData.name || "Subscribed Student",
-            email: userData.email || "Student",
-            joinedAt: new Date().toISOString(),
-            status: "completed",
-            earnedAmount: actualReward,
-            completedAt: new Date().toISOString()
+          // Update Referrer Document with earnings increment
+          await updateDoc(referrerRef, {
+            referralEarnings: increment(actualReward),
+            referralCount: increment(1),
           });
+
+          // Award Referrer +500 XP bonus as well!
+          try {
+            await addXP(referrerId, 500, "Friend subscribed to Achivox Pro! (₹50 Credited)");
+          } catch (xpErr) {
+            console.warn("[Referral] XP award error:", xpErr);
+          }
+
+          console.log(`[Referral] ✅ Credited ₹${actualReward} to referrer ${referrerId}`);
         }
-
-        // Update Referrer Document
-        await updateDoc(referrerRef, {
-          referralEarnings: currentEarnings + actualReward,
-          referralCount: increment(1),
-          referrals: updatedReferrals
-        });
-
-        // Award Referrer +500 XP bonus as well!
-        await addXP(referrerId, 500, "Friend subscribed to Achivox Pro! (₹50 Credited)");
       }
     } catch (refErr) {
-      console.warn("[Referral Notice] Referrer credit restricted by security rules:", refErr);
+      console.warn("[Referral Notice] Referrer credit error (rules):", refErr);
     }
 
-    // Mark current user as processed on their own document
+    // Mark subscriber as processed on THEIR OWN document (always allowed)
     await updateDoc(userRef, {
-      referralRewardProcessed: true
+      referralRewardProcessed: true,
+      referralRewardAmount: 50,
+      referralRewardAt: new Date().toISOString()
     });
 
   } catch (err) {
     console.error("Error processing referral reward on subscription:", err);
   }
 };
+
