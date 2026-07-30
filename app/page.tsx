@@ -1066,7 +1066,7 @@ export default function Home() {
             !userData?.isPro && /*#__PURE__*/ _jsx(OfferBanner, {}),
 
             /*#__PURE__*/ _jsxs("header", {
-                className: "px-3 sm:px-4 py-2.5 sm:py-3 flex justify-between items-center shrink-0 z-50 max-w-full overflow-hidden pt-safe",
+                className: "px-4 py-3 flex justify-between items-center shrink-0 z-50",
                 style: {
                     background: "rgba(255,255,255,0.85)",
                     backdropFilter: "blur(24px)",
@@ -1074,7 +1074,7 @@ export default function Home() {
                 },
                 children: [
                     /*#__PURE__*/ _jsxs(motion.div, {
-                        className: "flex items-center gap-2 sm:gap-3 shrink min-w-0",
+                        className: "flex items-center gap-3 shrink-0",
                         initial: {
                             opacity: 0,
                             x: -20
@@ -1090,7 +1090,7 @@ export default function Home() {
                         },
                         children: [
                             /*#__PURE__*/ _jsx(motion.div, {
-                                className: "w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border-2 border-indigo-100 dark:border-indigo-900/50 shrink-0",
+                                className: "w-9 h-9 rounded-2xl overflow-hidden shadow-xl border-2 border-indigo-100 dark:border-indigo-900/50 shrink-0",
                                 whileTap: {
                                     scale: 0.9,
                                     rotate: -5
@@ -1110,7 +1110,7 @@ export default function Home() {
                             /*#__PURE__*/ _jsxs("div", {
                                 children: [
                                     /*#__PURE__*/ _jsx("h1", {
-                                        className: "text-lg sm:text-xl font-black tracking-tighter leading-none truncate",
+                                        className: "text-lg font-black tracking-tighter leading-none",
                                         style: {
                                             background: "linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa)",
                                             WebkitBackgroundClip: "text",
@@ -1130,10 +1130,10 @@ export default function Home() {
                         ]
                     }),
                     /*#__PURE__*/ _jsxs("div", {
-                        className: "flex items-center gap-1.5 sm:gap-2 shrink-0",
+                        className: "flex items-center gap-1.5 shrink-0",
                         children: [
                             /*#__PURE__*/ _jsxs(motion.div, {
-                                className: "glass-icon-3d flex items-center gap-1.5 px-3 py-1.5 rounded-2xl cursor-pointer",
+                                className: "glass-icon-3d flex items-center gap-1 px-2 py-1.5 rounded-xl cursor-pointer",
                                 whileHover: {
                                     scale: 1.05,
                                     translateY: -2
@@ -1170,7 +1170,7 @@ export default function Home() {
                             }),
                             /*#__PURE__*/ _jsxs(motion.div, {
                                 onClick: ()=>setShowNotifications(true),
-                                className: "glass-icon-3d relative w-9 h-9 rounded-2xl flex items-center justify-center cursor-pointer",
+                                className: "glass-icon-3d relative w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer",
                                 whileHover: {
                                     scale: 1.1,
                                     translateY: -2
@@ -1206,7 +1206,7 @@ export default function Home() {
                                 onClick: ()=>setShowReferralCenter(true),
                                 whileHover: { scale: 1.05, translateY: -2 },
                                 whileTap: { scale: 0.95 },
-                                className: "glass-icon-3d flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl cursor-pointer bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-black text-[11px] sm:text-xs shadow-sm shrink-0",
+                                className: "glass-icon-3d flex items-center gap-1 px-2 py-1.5 rounded-xl cursor-pointer bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-black text-[10px] shadow-sm shrink-0",
                                 children: [
                                     /*#__PURE__*/ _jsx(Wallet, {
                                         className: "w-4 h-4 text-emerald-500"
@@ -1228,7 +1228,7 @@ export default function Home() {
                                     scale: 0.9
                                 },
                                 onClick: ()=>setShowRewardShop(true),
-                                className: "glass-icon-3d w-9 h-9 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400",
+                                className: "glass-icon-3d w-8 h-8 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400",
                                 children: /*#__PURE__*/ _jsx(Gift, {
                                     className: "w-4.5 h-4.5"
                                 })

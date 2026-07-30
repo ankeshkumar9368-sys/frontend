@@ -44,7 +44,7 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </head>
-      <body className="bg-slate-200 min-h-[100dvh] w-full max-w-full overflow-x-hidden flex items-center justify-center select-none antialiased">
+      <body className="bg-slate-200 h-[100dvh] overflow-hidden flex items-center justify-center select-none">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
