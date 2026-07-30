@@ -186,16 +186,7 @@ export default function SmartNotesViewer({
       try {
         setLoading(true);
 
-        // Usage Check for Free Users
-        if (!isSubscribed) {
-          const { allowed, remaining } = await checkAndIncrementUsage(userData?.id, "Smart Notes", 1, title); // 1 note per day
-          setUsageRemaining(remaining);
-          if (!allowed) {
-            setLoading(false);
-            return;
-          }
-        }
-
+        // 1. First attempt to load existing note from cache/Firestore (100% free re-viewing anytime)
         const data = await fetchChapterNotes(title, userData, lang, subjectContext, chapterName, false, mode);
         if (fetchIdRef.current !== currentFetchId) return; // Discard stale response
         
@@ -203,8 +194,26 @@ export default function SmartNotesViewer({
           setNotesData(data);
           try { localStorage.setItem(localKey, JSON.stringify(data)); } catch (e) {}
           logFeatureUsage("Smart Notes", "success", Date.now() - startTime, userData?.id);
-          
-          // Track notesGenerated achievement
+          return;
+        }
+
+        // 2. If NO cached note exists and a NEW AI generation is required, check daily usage limits for free users
+        if (!isSubscribed) {
+          const { allowed, remaining } = await checkAndIncrementUsage(userData?.id, "Smart Notes", 1, title);
+          setUsageRemaining(remaining);
+          if (!allowed) {
+            setLoading(false);
+            return;
+          }
+        }
+
+        // 3. Fallback retry if needed
+        const freshData = await fetchChapterNotes(title, userData, lang, subjectContext, chapterName, true, mode);
+        if (fetchIdRef.current !== currentFetchId) return;
+        if (freshData) {
+          setNotesData(freshData);
+          try { localStorage.setItem(localKey, JSON.stringify(freshData)); } catch (e) {}
+          logFeatureUsage("Smart Notes", "success", Date.now() - startTime, userData?.id);
           if (userData?.id) {
             try { await updateDoc(doc(db, "users", userData.id), { notesGenerated: increment(1) }); } catch(e) {}
           }
