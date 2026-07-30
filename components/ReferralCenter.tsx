@@ -148,12 +148,12 @@ export default function ReferralCenter({ userData, onClose, onSuccess }: Referra
   };
 
   return (
-    <div className="fixed inset-0 z-[300] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-[300] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-2 sm:p-4 overflow-y-auto pt-safe pb-safe">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="bg-slate-900 w-full max-w-lg rounded-[32px] border border-slate-800 overflow-hidden relative shadow-[0_0_60px_rgba(99,102,241,0.2)] my-auto"
+        className="bg-slate-900 w-full max-w-lg rounded-[28px] sm:rounded-[32px] border border-slate-800 overflow-hidden relative shadow-[0_0_60px_rgba(99,102,241,0.2)] my-auto max-h-[92dvh] overflow-y-auto hide-scrollbar flex flex-col"
       >
         {/* Glow backdrop */}
         <div className="absolute top-0 inset-x-0 h-48 bg-gradient-to-b from-indigo-600/20 via-purple-600/10 to-transparent pointer-events-none" />

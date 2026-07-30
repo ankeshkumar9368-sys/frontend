@@ -132,7 +132,7 @@ export default function AIDoubtSolver({ onExit, autoStartMic = false, isSubscrib
       </AnimatePresence>
 
       {/* Header */}
-      <div className="p-6 border-b border-border flex justify-between items-center bg-primary text-white">
+      <div className="p-4 sm:p-6 pt-safe border-b border-border flex justify-between items-center bg-primary text-white shrink-0">
         <div className="flex items-center gap-4">
           <div className="w-6 h-6 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20">
             <Brain className="w-7 h-7" />
@@ -237,7 +237,7 @@ export default function AIDoubtSolver({ onExit, autoStartMic = false, isSubscrib
           </div>
 
           {/* Input Area */}
-          <div className="p-6 border-t border-border bg-slate-50 dark:bg-slate-900/50">
+          <div className="p-3 sm:p-6 pb-safe border-t border-border bg-slate-50 dark:bg-slate-900/50 shrink-0">
             <div className="flex gap-3 bg-white dark:bg-slate-800 p-2 rounded-[24px] border border-border shadow-lg focus-within:border-primary transition-all items-center">
               <input 
                 type="text" 
