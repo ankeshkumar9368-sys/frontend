@@ -1523,27 +1523,7 @@ export default function TopperNotes({
           </div>
         )}
 
-        {/* Page 5: Diagrams & Visuals */}
-        {notes.diagramSuggestions && notes.diagramSuggestions.length > 0 && (
-          <div className="pdf-page" style={pdfPageStyle}>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#059669', borderBottom: '1px solid #10b981', paddingBottom: '4px', marginBottom: '14px' }}>📐 Diagrams & Visuals</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {notes.diagramSuggestions.map((d: any, idx: number) => {
-                const img = wikiImages[d.wikiTitle];
-                if (!img) return null;
-                return (
-                  <div key={idx} style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '14px', backgroundColor: '#ffffff', display: 'flex', gap: '16px', alignItems: 'center' }}>
-                    <img src={img.url} alt={d.label} crossOrigin="anonymous" style={{ maxHeight: '160px', maxWidth: '220px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #f1f5f9' }} referrerPolicy="no-referrer" />
-                    <div style={{ flex: 1 }}>
-                      <span style={{ fontSize: '9px', fontWeight: 'black', color: '#4f46e5', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '4px' }}>Concept Diagram: {img.caption}</span>
-                      <p style={{ fontSize: '11px', color: '#475569', fontWeight: 'bold', margin: '0', lineHeight: '1.6' }}>{d.label}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+
 
         {/* Page 6: Common Mistakes & Memory Mnemonics */}
         {((notes.commonMistakes && notes.commonMistakes.length > 0) || (notes.memoryTricks && notes.memoryTricks.length > 0) || (notes.ncertHighlights && notes.ncertHighlights.length > 0)) && (
