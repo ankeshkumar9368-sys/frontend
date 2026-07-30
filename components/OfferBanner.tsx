@@ -1,22 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, Zap } from "lucide-react";
+import { Zap, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const OFFER_KEY = "achivox_offer_deadline";
-const OFFER_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+const OFFER_DURATION_MS = 24 * 60 * 60 * 1000;
 
 export default function OfferBanner() {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 59 });
   const [expired, setExpired] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-
-    // Read or set deadline from localStorage
+    // Check if dismissed this session
+    if (sessionStorage.getItem("offer_dismissed")) {
+      setDismissed(true);
+      return;
+    }
     let deadline: number;
     const stored = localStorage.getItem(OFFER_KEY);
     if (stored) {
@@ -25,7 +29,6 @@ export default function OfferBanner() {
       deadline = Date.now() + OFFER_DURATION_MS;
       localStorage.setItem(OFFER_KEY, String(deadline));
     }
-
     const update = () => {
       const remaining = deadline - Date.now();
       if (remaining <= 0) {
@@ -39,79 +42,60 @@ export default function OfferBanner() {
         minutes: Math.floor((t % 3600) / 60),
         seconds: t % 60,
       });
-      setExpired(false);
     };
-
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // Don't render until mounted (avoid hydration mismatch)
-  if (!mounted) return null;
+  if (!mounted || dismissed) return null;
 
   const pad = (n: number) => String(n).padStart(2, "0");
   const totalMinutes = timeLeft.hours * 60 + timeLeft.minutes;
 
-  // Dynamic colors based on urgency
-  const bannerBg = expired
-    ? "bg-slate-700"
-    : totalMinutes < 15
-      ? "bg-gradient-to-r from-red-700 via-rose-600 to-red-700"
-      : totalMinutes < 60
-        ? "bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600"
-        : totalMinutes < 240
-          ? "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500"
-          : "bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600";
-
-  const config = expired
-    ? { emoji: "⏰", label: "Offer Ended", msg: "Price increased — Standard rates now active", textColor: "text-slate-300", badgeBg: "bg-slate-600 text-slate-200" }
-    : totalMinutes < 15
-      ? { emoji: "🚨", label: "LAST CHANCE!", msg: "Price increasing in minutes — Lock in 60% OFF NOW!", textColor: "text-red-100", badgeBg: "bg-white/20 text-white" }
-      : totalMinutes < 60
-        ? { emoji: "⚡", label: "HURRY!", msg: "Less than 1 hour left! Save 60% on Achivox Pro", textColor: "text-orange-100", badgeBg: "bg-white/20 text-white" }
-        : totalMinutes < 240
-          ? { emoji: "🔥", label: "FLASH SALE", msg: "60% OFF Launch Offer — Full Year Pro at ₹399 only", textColor: "text-amber-950", badgeBg: "bg-black/20 text-amber-950" }
-          : { emoji: "🎉", label: "LIMITED OFFER", msg: "Launch Special: Full Year Pro at 60% OFF — ₹399 only!", textColor: "text-emerald-50", badgeBg: "bg-black/20 text-white" };
+  const bannerBg =
+    totalMinutes < 60
+      ? "from-red-600 to-rose-600"
+      : "from-emerald-600 to-teal-600";
 
   return (
     <div
-      className={`w-full ${bannerBg} ${!expired && totalMinutes < 15 ? "animate-pulse" : ""} transition-all duration-1000 z-50`}
+      className={`w-full bg-gradient-to-r ${bannerBg} shrink-0 z-50`}
       style={{ position: "sticky", top: 0 }}
     >
-      <div className="max-w-6xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
-        {/* Left: Badge + Message */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shrink-0 ${config.badgeBg}`}>
-            {config.emoji} {config.label}
+      <div className="flex items-center justify-between px-3 py-1.5 gap-2">
+        {/* Left: label + message in one line */}
+        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-white/20 text-white shrink-0">
+            🎉 OFFER
           </span>
-          <span className={`text-xs font-bold ${config.textColor}`}>
-            {config.msg}
+          <span className="text-[11px] font-bold text-white truncate">
+            60% OFF — Full Year Pro ₹399
           </span>
         </div>
 
-        {/* Right: Timer + CTA */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Right: compact timer + grab deal + close */}
+        <div className="flex items-center gap-1.5 shrink-0">
           {!expired && (
-            <div className={`flex items-center gap-1 font-black font-mono text-sm ${config.textColor}`}>
-              <Clock className="w-3.5 h-3.5 opacity-80" />
-              <span className="bg-black/20 px-1.5 py-0.5 rounded">{pad(timeLeft.hours)}</span>
-              <span>:</span>
-              <span className="bg-black/20 px-1.5 py-0.5 rounded">{pad(timeLeft.minutes)}</span>
-              <span>:</span>
-              <span className={`px-1.5 py-0.5 rounded ${
-                timeLeft.hours === 0 && timeLeft.minutes < 10 ? "bg-red-900/60 animate-pulse" : "bg-black/20"
-              }`}>
-                {pad(timeLeft.seconds)}
-              </span>
-            </div>
+            <span className="text-[10px] font-black font-mono text-white bg-black/20 px-1.5 py-0.5 rounded">
+              {pad(timeLeft.hours)}:{pad(timeLeft.minutes)}:{pad(timeLeft.seconds)}
+            </span>
           )}
           <button
             onClick={() => router.push("/subscription")}
-            className="text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full border border-white/40 text-white hover:bg-white/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-1 shrink-0 whitespace-nowrap"
+            className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-white text-emerald-700 flex items-center gap-0.5 shrink-0"
           >
-            <Zap className="w-3 h-3" />
-            {expired ? "Subscribe Now" : "Grab Deal"}
+            <Zap className="w-2.5 h-2.5" />
+            {expired ? "Buy" : "Grab"}
+          </button>
+          <button
+            onClick={() => {
+              setDismissed(true);
+              sessionStorage.setItem("offer_dismissed", "1");
+            }}
+            className="p-0.5 text-white/70 hover:text-white"
+          >
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

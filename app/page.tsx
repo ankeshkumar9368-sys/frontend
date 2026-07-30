@@ -1066,7 +1066,7 @@ export default function Home() {
             !userData?.isPro && /*#__PURE__*/ _jsx(OfferBanner, {}),
 
             /*#__PURE__*/ _jsxs("header", {
-                className: "px-4 py-3 flex justify-between items-center shrink-0 z-50",
+                className: "pl-3 pr-3 py-2.5 flex justify-between items-center shrink-0 z-50",
                 style: {
                     background: "rgba(255,255,255,0.85)",
                     backdropFilter: "blur(24px)",
@@ -1130,7 +1130,7 @@ export default function Home() {
                         ]
                     }),
                     /*#__PURE__*/ _jsxs("div", {
-                        className: "flex items-center gap-1.5 shrink-0",
+                        className: "flex items-center gap-1 shrink-0",
                         children: [
                             /*#__PURE__*/ _jsxs(motion.div, {
                                 className: "glass-icon-3d flex items-center gap-1 px-2 py-1.5 rounded-xl cursor-pointer",
@@ -1170,7 +1170,7 @@ export default function Home() {
                             }),
                             /*#__PURE__*/ _jsxs(motion.div, {
                                 onClick: ()=>setShowNotifications(true),
-                                className: "glass-icon-3d relative w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer",
+                                className: "glass-icon-3d relative w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer shrink-0",
                                 whileHover: {
                                     scale: 1.1,
                                     translateY: -2
@@ -1228,9 +1228,9 @@ export default function Home() {
                                     scale: 0.9
                                 },
                                 onClick: ()=>setShowRewardShop(true),
-                                className: "glass-icon-3d w-8 h-8 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400",
+                                className: "glass-icon-3d w-8 h-8 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0",
                                 children: /*#__PURE__*/ _jsx(Gift, {
-                                    className: "w-4.5 h-4.5"
+                                    className: "w-4 h-4"
                                 })
                             })
                         ]
