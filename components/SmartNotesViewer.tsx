@@ -31,89 +31,7 @@ interface SmartNotesViewerProps {
 }
 
 function InteractiveDiagramCard({ wikiTitle, label, wikiImage }: { wikiTitle: string; label: string; wikiImage: any }) {
-  if (!wikiImage || !wikiImage.url) return null;
-
-  const textToParse = `${label} ${wikiImage.caption || ''}`;
-  const parts: string[] = [];
-  
-  const matchParentheses = textToParse.match(/\(([^)]+)\)/g);
-  if (matchParentheses) {
-    matchParentheses.forEach(m => {
-      const clean = m.replace(/[()]/g, '').trim();
-      if (clean.length > 2 && clean.length < 30) parts.push(clean);
-    });
-  }
-
-  const matchLabelsList = textToParse.match(/labels:\s*([^।|.]+)/i) || textToParse.match(/parts:\s*([^।|.]+)/i) || textToParse.match(/अनिवार्य लेबल:\s*([^।|.]+)/i);
-  if (matchLabelsList) {
-    const list = matchLabelsList[1].split(/[,|•]/);
-    list.forEach(item => {
-      const clean = item.trim().replace(/["']/g, '');
-      if (clean.length > 1 && clean.length < 40 && !parts.includes(clean)) {
-        parts.push(clean);
-      }
-    });
-  }
-
-  if (parts.length === 0) {
-    const words = textToParse.split(/[,.;]/);
-    words.forEach(w => {
-      const clean = w.trim();
-      if (clean.length > 3 && clean.length < 35 && !clean.includes('http') && !clean.toLowerCase().includes('diagram')) {
-        parts.push(clean);
-      }
-    });
-  }
-
-  const uniqueParts = Array.from(new Set(parts)).slice(0, 6);
-
-  return (
-    <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 my-4 shadow-sm break-inside-avoid page-break-inside-avoid font-sans">
-      <div className="flex flex-col md:flex-row gap-5 items-center">
-        {/* Image Container */}
-        <div className="w-full md:w-1/2 flex flex-col items-center bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-100 dark:border-slate-900 relative group overflow-hidden shadow-sm">
-          <img 
-            src={wikiImage.url} 
-            alt={wikiTitle} 
-            className="max-h-[220px] object-contain rounded-xl transition-transform duration-300 group-hover:scale-105"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute top-2 right-2 bg-emerald-600/90 backdrop-blur-sm text-[9px] text-white px-2.5 py-0.5 rounded-full uppercase tracking-wider font-black shadow-sm">
-            Interactive Guide
-          </div>
-        </div>
-
-        {/* Info & Labels Explorer */}
-        <div className="w-full md:w-1/2 space-y-3.5">
-          <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-2">
-            <span className="text-emerald-500">📐</span> {wikiTitle} Diagram
-          </h4>
-          
-          <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 leading-relaxed">
-            {wikiImage.caption || label}
-          </p>
-
-          {uniqueParts.length > 0 && (
-            <div className="space-y-2 pt-1">
-              <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block">
-                Labels & Key Parts
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {uniqueParts.map((part, pIdx) => (
-                  <span 
-                    key={pIdx} 
-                    className="text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/50 px-2.5 py-1 rounded-lg cursor-pointer hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all shadow-sm"
-                  >
-                    📍 {part}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 // ── Collapsible Section ─────────────────────────────────────────
@@ -220,45 +138,9 @@ export default function SmartNotesViewer({
   const displaySubject = subjectContext || notesData?.topicMeta?.subject || "General";
   const displayTopic = notesData?.topicMeta?.topic || chapterName || title;
 
+  // Wikipedia image fetching disabled — content is 100% exam-focused AI text
   useEffect(() => {
-    if (notesData) {
-      const suggestions: { wikiTitle: string; label: string; section: string; insertAfterConcept?: string }[] = [];
-      
-      const mainTerm = notesData.meta?.wikiSearchTerm;
-      if (mainTerm && mainTerm.toLowerCase() !== 'none' && mainTerm.trim().length > 0) {
-        suggestions.push({
-          wikiTitle: mainTerm,
-          label: `Main diagram for ${notesData.meta.topic || 'Concept'}`,
-          section: 'core'
-        });
-      }
-
-      if (notesData.topics && notesData.topics.length > 0) {
-        const skipTerms = ["physics", "chemistry", "biology", "mathematics", "maths", "science", "history", "geography", "civics", "economics", "english", "hindi", "sanskrit", "none", "n/a", "null", "general"];
-        notesData.topics.forEach((t: any) => {
-          if (t.title && !skipTerms.includes(t.title.toLowerCase().trim())) {
-            suggestions.push({
-              wikiTitle: t.title,
-              label: `Concept diagram: ${t.title}`,
-              section: 'core',
-              insertAfterConcept: t.title
-            });
-          }
-        });
-      }
-
-      if (suggestions.length > 0) {
-        setDiagramsLoading(true);
-        import("../lib/wikipedia").then(({ fetchMultipleWikiImages }) => {
-          fetchMultipleWikiImages(suggestions)
-            .then((imgs) => {
-              setWikiImages(imgs);
-            })
-            .catch(console.error)
-            .finally(() => setDiagramsLoading(false));
-        });
-      }
-    }
+    // Wiki images removed
   }, [notesData]);
 
   // Automatic localStorage caching whenever notesData updates (e.g. from parent initialData or direct fetch)

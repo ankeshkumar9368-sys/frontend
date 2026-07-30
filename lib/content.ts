@@ -32,7 +32,7 @@ export {
   evaluateSubjectiveAnswer 
 };
 
-export const achivox_cache_version = "v12";
+export const achivox_cache_version = "v14";
 
 export const hasCachedContent = (mode: string, parentId: string | null, type: string) => {
   if (typeof window === "undefined") return false;

@@ -4,17 +4,16 @@ import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft, RefreshCw, Download, Share2, BookOpen,
-  Zap, Brain, CheckCircle, XCircle, ChevronDown, ChevronUp,
-  Sparkles, Flame, Target, AlarmCheck, Copy, Check
+  ArrowLeft, RefreshCw, Share2, Download, Target,
+  CheckCircle, XCircle, ChevronDown, ChevronUp,
+  Sparkles, Check
 } from "lucide-react";
 import { fetchChapterNotes } from "../../lib/content";
 import { auth, db } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { fetchWikipediaImage, fetchMultipleWikiImages } from "../../lib/wikipedia";
+// Wikipedia image fetching disabled — AI-only exam content
 
-// Local fetchWikipediaImage removed in favor of import from lib/wikipedia
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 interface NotesTopic {
@@ -314,8 +313,7 @@ export default function SmartNotesClient() {
   const [error, setError]         = useState("");
   const [genTime, setGenTime]     = useState(0);
   const [copied, setCopied]       = useState(false);
-  const [wikiImages, setWikiImages] = useState<Record<string, { url: string; caption: string; sourceUrl: string } | null>>({});
-  const [diagramsLoading, setDiagramsLoading] = useState(false);
+  // Wiki images removed — exam-only AI content
 
   const subjectMeta = SUBJECT_COLORS[subject] || SUBJECT_COLORS["General"];
 
@@ -348,37 +346,7 @@ export default function SmartNotesClient() {
       setNotes(data);
       setGenTime(Math.round((Date.now() - start) / 100) / 10);
 
-      // Fetch Wikipedia diagrams in the background
-      if (data?.diagramSuggestions && data.diagramSuggestions.length > 0) {
-        setDiagramsLoading(true);
-        const filteredSuggestions = data.diagramSuggestions.filter((s: any) => s.wikiTitle);
-        fetchMultipleWikiImages(filteredSuggestions)
-          .then(images => {
-            setWikiImages(images);
-            setDiagramsLoading(false);
-          })
-          .catch(err => {
-            console.error("Wiki images fetch failed:", err);
-            setWikiImages({});
-            setDiagramsLoading(false);
-          });
-      } else {
-        const wikiQuery = data?.wikiSearchTerm || data?.meta?.wikiSearchTerm || data?.topicMeta?.topic || data?.meta?.topic || topic;
-        const skipTerms = ["physics", "chemistry", "biology", "mathematics", "maths", "science", "history", "geography", "civics", "economics", "english", "hindi", "sanskrit", "none", "n/a", "null", "general"];
-        if (wikiQuery && !skipTerms.includes(wikiQuery.toLowerCase().trim())) {
-          fetchWikipediaImage(wikiQuery).then(img => {
-            if (img) {
-              setWikiImages({ [wikiQuery]: { url: img.url, caption: img.caption, sourceUrl: img.sourceUrl } });
-            } else {
-              setWikiImages({});
-            }
-          }).catch(() => {
-            setWikiImages({});
-          });
-        } else {
-          setWikiImages({});
-        }
-      }
+      // Wikipedia image fetching disabled — content is 100% exam-focused AI text
     } catch (e: any) {
       const msg = e?.message || "Unknown error";
       if (msg.includes("REGENERATE_LOCK")) {
@@ -516,79 +484,7 @@ export default function SmartNotesClient() {
           </div>
         )}
 
-        {/* WIKIPEDIA DIAGRAMS */}
-        {notes?.diagramSuggestions && notes.diagramSuggestions.length > 0 ? (
-          <div className="space-y-4 mb-6">
-            {notes.diagramSuggestions.map((d: any, idx: number) => {
-              const img = wikiImages[d.wikiTitle];
-              if (!img) return null;
-              return (
-                <div key={idx} className="bg-[#1a1a2e] border border-white/10 rounded-2xl overflow-hidden">
-                  <div className="px-4 pt-4 pb-2 flex items-center gap-2">
-                    <span className="text-base">🖼️</span>
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Topic Diagram: {img.caption}</p>
-                    <span className="ml-auto text-[9px] text-slate-500 font-semibold">Source: Wikipedia</span>
-                  </div>
-                  <div className="relative bg-white/3 mx-4 mb-3 rounded-xl overflow-hidden">
-                    <img
-                      src={img.url}
-                      alt={d.label}
-                      crossOrigin="anonymous"
-                      className="w-full max-h-64 object-contain mx-auto block"
-                      onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
-                    />
-                  </div>
-                  <div className="px-4 pb-4">
-                    <p className="text-[11px] text-slate-300 font-semibold leading-relaxed mb-2">{d.label}</p>
-                    <a
-                      href={img.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[10px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-lg hover:bg-indigo-500/20 transition-colors"
-                    >
-                      <BookOpen className="w-3 h-3" />
-                      Read on Wikipedia
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          Object.entries(wikiImages).map(([query, img]) => {
-            if (!img) return null;
-            return (
-              <div key={query} className="bg-[#1a1a2e] border border-white/10 rounded-2xl overflow-hidden mb-4">
-                <div className="px-4 pt-4 pb-2 flex items-center gap-2">
-                  <span className="text-base">🖼️</span>
-                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Topic Diagram</p>
-                  <span className="ml-auto text-[9px] text-slate-500 font-semibold">Source: Wikipedia</span>
-                </div>
-                <div className="relative bg-white/3 mx-4 mb-3 rounded-xl overflow-hidden">
-                  <img
-                    src={img.url}
-                    alt={img.caption}
-                    crossOrigin="anonymous"
-                    className="w-full max-h-56 object-contain mx-auto block"
-                    onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
-                  />
-                </div>
-                <div className="px-4 pb-4">
-                  <p className="text-[10px] text-slate-400 italic mb-2">{img.caption}</p>
-                  <a
-                    href={img.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[10px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-lg hover:bg-indigo-500/20 transition-colors"
-                  >
-                    <BookOpen className="w-3 h-3" />
-                    Read on Wikipedia
-                  </a>
-                </div>
-              </div>
-            );
-          })
-        )}
+        {/* Wikipedia diagrams removed — 100% AI exam content only */}
 
         {/* KEY CONCEPTS */}
         {topics.length > 0 && (

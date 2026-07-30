@@ -188,20 +188,7 @@ export default function TopperNotes({
           } catch(e) {}
         }
 
-        // Fetch Wikipedia diagrams in background after notes load
-        if (data.diagramSuggestions && data.diagramSuggestions.length > 0) {
-          setDiagramsLoading(true);
-          const skipTerms = ["physics", "chemistry", "biology", "mathematics", "maths", "science", "history", "geography", "civics", "economics", "english", "hindi", "sanskrit", "none", "n/a", "null", "general"];
-          const filteredSuggestions = data.diagramSuggestions.filter((s: any) => 
-            s.wikiTitle && !skipTerms.includes(s.wikiTitle.toLowerCase().trim())
-          );
-          fetchMultipleWikiImages(filteredSuggestions)
-            .then((imgs) => {
-              setWikiImages(imgs);
-            })
-            .catch(console.error)
-            .finally(() => setDiagramsLoading(false));
-        }
+        // Wikipedia diagram fetching disabled — 100% exam-focused AI content only
       } else {
         setError("Failed to generate notes. Please try again.");
       }
@@ -636,53 +623,9 @@ export default function TopperNotes({
     );
   };
 
-  // DiagramCard: fetches and renders a Wikipedia diagram
+  // DiagramCard disabled — 100% exam-focused AI content only
   const DiagramCard = ({ wikiTitle, label }: { wikiTitle: string; label: string }) => {
-    const skipTerms = ["physics", "chemistry", "biology", "mathematics", "maths", "science", "history", "geography", "civics", "economics", "english", "hindi", "sanskrit", "none", "n/a", "null", "general"];
-    if (skipTerms.includes(wikiTitle.toLowerCase().trim())) return null;
-
-    const img = wikiImages[wikiTitle];
-    const isLoading = diagramsLoading && img === undefined;
-
-    if (isLoading) {
-      return (
-        <div className="my-5 rounded-2xl overflow-hidden border border-indigo-200 bg-indigo-50/50 flex items-center justify-center gap-3 p-6 animate-pulse">
-          <ImageIcon className="w-5 h-5 text-indigo-400" />
-          <span className="text-xs font-black uppercase text-indigo-400 tracking-wider">Loading diagram...</span>
-        </div>
-      );
-    }
-
-    if (!img) return null;
-
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="my-6 rounded-2xl overflow-hidden border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-white shadow-md"
-      >
-        {/* Header */}
-        <div className="flex items-center gap-2 px-4 py-2 bg-indigo-600">
-          <ImageIcon className="w-4 h-4 text-white" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-white">📐 DIAGRAM</span>
-        </div>
-        {/* Image */}
-        <div className="flex flex-col items-center p-3 sm:p-5">
-          <img
-            src={img.url}
-            alt={label}
-            crossOrigin="anonymous"
-            referrerPolicy="no-referrer"
-            className="max-h-72 w-auto object-contain rounded-xl border border-slate-200 shadow-sm bg-white"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
-          <p className="mt-3 text-center text-xs font-bold text-slate-600 italic leading-snug max-w-sm">
-            {label}
-            <span className="block text-[9px] font-black text-indigo-400 uppercase tracking-wider mt-1">Source Concept: {img.caption}</span>
-          </p>
-        </div>
-      </motion.div>
-    );
+    return null;
   };
 
   const pdfPageStyle = {

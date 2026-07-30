@@ -121,7 +121,7 @@ function recordTokenUsage(usage: any, feature: string) {
 // ==========================================
 // GLOBAL AI CACHING SYSTEM (L1: localStorage, L2: Firestore)
 // ==========================================
-const FIRESTORE_CACHE_VERSION = "_v9_no_shuffle_strict";
+const FIRESTORE_CACHE_VERSION = "_v11_no_diagrams_at_all";
 const LS_CACHE_PREFIX = "achivox_aicache_";
 
 // L1 localStorage instant check (synchronous, 0ms)
@@ -306,25 +306,33 @@ export async function generateAInotes(topic: string, userData: any, mode: "full"
   const isMaths = subject === 'Mathematics';
   const formulaLabel = isLanguageSubject ? 'Key rule / literary device / grammar rule' : isMaths ? 'Mathematical formula or expression' : 'Formula or equation (if applicable)';
 
-  const prompt = `You are a SENIOR EXAM EXPERT and ${subject} teacher for Class ${clsName} students (${boardName} Board).
-You must generate ULTRA-COMPREHENSIVE, 100% ACCURATE, EXAM-LEVEL bilingual study notes for the topic: "${topic}"
+  const prompt = `You are an ELITE SENIOR EXAM COACH and ${subject} specialist for Class ${clsName} ${boardName} Board students.
+Generate TOPPER-LEVEL, 100% EXAM-READY, HIGHLY ACCURATE bilingual study notes for: "${topic}"
 
 Subject: ${subject} | Class: ${clsName} | Board: ${boardName} | Student Level: ${level}
 Languages: English + ${lang}
 ${remedialExtra}
 
-STRICT RULES — FOLLOW EXACTLY:
-1. Output ONLY valid JSON. Zero text outside JSON. No markdown. No code blocks.
-2. Every fact, formula, date, name, and definition MUST be verified against NCERT/${boardName} textbooks.
-3. Every array must have exactly 2-3 high-quality items. Empty arrays are FORBIDDEN.
-4. Keep all content descriptions concise (2-3 sentences max) to ensure fast rendering.
-5. ALL key fields must be bilingual (English + ${lang}).
-6. Questions must match actual ${boardName} board exam paper pattern and difficulty.
-7. Short questions = 2-3 marks, Long questions = 5-6 marks. Model answers must be complete.
-8. LATEX EQUATION RULE: All mathematical expressions, equations, chemical equations, and formulas MUST be written in clean, standard LaTeX math format (e.g. use \\\\frac{a}{b} for fractions, \\\\cdot for multiplication, ^ for superscript, _ for subscript). Example: \\\\frac{G \\\\cdot m_1 \\\\cdot m_2}{r^2}. Do NOT write plain text equations like 'a/b' or use '*' for multiplication.
-${mode === 'revision' ? '9. REVISION MODE: Extra concise, only essentials.' : ''}
+═══ CRITICAL RULES — NO EXCEPTIONS ═══
+1. Output ONLY valid JSON. ZERO text outside JSON. No markdown. No code blocks. No explanations.
+2. Every fact, definition, date, name, and formula MUST be 100% verified from NCERT/${boardName} textbooks.
+3. Content MUST be EXAM-SPECIFIC — directly aligned with ${boardName} board paper pattern.
+4. Questions MUST be real exam-style: exact wording, difficulty, and marking as in actual ${boardName} papers.
+5. Empty arrays are STRICTLY FORBIDDEN — every field must have at least 2-3 high-quality items.
+6. ALL key fields must be bilingual (English + ${lang}).
+7. Short Qs = 2-3 marks. Long Qs = 5-6 marks. Model answers must be COMPLETE and MARKSCHEME-READY.
+8. LATEX MATH RULE: All equations/formulas MUST use LaTeX format (e.g. \\\\frac{a}{b}, \\\\sqrt{x}, x^{2}, H_{2}O). NEVER write plain text like a/b or H2O.
+9. CONTENT DEPTH: Go BEYOND textbook basics — include topper-level insights, examiner observations, last 5-year PYQ patterns, and value-point answers.
+${mode === 'revision' ? '10. REVISION MODE: Ultra-concise. Only the most exam-critical facts.' : ''}
 
-OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays):
+═══ EXAM FOCUS STANDARDS ═══
+- Each topic MUST have an "examLine" — one sentence that if written verbatim in an answer, will score full marks.
+- MCQs must follow the EXACT format used in ${boardName} board papers (stem + 4 options, one definitively correct).
+- Topper answers MUST include: definitions, key terms, cause-effect, diagrams mentioned (text description), examples.
+- Memory tricks MUST be creative, catchy, and proven to help retention.
+- Final Cheat Sheet MUST be the top 3-5 things an examiner looks for to give full marks.
+
+OUTPUT THIS EXACT JSON SCHEMA — FILL EVERY FIELD WITH EXAM-QUALITY CONTENT:
 {
   "meta": {
     "topic": "${topic}",
@@ -333,124 +341,136 @@ OUTPUT EXACTLY THIS JSON SCHEMA (fill EVERY field — no nulls, no empty arrays)
     "board": "${boardName}",
     "studentLevel": "${level}",
     "mode": "${mode}",
-    "accuracy": ${acc},
-    "wikiSearchTerm": "Exact title of a Wikipedia article that has a highly relevant educational diagram/image for this topic. Example: for 'Reflection of Light' use 'Reflection (physics)'. Set to 'None' if no specific diagram article exists."
+    "accuracy": ${acc}
   },
-  "intro": "3-4 line engaging introduction in English",
-  "introHindi": "Same introduction in ${lang}",
+  "intro": "3-4 sentence engaging introduction covering: what this topic is, why it is important for exams, and what students will learn. Write for a smart student.",
+  "introHindi": "Same introduction in ${lang} — clear and exam-focused.",
   "topics": [
     {
-      "title": "Sub-topic name in English (use official NCERT terminology)",
-      "titleHindi": "Name in ${lang}",
-      "content": "Clear detailed explanation in English (2-3 sentences)",
+      "title": "Sub-topic name (use exact NCERT/official terminology)",
+      "titleHindi": "Sub-topic name in ${lang}",
+      "content": "2-3 sentence clear, topper-level explanation covering the concept completely. Include cause-effect or mechanism where applicable.",
       "contentHindi": "Same explanation in ${lang}",
-      "definition": "Precise textbook definition in English",
-      "definitionHindi": "Definition in ${lang}",
-      "examLine": "One powerful exam-ready sentence that guarantees marks if written in answers",
-      "formula": "${formulaLabel}. Write 'None' ONLY if truly no formula exists.",
-      "subPoints": ["Key point 1", "Key point 2"]
+      "definition": "Precise, textbook-standard definition in English. Must be quotable in an exam answer.",
+      "definitionHindi": "Exact definition in ${lang}",
+      "examLine": "🎯 ONE powerful sentence that if written in board exam answer, guarantees full marks for this concept.",
+      "formula": "${formulaLabel}. Write in LaTeX. Write 'None' ONLY if this sub-topic has absolutely no formula.",
+      "subPoints": ["Exam-critical key point 1 — specific and factual", "Key point 2 — examiner looks for this", "Key point 3 — differentiates toppers from average students"]
     }
   ],
   "formulas": [
     {
-      "title": "Formula or Rule name",
-      "equation": "The complete formula/rule/equation. Use 'None' only if subject has zero formulas.",
-      "usage": "Exact context: when, why and how to apply this formula"
+      "title": "Formula/Law/Rule name",
+      "equation": "Complete formula in LaTeX format. Use 'None' only if subject is purely non-mathematical (e.g. Hindi literature).",
+      "usage": "WHEN and HOW to use this formula in exam — include what each variable means and SI units."
     }
   ],
   "memoryTricks": [
     {
-      "trick": "Creative mnemonic or memory shortcut in English",
-      "trickHindi": "Same trick in ${lang}"
+      "trick": "Highly creative mnemonic, acronym, story, or rhyme in English that makes this concept unforgettable.",
+      "trickHindi": "Same trick or an equivalent Hindi version that is equally catchy."
     }
   ],
   "shortQuestions": [
     {
-      "q": "2-3 mark question exactly as asked in ${boardName} board exams",
+      "q": "Exact 2-3 mark question as it appears in ${boardName} board exams. Use real exam language.",
       "qHindi": "Same question in ${lang}",
-      "a": "Complete model answer (2-3 points)",
+      "a": "Complete model answer for full marks — include key terms, definitions, and 2-3 specific points the examiner expects.",
       "aHindi": "Model answer in ${lang}",
       "marks": 3,
-      "tip": "Quick tip: how to write this answer to score full marks"
+      "tip": "💡 Examiner tip: what specifically to write to get all 3 marks and avoid common mistakes."
     }
   ],
   "longQuestions": [
     {
-      "q": "5-6 mark long question as asked in ${boardName} board exams",
+      "q": "Exact 5-6 mark question as it appears in ${boardName} board exams. Use real exam language.",
       "qHindi": "Same question in ${lang}",
-      "a": "Detailed model answer with all key points (minimum 5 points)",
+      "a": "Detailed model answer — minimum 5 well-organized points with key terms highlighted. Include intro, body points, and conclusion if applicable.",
       "aHindi": "Model answer in ${lang}",
       "marks": 5,
-      "keyPoints": ["Essential point 1", "Essential point 2"],
-      "tip": "Strategy: how to structure this answer to get 5/5"
+      "keyPoints": ["Value point 1 — must be in answer for full marks", "Value point 2", "Value point 3 — differentiator"],
+      "tip": "🎯 How to structure this answer to get 5/5: mention diagram, use headings, write in points."
     }
   ],
   "subjectiveQuestions": [
     {
-      "q": "Full board exam style question",
-      "a": "Complete model answer with all key points",
-      "easyWay": "Simple shortcut or tip to write this answer",
-      "solutionSteps": ["Step 1", "Step 2"],
+      "q": "Board exam style question (can be short or long)",
+      "a": "Complete topper-level model answer",
+      "easyWay": "The simplest, most memorable way to remember and write this answer",
+      "solutionSteps": ["Step 1: Start with definition", "Step 2: Explain with example", "Step 3: Add formula/diagram reference"],
       "weightage": 5
     }
   ],
   "objectiveQuestions": [
     {
-      "q": "MCQ question exactly matching board exam pattern",
-      "options": ["Option A", "Option B", "Option C", "Option D"],
-      "correct": 0,
-      "explanation": "Detailed explanation of why the correct option is right"
+      "q": "MCQ exactly matching ${boardName} board format — unambiguous, factual, one definitively correct answer.",
+      "options": ["Plausible but wrong option", "Correct answer", "Common misconception option", "Another wrong option"],
+      "correct": 1,
+      "explanation": "Detailed explanation: why the correct answer is right, and why each wrong option is incorrect. Helps avoid future mistakes."
     }
   ],
   "quickRevision": [
-    { "en": "One-liner key revision point in English", "hi": "Same in ${lang}" }
+    { "en": "One powerful exam-critical revision point — a fact, rule, or formula that is frequently tested.", "hi": "Same point in ${lang}" }
   ],
   "importancePoints": [
-    { "en": "Critical exam fact in English", "hi": "In ${lang}" }
+    { "en": "Must-know exam fact — directly from board paper frequency analysis", "hi": "In ${lang}" }
   ],
-  "summary": ["Key takeaway 1", "Key takeaway 2"],
+  "summary": [
+    "Most exam-critical takeaway from this topic — if a student remembers only one thing, this is it.",
+    "Second most important takeaway — frequently tested in board exams."
+  ],
   "finalCheatSheet": [
-    "🔥 MUST REMEMBER: [Most important fact]",
-    "📌 EXAM TRICK: [A trick that helps in MCQs]"
+    "🔥 MUST WRITE IN EXAM: [The single most important fact/definition that examiners always look for]",
+    "📌 TOPPER TRICK: [A smart shortcut or insight that separates 90+ scorers from average students]",
+    "⚡ PYQ ALERT: [The exact type of question that has appeared repeatedly in last 5 years of ${boardName} exams]"
   ],
   "examBooster": {
-    "highProbabilityTopics": ["Sub-topic 1", "Sub-topic 2"],
-    "boardFrequency": "Analysis: how often does this topic appear in ${boardName} exams",
-    "predictedQuestion": "The most likely question to appear in the next board exam"
+    "highProbabilityTopics": ["Sub-topic most likely to appear in next exam (with % estimate)", "Second highest probability sub-topic"],
+    "boardFrequency": "Detailed analysis: how many times this topic appeared in ${boardName} exams in last 5 years. Which questions are repeated. What is the typical marking.",
+    "predictedQuestion": "The single most likely question to appear in the next ${boardName} exam based on current trends and paper analysis."
   },
   "solvedExample": {
-    "question": "A realistic, exam-style solved problem",
-    "solution": ["Step 1", "Step 2"]
+    "question": "A realistic, exam-style problem (numerical/case-based/definition-based as per subject)",
+    "solution": ["Step 1: Identify what is given and what is asked", "Step 2: Apply the relevant formula/concept", "Step 3: Solve with working shown", "Step 4: State the answer with correct units/conclusion"]
   },
   "masterNotes": {
-    "snapshotConcepts": "Complete 2-3 sentence overview paragraph. ${lang} mein: same paragraph in ${lang}.",
-    "definitions": [{"term": "Key term", "definition": "Precise definition"}],
-    "formulaSheet": [{"formula": "Expression", "meaning": "What it means", "symbols": "Symbols", "siUnits": "Units", "conditions": "When to use", "mistake": "Mistake to avoid"}],
-    "shortTricks": ["Memory trick 1"],
-    "commonMistakes": [{"mistake": "What students commonly do wrong", "correction": "The correct approach"}],
-    "solvedExample": {"question": "Sample problem", "stepByStepSolution": ["Step 1", "Step 2"]},
-    "pyqPoint": "Types of questions that have appeared in the last 5 years",
-    "faqs": [{"q": "Most common doubt", "a": "Clear answer"}],
-    "memoryTricks": ["Best mnemonic"],
-    "revisionSummary": "One complete paragraph: everything a student needs to know — English + ${lang}",
-    "fiveOneLinePoints": ["One-liner 1", "One-liner 2"]
+    "snapshotConcepts": "A 2-3 sentence power summary that covers the entire topic. If a student reads only this, they can answer any 2-mark question. Write in English first, then: '${lang} mein: [Hindi translation]'",
+    "definitions": [
+      {"term": "Most important key term from this topic", "definition": "Precise, verbatim-quotable definition from NCERT/official source"}
+    ],
+    "formulaSheet": [
+      {"formula": "Formula in LaTeX", "meaning": "What this formula calculates", "symbols": "What each symbol/variable represents", "siUnits": "SI units of each quantity", "conditions": "Under what conditions this formula is valid", "mistake": "The most common mistake students make with this formula"}
+    ],
+    "shortTricks": ["The most powerful memory trick for the entire topic — creative and sticky"],
+    "commonMistakes": [
+      {"mistake": "Most common error that costs students marks in this topic", "correction": "The exact correct approach that examiners want to see"}
+    ],
+    "solvedExample": {
+      "question": "Classic exam-style problem that tests core understanding",
+      "stepByStepSolution": ["Step 1: Analyse problem", "Step 2: Apply concept", "Step 3: Calculate/explain", "Step 4: Write conclusion"]
+    },
+    "pyqPoint": "Detailed pattern analysis: exact types of questions asked in last 5 years of ${boardName} exams. Include mark breakdowns and most repeated sub-topics.",
+    "faqs": [
+      {"q": "Most frequently asked student doubt about this topic", "a": "Crystal-clear answer that eliminates the doubt permanently"}
+    ],
+    "memoryTricks": ["Best proven mnemonic that toppers use for this topic"],
+    "revisionSummary": "A single complete paragraph covering everything essential. Written so that reading this alone is enough for last-minute revision. English first, then ${lang}.",
+    "fiveOneLinePoints": [
+      "One-liner 1: A critical exam fact in 1 sentence",
+      "One-liner 2: A formula or rule in 1 sentence",
+      "One-liner 3: A cause-effect or comparison point",
+      "One-liner 4: A PYQ-style answer starter",
+      "One-liner 5: A topper-level insight"
+    ]
   },
   "improvementPlanNew": {
-    "weakAreas": ["Area students struggle with"],
-    "practicePlan": ["Day 1: Read concepts (15 min)", "Day 2: Practice MCQs (20 min)"]
+    "weakAreas": ["Most commonly misunderstood aspect of this topic", "Second weak area that loses marks"],
+    "practicePlan": ["Day 1 (15 min): Read masterNotes.snapshotConcepts + definitions. Write key terms 3 times.", "Day 2 (20 min): Solve all MCQs and check explanations. Note wrong ones.", "Day 3 (25 min): Attempt all shortQuestions without looking at answers. Then compare.", "Day 4 (30 min): Write model answers for longQuestions. Check against keyPoints."]
   },
   "adaptiveLearningNew": {
-    "currentLevelAnalysis": "Assessment of difficulty and what to focus on",
-    "difficultyAdjustment": "${level === 'weak' ? 'Increase difficulty gradually' : 'Maintain level'}"
-  },
-  "diagramSuggestions": [
-    {
-      "label": "Detailed caption describing the diagram",
-      "wikiTitle": "Exact title of a Wikipedia article showing this diagram.",
-      "section": "snapshot",
-      "insertAfterConcept": "Name of concept"
-    }
-  ]
+    "currentLevelAnalysis": "Based on ${level} performance: assessment of which parts of this topic need most attention and why.",
+    "difficultyAdjustment": "${level === 'weak' ? 'Start with definitions and memory tricks. Do NOT attempt long questions yet.' : level === 'average' ? 'Focus on exam patterns and formula application. Review common mistakes.' : 'Challenge yourself with PYQ-style questions and topper-level analysis.'}"
+  }
 }`;
 
   try {
@@ -1056,7 +1076,7 @@ export async function generateTopperNotes(
     - If the Target Goal is a School or Board Exam (e.g., Class 9th, 10th for CBSE/State Board):
       1. EXACT TEXTBOOK MATCH: The content, concepts, and depth MUST exactly match the official textbook (e.g., NCERT) for Class ${cls} ${board} board.
       2. STRICTLY NO EXTRA CONTENT: Absolutely DO NOT include any extra information, advanced formulas, higher-class derivations, or out-of-syllabus topics. If the topic is in Class ${cls}, explain it EXACTLY as the Class ${cls} book does, nothing more.
-      3. EXACT DIAGRAMS: Diagram suggestions MUST strictly match the standard, basic diagrams given in the Class ${cls} textbook.
+      3. TEXT ONLY: Focus 100% on clear, bulleted, exam-ready text explanations, formulas, and PYQs. Do NOT generate or suggest diagrams.
 
     🚨 STAGE-BY-STAGE PAGE SIZE & CONTENT LIMITATION RULES (CRITICAL FOR A4 PDF PRINTING) 🚨
     To prevent PDF page overflows, content splitting across A4 pages, or text cuts, you MUST strictly limit the volume of generated content as follows:
@@ -1067,8 +1087,7 @@ export async function generateTopperNotes(
     3. Chapter Snapshot: Provide exactly 5 summary points.
     4. Key Concepts: Provide exactly 2 concepts.
     5. Definitions: Provide exactly 3-4 key definitions (1-2 lines each).
-    6. Diagram Suggestions: Provide exactly 3-4 diagram suggestions total. Each suggestion's "label" MUST be a detailed explanation of the diagram, showing what each part's name is, how it functions, and listing mandatory labels/arrows.
-    7. Exam Booster Facts: Provide exactly 2 facts under frequentlyAsked, 2 under oneMark, and 2 under boardFavourites.
+    6. Exam Booster Facts: Provide exactly 2 facts under frequentlyAsked, 2 under oneMark, and 2 under boardFavourites.
     8. Common Mistakes: Provide exactly 2 mistake boxes.
     9. Memory Mnemonics: Provide exactly 1 mnemonic.
     10. NCERT Highlights: Provide exactly 3 key lines.
@@ -1175,29 +1194,8 @@ export async function generateTopperNotes(
       ],
       "highlighterPoints": [
         "List of exactly 10-15 keywords or terms used in the notes that should be highlighted in yellow (e.g., 'inertia', 'acceleration')"
-      ],
-      "diagramSuggestions": [
-        {
-          "label": "Detailed caption containing the diagram description and a list of mandatory labels/arrows needed for exam-readiness (e.g., 'Newton's Law of Gravitation: Showing two spherical masses m1 and m2 separated by distance r, with equal and opposite force vectors F1 and F2 pointing towards each other. Mandatory Labels: m1, m2, r, F1, F2.')",
-          "wikiTitle": "Exact Wikipedia article title whose page image/thumbnail best illustrates this concept (e.g., 'Newton's_law_of_universal_gravitation')",
-          "section": "snapshot OR core OR visuals OR mistakes OR pyqs",
-          "insertAfterConcept": "Name of the concept/heading after which this diagram should appear (e.g., 'Universal Law of Gravitation')"
-        }
       ]
     }
-
-    DIAGRAM RULES (STRICT):
-    - Provide 3-6 diagramSuggestions per topic. More complex topics = more diagrams.
-    - NO BIOGRAPHY/PORTRAITS: Do NOT suggest general article titles of historical figures or scientists (e.g., 'Isaac_Newton', 'Albert_Einstein') as these display portraits or photos of people. Instead, use specific physical process or diagrammatic article titles (e.g., 'Newton's_law_of_universal_gravitation', 'Bohr_model', 'Chemical_bond').
-    - NO GENERIC SUBJECTS: Do NOT use broad generic subject/curriculum titles (e.g., 'Physics', 'Chemistry', 'Biology', 'Mathematics', 'Science') as the wikiTitle. Use only specific sub-topic titles that point to actual diagrammatic pages.
-    - NO MISMATCHED GRAPHICS: Do NOT suggest random internet-scraped, out-of-context, or advanced research lab graphs (e.g. advanced engineering data or satellite anomaly maps). Suggest only standard, direct textbook diagrams.
-    - ACCURATE CONTEXT ONLY: Every diagram suggestion must directly represent the core concept mentioned in that specific section.
-    - TEXTBOOK STANDARD: Suggest standard, clean, and accurate diagrams that perfectly match academic school/college textbooks (like NCERT reference books).
-    - LABELS MATTER: In the 'label' field, you must clearly specify the mandatory labels, parts, and arrows required to make the diagram technically correct for school exams.
-    - wikiTitle MUST be a real, existing Wikipedia article title that has an image on its page.
-    - Use English Wikipedia article titles (underscores for spaces).
-    - Distribute diagrams across at least 2-3 different sections.
-    - insertAfterConcept must match an actual concept name in keyConcepts, or a heading like "Chapter Snapshot", "Formula Sheet", "Text Flowchart", etc.
 
     OUTPUT RULES:
     - Never include markdown other than the JSON object. Do not wrap the JSON in \`\`\`json.
