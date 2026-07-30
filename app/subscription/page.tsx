@@ -31,10 +31,17 @@ export default function SubscriptionPage() {
   // Real Persistent Timer — stored in localStorage so it survives page refresh
   const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 59 });
   const [offerExpired, setOfferExpired] = useState(false);
-  // Offer prices — increase when timer expires
-  const launchPrice = offerExpired ? 599 : 399;   // was ₹399, becomes ₹599
-  const proAnnualPrice = offerExpired ? 699 : 499; // was ₹499, becomes ₹699
-  const proMonthlyPrice = offerExpired ? 99 : 79;  // was ₹79, becomes ₹99
+
+  // Unified Price Definitions: Single Source of Truth
+  // Active: Pro Annual = ₹399, Pro Monthly = ₹79, Exam Pass = ₹99
+  // Expired: Pro Annual = ₹599 (standard rate), Pro Monthly = ₹99, Exam Pass = ₹99
+  const baseAnnualPrice = offerExpired ? 599 : 399;
+  const baseMonthlyPrice = offerExpired ? 99 : 79;
+  const baseExamPassPrice = 99;
+
+  const finalAnnualPrice = discountPercent > 0 ? Math.round(baseAnnualPrice * (1 - discountPercent / 100)) : baseAnnualPrice;
+  const finalMonthlyPrice = discountPercent > 0 ? Math.round(baseMonthlyPrice * (1 - discountPercent / 100)) : baseMonthlyPrice;
+  const finalExamPassPrice = discountPercent > 0 ? Math.round(baseExamPassPrice * (1 - discountPercent / 100)) : baseExamPassPrice;
 
   // Offer Rotator
   const [offerIndex, setOfferIndex] = useState(0);
@@ -42,11 +49,11 @@ export default function SubscriptionPage() {
 
   const rotatingOffers = [
     { icon: Gift, text: "🎉 New User Offer: 7 Days Pro FREE on Annual Plan", badge: "Trial" },
-    { icon: Flame, text: "⚡ Flash Sale: Save 60% OFF Launch Pass today", badge: "Hot" },
+    { icon: Flame, text: `⚡ Flash Sale: Save 60% OFF Launch Pass today (₹${baseAnnualPrice})`, badge: "Hot" },
     { icon: Users, text: "👥 Refer 3 Friends: Get 30 Days Premium FREE", badge: "Bonus" },
     { icon: Award, text: "🏆 Maintain 30-Day Streak: Unlock 1 Month Premium", badge: "Earn" },
     { icon: Percent, text: "🎓 School/Coaching Code: Use 'SCHOOL20' for extra 20% OFF", badge: "Coupon" },
-    { icon: Sparkles, text: "📚 Board Exam Special: Launch Pass for ₹399 (Limited Time)", badge: "Special" },
+    { icon: Sparkles, text: `📚 Board Exam Special: Launch Pass for ₹${baseAnnualPrice} (Limited Time)`, badge: "Special" },
     { icon: Gift, text: "🎁 First Payment Reward: Instant 500 Achivox Coins", badge: "Coins" }
   ];
 
@@ -386,24 +393,20 @@ export default function SubscriptionPage() {
                 </p>
 
                 <div className="flex items-baseline justify-center lg:justify-start gap-3 pt-1">
-                  {offerExpired ? (
-                    <span className="text-slate-400 line-through text-base sm:text-lg font-bold">₹399</span>
-                  ) : (
-                    <span className="text-slate-400 line-through text-base sm:text-lg font-bold">₹999</span>
-                  )}
+                  <span className="text-slate-400 line-through text-base sm:text-lg font-bold">₹999</span>
                   <span className={`text-3xl sm:text-4xl font-black ${
                     offerExpired ? "text-slate-300" : "text-amber-400"
                   }`}>
-                    ₹{discountPercent > 0 ? Math.round(launchPrice * (1 - discountPercent / 100)) : launchPrice}
+                    ₹{finalAnnualPrice}
                   </span>
                   {!offerExpired && (
                     <span className="text-[10px] sm:text-xs font-bold text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-                      SAVE ₹{999 - launchPrice} TODAY
+                      SAVE ₹{999 - finalAnnualPrice} TODAY
                     </span>
                   )}
                   {offerExpired && (
                     <span className="text-[10px] sm:text-xs font-bold text-rose-300 bg-rose-500/20 px-2.5 py-0.5 rounded-full border border-rose-500/30">
-                      OFFER ENDED
+                      STANDARD PRICE (₹599)
                     </span>
                   )}
                 </div>
@@ -414,7 +417,7 @@ export default function SubscriptionPage() {
                   <div className="bg-slate-700/50 backdrop-blur-md border border-slate-600/40 px-4 py-3 rounded-2xl text-center w-full sm:w-auto">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">⏰ Offer Status</p>
                     <p className="text-base font-black text-rose-400">OFFER EXPIRED</p>
-                    <p className="text-[10px] text-slate-500 mt-1">Price has increased to ₹{launchPrice}</p>
+                    <p className="text-[10px] text-slate-400 mt-1">Price has increased to ₹{baseAnnualPrice}</p>
                   </div>
                 ) : (
                   <div className={`backdrop-blur-md border px-4 py-2.5 rounded-2xl text-center w-full sm:w-auto transition-all ${
@@ -459,7 +462,7 @@ export default function SubscriptionPage() {
                 )}
 
                 <button
-                  onClick={() => handleCheckout(`Launch Special (₹${launchPrice})`, launchPrice)}
+                  onClick={() => handleCheckout(`Pro Year Pass (₹${finalAnnualPrice})`, finalAnnualPrice)}
                   disabled={payingPlan !== null}
                   className={`w-full sm:w-auto font-black text-xs sm:text-sm uppercase tracking-wider py-3.5 px-8 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 ${
                     offerExpired
@@ -470,9 +473,9 @@ export default function SubscriptionPage() {
                   {payingPlan !== null ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
                   ) : offerExpired ? (
-                    <>Get Annual Access (₹{discountPercent > 0 ? Math.round(launchPrice * (1 - discountPercent / 100)) : launchPrice})</>
+                    <>Get Annual Access (₹{finalAnnualPrice})</>
                   ) : (
-                    <><Zap className="w-4 h-4 fill-slate-950" /> Claim Launch Offer (₹{discountPercent > 0 ? Math.round(launchPrice * (1 - discountPercent / 100)) : launchPrice})</>
+                    <><Zap className="w-4 h-4 fill-slate-950" /> Claim Launch Offer (₹{finalAnnualPrice})</>
                   )}
                 </button>
               </div>
@@ -624,19 +627,19 @@ export default function SubscriptionPage() {
                   <div>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl sm:text-4xl font-black text-white">
-                        ₹{discountPercent > 0 ? Math.round(proAnnualPrice * (1 - discountPercent / 100)) : proAnnualPrice}
+                        ₹{finalAnnualPrice}
                       </span>
                       <span className="text-xs font-bold text-slate-400">/ year</span>
                     </div>
                     <p className="text-[11px] font-bold text-emerald-400 mt-1">
-                      {offerExpired ? "Standard price active" : "Only ₹1.36/day (Save ₹449 compared to monthly)"}
+                      {offerExpired ? "Standard price active (₹599/yr)" : "Only ₹1.09/day (Save ₹600 today)"}
                     </p>
                   </div>
                 ) : (
                   <div>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl sm:text-4xl font-black text-white">
-                        ₹{discountPercent > 0 ? Math.round(proMonthlyPrice * (1 - discountPercent / 100)) : proMonthlyPrice}
+                        ₹{finalMonthlyPrice}
                       </span>
                       <span className="text-xs font-bold text-slate-400">/ month</span>
                     </div>
@@ -685,8 +688,8 @@ export default function SubscriptionPage() {
 
             <button
               onClick={() => handleCheckout(
-                proCycle === "annual" ? `Pro Annual (₹${proAnnualPrice})` : `Pro Monthly (₹${proMonthlyPrice})`,
-                proCycle === "annual" ? proAnnualPrice : proMonthlyPrice
+                proCycle === "annual" ? `Pro Annual (₹${finalAnnualPrice})` : `Pro Monthly (₹${finalMonthlyPrice})`,
+                proCycle === "annual" ? finalAnnualPrice : finalMonthlyPrice
               )}
               disabled={payingPlan !== null}
               className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm uppercase tracking-wider py-4 rounded-2xl shadow-xl shadow-blue-600/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
@@ -699,10 +702,7 @@ export default function SubscriptionPage() {
               ) : (
                 <>
                   <Zap className="w-4 h-4 fill-white" />
-                  Upgrade Now (₹{proCycle === "annual" 
-                    ? (discountPercent > 0 ? Math.round(499 * (1 - discountPercent / 100)) : 499)
-                    : (discountPercent > 0 ? Math.round(79 * (1 - discountPercent / 100)) : 79)
-                  })
+                  Upgrade Now (₹{proCycle === "annual" ? finalAnnualPrice : finalMonthlyPrice})
                 </>
               )}
             </button>
@@ -898,11 +898,11 @@ export default function SubscriptionPage() {
               🚀 Start Learning Today
             </h2>
             <p className="text-xs sm:text-sm text-blue-100 font-medium">
-              Only ₹1.36/day on the Yearly Plan. Invest in your academic success now!
+              {offerExpired ? "Standard Price: ₹599/Year. Invest in your academic success now!" : "Only ₹1.09/day on the Yearly Plan. Invest in your academic success now!"}
             </p>
             
             <button
-              onClick={() => handleCheckout("Launch Special (₹399)", 399)}
+              onClick={() => handleCheckout(`Pro Year Pass (₹${finalAnnualPrice})`, finalAnnualPrice)}
               disabled={payingPlan !== null}
               className="bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-widest py-3.5 sm:py-4 px-8 sm:px-10 rounded-2xl shadow-xl shadow-amber-500/30 transition-all hover:scale-105 active:scale-95 inline-flex items-center gap-2"
             >
@@ -914,7 +914,7 @@ export default function SubscriptionPage() {
               ) : (
                 <>
                   <Zap className="w-4 h-4 fill-slate-950" />
-                  Claim 60% OFF Now
+                  {offerExpired ? `Get Full Year Access (₹${finalAnnualPrice})` : `Claim 60% OFF Now (₹${finalAnnualPrice})`}
                 </>
               )}
             </button>
@@ -939,19 +939,27 @@ export default function SubscriptionPage() {
           <div className="hidden sm:block">
             <div className="flex items-center gap-2">
               <span className="text-xs font-black text-slate-900">PRO YEARLY ACCESS</span>
-              <span className="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full">60% OFF</span>
+              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                offerExpired ? "bg-slate-200 text-slate-700" : "bg-amber-100 text-amber-800"
+              }`}>
+                {offerExpired ? "STANDARD PRICE" : "60% OFF"}
+              </span>
             </div>
-            <p className="text-[11px] font-bold text-emerald-600">Only ₹1.36/day (₹399 total)</p>
+            <p className="text-[11px] font-bold text-emerald-600">
+              {offerExpired ? "Standard Rate: ₹599/year" : "Only ₹1.09/day (₹399 total)"}
+            </p>
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="sm:hidden text-left flex-1">
               <p className="text-xs font-black text-slate-900">Pro Year Pass</p>
-              <p className="text-[11px] font-bold text-amber-600">₹399 (60% OFF)</p>
+              <p className="text-[11px] font-bold text-amber-600">
+                {offerExpired ? "₹599 / Year" : "₹399 (60% OFF)"}
+              </p>
             </div>
 
             <button
-              onClick={() => handleCheckout("Launch Special (₹399)", 399)}
+              onClick={() => handleCheckout(`Pro Year Pass (₹${finalAnnualPrice})`, finalAnnualPrice)}
               disabled={payingPlan !== null}
               className="flex-1 sm:flex-initial bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-widest py-3 px-6 rounded-xl shadow-md transition-all hover:scale-105 flex items-center justify-center gap-1.5 shrink-0"
             >
@@ -960,7 +968,7 @@ export default function SubscriptionPage() {
               ) : (
                 <>
                   <Zap className="w-3.5 h-3.5 fill-white" />
-                  Upgrade Now
+                  Upgrade Now (₹{finalAnnualPrice})
                 </>
               )}
             </button>
