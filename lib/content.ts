@@ -32,7 +32,7 @@ export {
   evaluateSubjectiveAnswer 
 };
 
-export const achivox_cache_version = "v14";
+export const achivox_cache_version = "v15";
 
 export const hasCachedContent = (mode: string, parentId: string | null, type: string) => {
   if (typeof window === "undefined") return false;
@@ -240,10 +240,10 @@ export const fetchChapterNotes = async (topicName: string, userData?: any, lang:
       commonMistakesNew: rawData.commonMistakesNew || mn.commonMistakes || rawData.commonMistakes || [],
       improvementPlanNew: rawData.improvementPlanNew || rawData.improvementPlan || null,
       adaptiveLearningNew: rawData.adaptiveLearningNew || rawData.adaptiveLearning || null,
-      wikiSearchTerm: rawData.wikiSearchTerm || rawData.meta?.wikiSearchTerm || "None",
+      wikiSearchTerm: "None",
       shortQuestions: rawData.shortQuestions || [],
       longQuestions: rawData.longQuestions || [],
-      diagramSuggestions: rawData.diagramSuggestions || [],
+      diagramSuggestions: [],
       subjectiveQuestions: (rawData.subjectiveQuestions || rawData.questions?.subjective || []).map((q: any) => ({
         q: q.q || q.question || "",
         a: q.a || q.answer || "",

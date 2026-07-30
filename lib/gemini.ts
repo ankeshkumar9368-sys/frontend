@@ -121,7 +121,7 @@ function recordTokenUsage(usage: any, feature: string) {
 // ==========================================
 // GLOBAL AI CACHING SYSTEM (L1: localStorage, L2: Firestore)
 // ==========================================
-const FIRESTORE_CACHE_VERSION = "_v11_no_diagrams_at_all";
+const FIRESTORE_CACHE_VERSION = "_v12_absolute_no_diagrams";
 const LS_CACHE_PREFIX = "achivox_aicache_";
 
 // L1 localStorage instant check (synchronous, 0ms)

@@ -640,15 +640,7 @@ export default function SmartNotesViewer({
           </div>
         </div>
 
-        {notesData?.meta?.wikiSearchTerm && notesData.meta.wikiSearchTerm.toLowerCase() !== 'none' && wikiImages[notesData.meta.wikiSearchTerm] && (
-          <div className="mx-4 mb-3">
-            <InteractiveDiagramCard 
-              wikiTitle={notesData.meta.wikiSearchTerm} 
-              label={`Overview visual diagram for ${notesData.meta.topic || 'Concept'}`} 
-              wikiImage={wikiImages[notesData.meta.wikiSearchTerm]} 
-            />
-          </div>
-        )}
+
 
         {/* Concept Overview — always open */}
         <div className="px-4 space-y-6">
@@ -731,13 +723,7 @@ export default function SmartNotesViewer({
                            <MathRenderer content={t.examTip} />
                         </div>
                       )}
-                      {wikiImages[t.title] && (
-                        <InteractiveDiagramCard 
-                          wikiTitle={t.title} 
-                          label={`Academic diagram for ${t.title}`} 
-                          wikiImage={wikiImages[t.title]} 
-                        />
-                      )}
+
                     </div>
                   </div>
                 ))}
