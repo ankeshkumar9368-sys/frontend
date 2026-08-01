@@ -55,6 +55,7 @@ const OfferBanner = dynamic(() => import("../components/OfferBanner"), { ssr: fa
 import GoalSelector from "../components/GoalSelector";
 import AILoadingOverlay from "../components/AILoadingOverlay";
 import { getWeakAreas } from "../lib/analytics";
+import { LiveStudentActivityToast, LiveDashboardBadge } from "../components/LiveStudentActivityToast";
 
 const tapEffect = { 
   scale: 0.95, 
@@ -1402,6 +1403,11 @@ export default function Home() {
                                                     ]
                                                 })
                                             ]
+                                        }),
+                                        /* Live Active Student Badge */
+                                        /*#__PURE__*/ _jsx("div", {
+                                            className: "mb-3 flex justify-start",
+                                            children: /*#__PURE__*/ _jsx(LiveDashboardBadge, {})
                                         }),
                                         /* Refer & Earn Home Banner Card */
                                         /*#__PURE__*/ _jsxs(motion.div, {
@@ -4052,7 +4058,8 @@ export default function Home() {
                         ]
                     })
                 })
-            })
+            }),
+            /*#__PURE__*/ _jsx(LiveStudentActivityToast, {})
         ]
     });
 }

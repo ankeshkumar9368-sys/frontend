@@ -17,6 +17,7 @@ import {
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { LiveStudentActivityToast, LiveDashboardBadge } from "./LiveStudentActivityToast";
 
 const StudyMotionScene = dynamic(() => import("./StudyMotionScene"), { ssr: false });
 
@@ -236,11 +237,8 @@ export default function LandingPage({ onLogin }: { onLogin: () => void }) {
                 Apna AI Plan Banaye
                 <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
-              <div className="flex items-center gap-3 border border-white/12 bg-black/20 px-4 py-3 backdrop-blur">
-                <div className="h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.9)]" />
-                <span className="text-xs font-black uppercase tracking-[0.16em] text-slate-200">
-                  Live motion study mode
-                </span>
+              <div className="flex items-center gap-3">
+                <LiveDashboardBadge />
               </div>
             </motion.div>
           </div>
@@ -442,6 +440,7 @@ export default function LandingPage({ onLogin }: { onLogin: () => void }) {
           Achivox AI © 2026 · Made for India
         </p>
       </footer>
+      <LiveStudentActivityToast />
     </div>
   );
 }
