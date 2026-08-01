@@ -95,31 +95,8 @@ export default function SmartNotesViewer({
 }: SmartNotesViewerProps) {
   useStudyTimer(title.toLowerCase().replace(/\s+/g, "-"));
 
-  const [notesData, setNotesData] = useState<ChapterNote | null>(() => {
-    if (initialData) return initialData;
-    if (typeof window !== "undefined") {
-      try {
-        const localKey = `achivox_notes_${mode}_${subjectContext || 'gen'}_${chapterName || 'none'}_${title || 'none'}_${userData?.id || 'guest'}`.replace(/[^a-zA-Z0-9_]/g, '_');
-        const localCache = localStorage.getItem(localKey);
-        if (localCache) {
-          const parsed = JSON.parse(localCache);
-          if (parsed && parsed.topics) return parsed;
-        }
-      } catch (e) {}
-    }
-    return null;
-  });
-  
-  const [loading, setLoading] = useState<boolean>(() => {
-    if (initialData) return false;
-    if (typeof window !== "undefined") {
-      try {
-        const localKey = `achivox_notes_${mode}_${subjectContext || 'gen'}_${chapterName || 'none'}_${title || 'none'}_${userData?.id || 'guest'}`.replace(/[^a-zA-Z0-9_]/g, '_');
-        if (localStorage.getItem(localKey)) return false;
-      } catch (e) {}
-    }
-    return true;
-  });
+  const [notesData, setNotesData] = useState<ChapterNote | null>(initialData ?? null);
+  const [loading, setLoading] = useState<boolean>(!initialData);
   const [progress, setProgress] = useState(0);
   const [lang, setLang] = useState<string>("dual");
   const [usageRemaining, setUsageRemaining] = useState<number | null>(null);
@@ -155,13 +132,15 @@ export default function SmartNotesViewer({
     }
   }, [notesData, mode, subjectContext, chapterName, title, userData?.id]);
 
+  // Reset state whenever chapter/title changes so stale data is cleared immediately
   useEffect(() => {
-    // Skip fetching if we already have data from initialData
-    if (notesData && (notesData.topicMeta?.topic === chapterName || notesData.topicMeta?.topic === title)) {
-      setLoading(false);
-      return;
-    }
+    setNotesData(null);
+    setLoading(true);
+    isGeneratingRef.current = false;
+    fetchIdRef.current = null;
+  }, [title, chapterName]);
 
+  useEffect(() => {
     const loadNotes = async () => {
       if (isGeneratingRef.current) return;
       isGeneratingRef.current = true;
