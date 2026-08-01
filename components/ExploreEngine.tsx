@@ -29,7 +29,7 @@ export default function ExploreEngine({
   const searchRef = useRef<HTMLInputElement>(null);
 
   const govtStructure = ["Categories", "Exams", "Years", "Subjects", "Topics"];
-  const schoolStructure = ["Boards", "Classes", "Subjects", "Chapters", "Topics"];
+  const schoolStructure = ["Boards", "Classes", "Subjects", "Chapters"];
   
   const currentStructure = mode === "govt" ? govtStructure : schoolStructure;
   const currentLevelIndex = path.length;

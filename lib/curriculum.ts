@@ -999,12 +999,7 @@ export function getTopics(chapter: string, subject: string, cls: string): string
   const partialKey = Object.keys(TOPICS).find(k => k.startsWith(`${chapter}_`));
   if (partialKey) return TOPICS[partialKey];
 
-  // 3. Fallback: return generic topic-specific list based on subject
-  if (subject.includes("Mathematics")) return ["Core Concepts", "Theorems & Proofs", "Solved Examples", "Formula Bank", "Practice Exercise"];
-  if (subject.includes("Physics") || subject.includes("Chemistry") || subject.includes("Science")) return ["Theory Overview", "Experiments", "Formulas & Equations", "Conceptual Doubts", "Exam Focus"];
-  if (subject.includes("Social") || subject.includes("History") || subject.includes("Geography")) return ["Timeline", "Map Work", "Important Personalities", "Key Events", "Long Answer Focus"];
-  if (subject.includes("Economics") || subject.includes("Business") || subject.includes("Accountancy")) return ["Definitions", "Case Studies", "Principles", "Numeric Analysis", "Summary"];
-
+  // 3. Fallback: return empty array so generic sub-lists are never injected
   return [];
 }
 
