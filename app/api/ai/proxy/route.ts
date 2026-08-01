@@ -55,9 +55,9 @@ export async function POST(req: NextRequest) {
     let usageMetadata: any = null;
 
     try {
-      // Primary attempt: gemini-2.0-flash (10X Fast Sub-Second AI)
+      // Primary attempt: gemini-2.5-flash
       const fastModel = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash",
         generationConfig
       });
       const result = await fastModel.generateContent(prompt);
@@ -65,10 +65,10 @@ export async function POST(req: NextRequest) {
       text = response.text();
       usageMetadata = response.usageMetadata;
     } catch (primaryErr) {
-      console.warn("[proxy] gemini-2.0-flash call failed, falling back to gemini-1.5-flash:", primaryErr);
-      // Fallback attempt: gemini-1.5-flash
+      console.warn("[proxy] gemini-2.5-flash call failed, falling back to gemini-2.0-flash:", primaryErr);
+      // Fallback attempt: gemini-2.0-flash
       const fallbackModel = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         generationConfig
       });
       const result = await fallbackModel.generateContent(prompt);
