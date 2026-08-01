@@ -55,7 +55,7 @@ const OfferBanner = dynamic(() => import("../components/OfferBanner"), { ssr: fa
 import GoalSelector from "../components/GoalSelector";
 import AILoadingOverlay from "../components/AILoadingOverlay";
 import { getWeakAreas } from "../lib/analytics";
-import { LiveStudentActivityToast, LiveDashboardBadge } from "../components/LiveStudentActivityToast";
+import { LiveDashboardBadge } from "../components/LiveStudentActivityToast";
 
 const tapEffect = { 
   scale: 0.95, 
@@ -4058,8 +4058,7 @@ export default function Home() {
                         ]
                     })
                 })
-            }),
-            /*#__PURE__*/ _jsx(LiveStudentActivityToast, {})
+            })
         ]
     });
 }

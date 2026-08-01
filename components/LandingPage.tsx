@@ -17,7 +17,7 @@ import {
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LiveStudentActivityToast, LiveDashboardBadge } from "./LiveStudentActivityToast";
+import { LiveDashboardBadge } from "./LiveStudentActivityToast";
 
 const StudyMotionScene = dynamic(() => import("./StudyMotionScene"), { ssr: false });
 
@@ -440,7 +440,6 @@ export default function LandingPage({ onLogin }: { onLogin: () => void }) {
           Achivox AI © 2026 · Made for India
         </p>
       </footer>
-      <LiveStudentActivityToast />
     </div>
   );
 }
