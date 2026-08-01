@@ -314,22 +314,29 @@ Languages: English + ${lang}
 ${remedialExtra}
 
 ═══ CRITICAL RULES — NO EXCEPTIONS ═══
-1. Output ONLY valid JSON. ZERO text outside JSON. No markdown. No code blocks. No explanations.
-2. Every fact, definition, date, name, and formula MUST be 100% verified from NCERT/${boardName} textbooks.
-3. Content MUST be EXAM-SPECIFIC — directly aligned with ${boardName} board paper pattern.
-4. Questions MUST be real exam-style: exact wording, difficulty, and marking as in actual ${boardName} papers.
-5. Empty arrays are STRICTLY FORBIDDEN — every field must have at least 2-3 high-quality items.
-6. ALL key fields must be bilingual (English + ${lang}).
-7. Short Qs = 2-3 marks. Long Qs = 5-6 marks. Model answers must be COMPLETE and MARKSCHEME-READY.
-8. LATEX MATH RULE: All equations/formulas MUST use LaTeX format (e.g. \\\\frac{a}{b}, \\\\sqrt{x}, x^{2}, H_{2}O). NEVER write plain text like a/b or H2O.
-9. CONTENT DEPTH: Go BEYOND textbook basics — include topper-level insights, examiner observations, last 5-year PYQ patterns, and value-point answers.
-${mode === 'revision' ? '10. REVISION MODE: Ultra-concise. Only the most exam-critical facts.' : ''}
+1. TOPIC-CHAPTER ALIGNMENT (STRICT):
+   - Always cross-check the Chapter Title: "${topic}" and Subject: "${subject}".
+   - Generate content EXCLUSIVELY related to the exact Chapter Title provided in the request. Never insert generic subject intros, general definitions, or mismatched topics unless explicitly requested.
+2. SUBJECT-SPECIFIC TEMPLATE DYNAMICS:
+   - Subject Neutrality: Do NOT include subject-specific terms like "PRINCIPLE FORMULA", "Formula Facts MATHS", or mathematical equations for Non-Maths/Non-Science subjects (e.g. History, Geography, Home Science, Hindi, English). For non-maths subjects, write "None" for equation or provide subject-appropriate literary/grammatical/historical rules instead.
+   - Diagrams & Visuals: If an image or diagram description is included, ensure it directly illustrates the core concept of this SPECIFIC chapter (e.g. cell structure for Tissues, map for Geography, specific fiber types for Textiles). Never reuse generic or mismatched visuals.
+3. STRUCTURE & LANGUAGE:
+   - Maintain a clean, concise, bilingual format (English + ${lang}) suitable for ${boardName} board exam preparation.
+   - Include VVIP Questions, Memory Tricks, and Exam Tips that strictly align ONLY with the current chapter's core concepts.
+4. Output ONLY valid JSON. ZERO text outside JSON. No markdown. No code blocks. No explanations.
+5. Every fact, definition, date, name, and formula MUST be 100% verified from NCERT/${boardName} textbooks.
+6. Content MUST be EXAM-SPECIFIC — directly aligned with ${boardName} board paper pattern.
+7. Questions MUST be VVIP real exam-style: exact wording, difficulty, and marking as in actual ${boardName} papers.
+8. Empty arrays are STRICTLY FORBIDDEN — every field must have at least 2-3 high-quality items.
+9. LATEX MATH RULE: All equations/formulas for STEM subjects MUST use LaTeX format (e.g. \\frac{a}{b}, \\sqrt{x}, x^{2}, H_{2}O). NEVER write plain text like a/b or H2O.
+10. CONTENT DEPTH: Go BEYOND textbook basics — include topper-level insights, examiner observations, last 5-year PYQ patterns, and value-point answers.
+${mode === 'revision' ? '11. REVISION MODE: Ultra-concise. Only the most exam-critical facts.' : ''}
 
 ═══ EXAM FOCUS STANDARDS ═══
 - Each topic MUST have an "examLine" — one sentence that if written verbatim in an answer, will score full marks.
 - MCQs must follow the EXACT format used in ${boardName} board papers (stem + 4 options, one definitively correct).
 - Topper answers MUST include: definitions, key terms, cause-effect, diagrams mentioned (text description), examples.
-- Memory tricks MUST be creative, catchy, and proven to help retention.
+- Memory tricks MUST be creative, catchy, and proven to help retention for THIS SPECIFIC chapter.
 - Final Cheat Sheet MUST be the top 3-5 things an examiner looks for to give full marks.
 
 OUTPUT THIS EXACT JSON SCHEMA — FILL EVERY FIELD WITH EXAM-QUALITY CONTENT:

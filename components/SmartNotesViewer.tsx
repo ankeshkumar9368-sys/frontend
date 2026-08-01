@@ -680,9 +680,11 @@ export default function SmartNotesViewer({
                           </div>
                         )}
                       </div>
-                      {t.formula && (
+                      {t.formula && t.formula.trim().toLowerCase() !== "none" && (
                         <div className="my-5 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl px-5 py-5 text-center break-inside-avoid">
-                          <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2 opacity-70">Principle Formula</div>
+                          <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2 opacity-70">
+                            {['Mathematics', 'Physics', 'Chemistry', 'Accountancy'].includes(displaySubject) ? 'Principle Formula' : 'Core Rule / Concept Law'}
+                          </div>
                           <div className="text-lg font-black text-indigo-700 dark:text-indigo-300">
                             <MathRenderer content={(t.formula && t.formula.includes('$')) ? t.formula : `$${t.formula}$`} />
                           </div>
@@ -759,11 +761,11 @@ export default function SmartNotesViewer({
             </SmartAccordion>
           )}
 
-          {/* 📑 FORMULA SHEET — Clean LaTeX formulas */}
-          {notesData?.formulaSheet && notesData.formulaSheet.length > 0 && (
-            <SmartAccordion forceOpen={isExporting} icon={BookText} title="Formula Facts" color="bg-blue-500" badge="Maths">
+          {/* 📑 FORMULA / RULES SHEET — Subject-Neutral LaTeX or Core Rules */}
+          {notesData?.formulaSheet && notesData.formulaSheet.length > 0 && notesData.formulaSheet.some((f: any) => f.equation && f.equation.trim().toLowerCase() !== 'none') && (
+            <SmartAccordion forceOpen={isExporting} icon={BookText} title={['Mathematics', 'Physics', 'Chemistry', 'Accountancy'].includes(displaySubject) ? "Formula Facts" : "Core Rules & Laws"} color="bg-blue-500" badge={displaySubject || "Core"}>
               <div className="space-y-3 pt-2">
-                {Array.isArray(notesData.formulaSheet) && notesData.formulaSheet.map((f, i) => (
+                {Array.isArray(notesData.formulaSheet) && notesData.formulaSheet.filter((f: any) => f.equation && f.equation.trim().toLowerCase() !== 'none').map((f, i) => (
                   <div key={i} className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-border break-inside-avoid">
                     <p className="text-[10px] font-black uppercase text-slate-400 mb-2">{f.title}</p>
                     <div className="text-base font-black text-indigo-600 dark:text-indigo-400 my-2">
