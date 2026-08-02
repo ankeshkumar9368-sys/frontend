@@ -134,20 +134,20 @@ export default function Login() {
       initial={{ opacity: 0, scale: 0.96, y: 10 }} 
       animate={{ opacity: 1, scale: 1, y: 0 }} 
       transition={{ type: "spring", stiffness: 100, damping: 20 }} 
-      className="relative p-5 sm:p-7 rounded-[32px] sm:rounded-[38px] bg-[#121735]/95 border border-[#7A5AF8]/50 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden space-y-5"
+      className="relative p-4 sm:p-6 lg:p-6 xl:p-7 rounded-[28px] sm:rounded-[36px] bg-[#121735]/95 border border-[#7A5AF8]/50 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden space-y-4"
     >
       {/* Top Accent Line */}
       <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8]" />
 
       {/* LOGO & WELCOME */}
-      <div className="text-center space-y-1.5">
-        <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] p-[1.5px] shadow-[0_0_25px_rgba(122,90,248,0.4)] flex items-center justify-center">
+      <div className="text-center space-y-1">
+        <div className="mx-auto w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] p-[1.5px] shadow-[0_0_20px_rgba(122,90,248,0.4)] flex items-center justify-center">
           <div className="w-full h-full bg-[#0B1023] rounded-[14px] flex items-center justify-center">
-            <BookOpen className="w-7 h-7 text-[#38BDF8]" />
+            <BookOpen className="w-6 h-6 text-[#38BDF8]" />
           </div>
         </div>
 
-        <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white pt-1">
+        <h2 className="text-lg sm:text-xl lg:text-2xl font-black tracking-tight text-white pt-1">
           Welcome Back 👋
         </h2>
         <p className="text-xs font-semibold text-slate-300">
@@ -157,51 +157,51 @@ export default function Login() {
 
       {/* ⚠️ VISIBLE ERROR MESSAGE IF ANY */}
       {errorMsg && (
-        <div className="p-3 bg-rose-500/15 border border-rose-500/40 rounded-2xl text-rose-200 text-xs font-mono text-center break-all shadow-md">
+        <div className="p-2.5 bg-rose-500/15 border border-rose-500/40 rounded-xl text-rose-200 text-xs font-mono text-center break-all shadow-md">
           ❌ {errorMsg}
         </div>
       )}
 
       {/* 🔥 EXAMS ARE NEAR BANNER (CRITICAL REQ: PLACED JUST ABOVE LOGIN BUTTON) */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-500/20 via-amber-500/20 to-purple-500/20 border border-amber-400/50 backdrop-blur-md space-y-2 text-center shadow-lg">
-        <div className="flex items-center justify-center gap-1.5 text-xs sm:text-sm font-black text-[#FFD54F] uppercase tracking-wider">
-          <Flame className="w-4.5 h-4.5 text-amber-300 animate-bounce" /> 🔥 Exams are Near!
+      <div className="p-3.5 rounded-2xl bg-gradient-to-r from-rose-500/20 via-amber-500/20 to-purple-500/20 border border-amber-400/50 backdrop-blur-md space-y-1.5 text-center shadow-md">
+        <div className="flex items-center justify-center gap-1.5 text-xs font-black text-[#FFD54F] uppercase tracking-wider">
+          <Flame className="w-4 h-4 text-amber-300 animate-bounce" /> 🔥 Exams are Near!
         </div>
         <p className="text-xs font-bold text-white leading-tight">
-          Join 50,000+ Students Already Learning with Achivox AI
+          Join 50,000+ Students Learning with Achivox AI
         </p>
-        <div className="flex flex-wrap justify-center gap-1.5 pt-1 text-[11px] font-bold text-slate-200">
-          <span className="px-2.5 py-0.5 rounded-lg bg-white/10 border border-white/10">✔ CBSE</span>
-          <span className="px-2.5 py-0.5 rounded-lg bg-white/10 border border-white/10">✔ Bihar Board</span>
-          <span className="px-2.5 py-0.5 rounded-lg bg-white/10 border border-white/10">✔ ICSE</span>
-          <span className="px-2.5 py-0.5 rounded-lg bg-white/10 border border-white/10">✔ State Boards</span>
+        <div className="flex flex-wrap justify-center gap-1 pt-0.5 text-[10px] font-bold text-slate-200">
+          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">✔ CBSE</span>
+          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">✔ Bihar Board</span>
+          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">✔ ICSE</span>
+          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">✔ State Boards</span>
         </div>
-        <div className="text-[11px] font-extrabold text-emerald-300 pt-1 flex items-center justify-center gap-1">
-          Start FREE Today <ArrowRight className="w-3.5 h-3.5" />
+        <div className="text-[10px] font-extrabold text-emerald-300 pt-0.5 flex items-center justify-center gap-1">
+          Start FREE Today <ArrowRight className="w-3 h-3" />
         </div>
       </div>
 
       {/* 🎁 FREE SIGN-IN BONUS CALLOUT */}
-      <div className="p-3.5 rounded-2xl bg-[#7A5AF8]/15 border border-[#7A5AF8]/40 flex items-center gap-3">
-        <Sparkles className="w-5 h-5 text-[#FFD54F] shrink-0 animate-pulse" />
+      <div className="p-3 rounded-2xl bg-[#7A5AF8]/15 border border-[#7A5AF8]/40 flex items-center gap-2.5">
+        <Sparkles className="w-4.5 h-4.5 text-[#FFD54F] shrink-0 animate-pulse" />
         <div className="text-left">
           <span className="text-[10px] font-black text-[#FFD54F] uppercase tracking-wider block">FREE SIGN-IN BONUS</span>
-          <span className="text-xs font-bold text-slate-100">Get AI Credits + Chapter Notes instantly after login.</span>
+          <span className="text-[11px] font-bold text-slate-100 leading-tight block">Get AI Credits + Chapter Notes instantly on login.</span>
         </div>
       </div>
 
       {/* 🔘 LOGIN ACTION BUTTONS */}
-      <div className="space-y-3 pt-1">
+      <div className="space-y-2.5 pt-1">
         {/* Primary Button: Continue with Google */}
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleGoogleLogin} 
           disabled={loading}
-          className="w-full h-14 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] hover:from-[#4F46E5] hover:to-[#0EA5E9] text-white font-black rounded-2xl px-5 flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(122,90,248,0.4)] transition-all border border-white/25 disabled:opacity-70 active:scale-95 cursor-pointer"
+          className="w-full h-13 sm:h-14 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] hover:from-[#4F46E5] hover:to-[#0EA5E9] text-white font-black rounded-2xl px-4 flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(122,90,248,0.4)] transition-all border border-white/25 disabled:opacity-70 active:scale-95 cursor-pointer"
         >
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
-            <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path fill="#ea4335" d="M12 5.04c1.63 0 3.1.56 4.25 1.66l3.19-3.19C17.51 1.68 14.99.5 12 .5 7.69.5 3.95 2.99 2.12 6.6l3.69 2.86C6.72 6.8 9.15 5.04 12 5.04z"/>
               <path fill="#4285f4" d="M23.49 12.275c0-.82-.07-1.64-.22-2.42H12v4.61h6.43c-.27 1.47-1.11 2.7-2.36 3.54l3.67 2.84c2.14-1.97 3.38-4.88 3.38-8.57z"/>
               <path fill="#fbbc05" d="M5.81 14.54c-.25-.74-.39-1.53-.39-2.35s.14-1.61.39-2.35L2.12 6.98C1.3 8.62.83 10.45.83 12.37s.47 3.75 1.29 5.39l3.69-2.86z"/>
@@ -217,21 +217,21 @@ export default function Login() {
           whileTap={{ scale: 0.98 }}
           onClick={() => setShowWarningModal(true)} 
           disabled={loading}
-          className="w-full h-12 bg-white/[0.06] border border-white/15 hover:bg-white/[0.1] text-slate-200 hover:text-white font-bold rounded-2xl px-5 flex items-center justify-center gap-2 transition-all cursor-pointer"
+          className="w-full h-11 sm:h-12 bg-white/[0.06] border border-white/15 hover:bg-white/[0.1] text-slate-200 hover:text-white font-bold rounded-2xl px-4 flex items-center justify-center gap-2 transition-all cursor-pointer"
         >
           <User className="w-4 h-4 text-slate-300" />
           <span className="text-xs sm:text-sm font-bold">Continue as Guest</span>
         </motion.button>
 
-        <p className="text-center text-[11px] text-slate-400 font-semibold">
+        <p className="text-center text-[10px] text-slate-400 font-semibold">
           Limited Features Available
         </p>
       </div>
 
       {/* 🛡️ BOTTOM TRUST BADGES INSIDE PANEL */}
-      <div className="pt-3 border-t border-white/10 text-[10px] font-bold text-slate-300 grid grid-cols-2 gap-2 text-center">
-        <span className="flex items-center justify-center gap-1"><Lock className="w-3.5 h-3.5 text-emerald-400" /> 100% Encrypted</span>
-        <span className="flex items-center justify-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-[#38BDF8]" /> Verified Portal</span>
+      <div className="pt-2.5 border-t border-white/10 text-[10px] font-bold text-slate-300 grid grid-cols-2 gap-2 text-center">
+        <span className="flex items-center justify-center gap-1"><Lock className="w-3 h-3 text-emerald-400" /> 100% Encrypted</span>
+        <span className="flex items-center justify-center gap-1"><ShieldCheck className="w-3 h-3 text-[#38BDF8]" /> Verified Portal</span>
       </div>
     </motion.div>
   );
@@ -261,7 +261,7 @@ export default function Login() {
       </div>
 
       {/* 🔝 TOP BRAND NAVIGATION BAR */}
-      <header className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
+      <header className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] p-[1.5px] shadow-[0_0_25px_rgba(122,90,248,0.4)]">
             <div className="w-full h-full bg-[#0B1023] rounded-[14px] flex items-center justify-center">
@@ -283,15 +283,15 @@ export default function Login() {
       </header>
 
       {/* 🚀 MAIN CONTENT CONTAINER */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-4">
         
         {/* ========================================================
-            MOBILE VIEW (screen < lg): HERO TOP -> LOGIN CARD -> FEATURES
+            MOBILE & TABLET VIEW (screen < lg): STACKED VIEW WITH LOGIN TOP
            ======================================================== */}
         <div className="block lg:hidden space-y-6">
           
           {/* Mobile Hero Text */}
-          <div className="text-center space-y-3 pt-2">
+          <div className="text-center space-y-2.5 pt-1">
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -301,14 +301,14 @@ export default function Login() {
               <span>CBSE · Bihar Board · ICSE · State Boards</span>
             </motion.div>
 
-            <h1 className="text-3xl sm:text-4xl font-black leading-tight tracking-tight text-white">
+            <h1 className="text-2xl sm:text-4xl font-black leading-tight tracking-tight text-white">
               📚 Study Smarter. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#38BDF8] via-[#7A5AF8] to-[#FFD54F]">
                 🎯 Score Better in Less Time.
               </span>
             </h1>
 
-            <p className="text-sm font-medium text-slate-300 leading-normal max-w-md mx-auto">
+            <p className="text-xs sm:text-sm font-medium text-slate-300 leading-normal max-w-md mx-auto">
               India's AI Study Partner for School Students. Learn Faster, Revise Smarter & Score Higher.
             </p>
           </div>
@@ -319,7 +319,7 @@ export default function Login() {
           </div>
 
           {/* Mobile Free Bonus Card */}
-          <div className="p-5 rounded-3xl bg-gradient-to-br from-[#151A35]/95 via-[#0B1023]/95 to-[#151A35]/95 border border-[#7A5AF8]/40 shadow-lg backdrop-blur-xl space-y-3">
+          <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-[#151A35]/95 via-[#0B1023]/95 to-[#151A35]/95 border border-[#7A5AF8]/40 shadow-lg backdrop-blur-xl space-y-3">
             <div className="flex items-center gap-2 text-xs font-black text-[#FFD54F] uppercase tracking-wider">
               <span>🎁</span> Login Today & Get FREE:
             </div>
@@ -378,30 +378,30 @@ export default function Login() {
 
 
         {/* ========================================================
-            DESKTOP VIEW (screen >= lg): SIDE-BY-SIDE 2-COLUMN LAYOUT
+            DESKTOP VIEW (screen >= lg): AUTO-RESIZING 2-COLUMN LAYOUT
            ======================================================== */}
-        <div className="hidden lg:grid lg:grid-cols-12 gap-10 items-start">
+        <div className="hidden lg:grid lg:grid-cols-12 gap-8 xl:gap-10 items-center min-h-[calc(100vh-100px)]">
           
           {/* LEFT COLUMN: HERO, BONUS CARD, REVIEWS, FEATURES, COMPARISON (7 COLS) */}
-          <div className="lg:col-span-7 space-y-7">
+          <div className="lg:col-span-7 space-y-6">
             
             {/* 🏆 FLOATING BOARD BADGE */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#7A5AF8]/20 via-[#5B5CEB]/20 to-[#38BDF8]/20 border border-[#7A5AF8]/40 backdrop-blur-xl text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(122,90,248,0.2)]"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#7A5AF8]/20 via-[#5B5CEB]/20 to-[#38BDF8]/20 border border-[#7A5AF8]/40 backdrop-blur-xl text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(122,90,248,0.2)]"
             >
               <Trophy className="w-4 h-4 text-[#FFD54F] shrink-0" />
               <span>Designed for <strong className="text-white">CBSE · Bihar Board · ICSE · State Boards</strong></span>
             </motion.div>
 
             {/* 📚 HERO HEADINGS */}
-            <div className="space-y-3.5">
+            <div className="space-y-2.5">
               <motion.h1 
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.08] tracking-tight text-white"
+                className="text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight text-white"
               >
                 📚 Study Smarter. <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#38BDF8] via-[#7A5AF8] to-[#FFD54F]">
@@ -413,25 +413,25 @@ export default function Login() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
-                className="text-base lg:text-lg font-medium text-slate-300 leading-relaxed max-w-2xl"
+                className="text-sm lg:text-base font-medium text-slate-300 leading-relaxed max-w-xl"
               >
                 India's AI Study Partner for School Students. Learn Faster, Revise Smarter and Score Higher with AI.
               </motion.p>
             </div>
 
             {/* ⭐ STATS & TRUST BADGES */}
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
                 <div className="flex text-[#FFD54F]">{"⭐⭐⭐⭐⭐".split("").map((s, idx) => <span key={idx}>{s}</span>)}</div>
                 <span className="text-slate-200 ml-1">4.9/5 Rating</span>
               </div>
 
-              <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
-                <span className="text-base">👨‍🎓</span> <span>50,000+ Students</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
+                <span className="text-sm">👨‍🎓</span> <span>50,000+ Students</span>
               </div>
 
-              <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
-                <span className="text-base">🏫</span> <span>Trusted Across India</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
+                <span className="text-sm">🏫</span> <span>Trusted Across India</span>
               </div>
             </div>
 
@@ -440,14 +440,13 @@ export default function Login() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              whileHover={{ y: -2 }}
-              className="relative p-6 rounded-3xl bg-gradient-to-br from-[#151A35]/90 via-[#0B1023]/95 to-[#151A35]/90 border border-[#7A5AF8]/40 shadow-[0_15px_40px_rgba(122,90,248,0.15)] backdrop-blur-xl space-y-4"
+              className="relative p-5 rounded-3xl bg-gradient-to-br from-[#151A35]/90 via-[#0B1023]/95 to-[#151A35]/90 border border-[#7A5AF8]/40 shadow-[0_15px_40px_rgba(122,90,248,0.15)] backdrop-blur-xl space-y-3"
             >
-              <div className="flex items-center gap-2 text-sm font-black text-[#FFD54F] uppercase tracking-wider">
-                <span className="text-lg">🎁</span> Login Today & Get FREE:
+              <div className="flex items-center gap-2 text-xs font-black text-[#FFD54F] uppercase tracking-wider">
+                <span>🎁</span> Login Today & Get FREE:
               </div>
 
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-3 gap-2">
                 {[
                   "AI Smart Notes",
                   "10 AI Doubts",
@@ -455,60 +454,59 @@ export default function Login() {
                   "Study Planner",
                   "AI Mock Test"
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.05] border border-white/10 text-xs font-bold text-slate-100">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div key={idx} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/[0.05] border border-white/10 text-[11px] font-bold text-slate-100">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-bold text-slate-300">
+              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-300">
                 <span>⚡ Instant access on login</span>
                 <span className="text-[#FFD54F] font-extrabold">No Credit Card Required</span>
               </div>
             </motion.div>
 
             {/* ⭐ SOCIAL PROOF REVIEWS */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+            <div className="space-y-2.5">
+              <h3 className="text-[11px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#7A5AF8] animate-ping" /> What Indian Toppers Say
               </h3>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2.5">
                 {[
                   { name: "Rahul", cls: "Class 10 · CBSE", review: "Aaj revision sirf 2 ghante me complete ho gaya.", avatar: "👨‍🎓" },
                   { name: "Priya", cls: "Class 12 · Bihar Board", review: "Boards ke liye best AI app.", avatar: "👩‍🎓" },
                   { name: "Aditya", cls: "Class 9", review: "Mock Tests helped improve my confidence.", avatar: "🧑‍🎓" }
                 ].map((rev, i) => (
-                  <motion.div
+                  <div
                     key={i}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    className="p-4 rounded-2xl bg-[#151A35]/80 border border-white/10 backdrop-blur-md flex flex-col justify-between space-y-3"
+                    className="p-3 rounded-2xl bg-[#151A35]/80 border border-white/10 backdrop-blur-md flex flex-col justify-between space-y-2"
                   >
-                    <div className="space-y-1.5">
-                      <div className="flex text-[#FFD54F] text-xs">{"⭐⭐⭐⭐⭐".split("").map((s, idx) => <span key={idx}>{s}</span>)}</div>
-                      <p className="text-xs font-bold text-slate-200 leading-snug">"{rev.review}"</p>
+                    <div className="space-y-1">
+                      <div className="flex text-[#FFD54F] text-[10px]">{"⭐⭐⭐⭐⭐".split("").map((s, idx) => <span key={idx}>{s}</span>)}</div>
+                      <p className="text-[11px] font-bold text-slate-200 leading-snug">"{rev.review}"</p>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-2 border-t border-white/5 text-[11px]">
-                      <span className="text-base">{rev.avatar}</span>
+                    <div className="flex items-center gap-1.5 pt-1.5 border-t border-white/5 text-[10px]">
+                      <span>{rev.avatar}</span>
                       <div>
                         <p className="font-black text-white leading-tight">{rev.name}</p>
-                        <p className="text-[10px] text-slate-400 font-medium">{rev.cls}</p>
+                        <p className="text-[9px] text-slate-400 font-medium">{rev.cls}</p>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* 📄 FEATURE GRID */}
-            <div className="space-y-3.5">
-              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#38BDF8]" /> Everything You Need To Score 95%+
+            <div className="space-y-2.5">
+              <h3 className="text-[11px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#38BDF8]" /> Everything You Need To Score 95%+
               </h3>
 
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 gap-2">
                 {[
                   { icon: FileText, title: "AI Smart Notes", color: "text-[#38BDF8] bg-[#38BDF8]/10 border-[#38BDF8]/20" },
                   { icon: Bot, title: "Instant AI Doubt Solver", color: "text-[#7A5AF8] bg-[#7A5AF8]/10 border-[#7A5AF8]/20" },
@@ -519,76 +517,24 @@ export default function Login() {
                   { icon: RefreshCw, title: "Revision Mode", color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/20" },
                   { icon: Globe, title: "Hindi, English & Hinglish", color: "text-amber-400 bg-amber-400/10 border-amber-400/20" }
                 ].map((feat, idx) => (
-                  <motion.div
+                  <div
                     key={idx}
-                    whileHover={{ scale: 1.03, y: -2 }}
-                    className="p-3.5 rounded-2xl bg-[#151A35]/70 border border-white/10 backdrop-blur-md flex flex-col gap-2.5"
+                    className="p-2.5 rounded-2xl bg-[#151A35]/70 border border-white/10 backdrop-blur-md flex flex-col gap-2"
                   >
-                    <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${feat.color}`}>
-                      <feat.icon className="w-4.5 h-4.5" />
+                    <div className={`w-7 h-7 rounded-lg border flex items-center justify-center ${feat.color}`}>
+                      <feat.icon className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-xs font-bold text-slate-200 leading-tight">{feat.title}</span>
-                  </motion.div>
+                    <span className="text-[10px] font-bold text-slate-200 leading-tight">{feat.title}</span>
+                  </div>
                 ))}
-              </div>
-            </div>
-
-            {/* ⚖️ PREMIUM COMPARISON (Free vs Premium) */}
-            <div className="space-y-3.5">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                  <Award className="w-4 h-4 text-[#FFD54F]" /> Choose Your Plan
-                </h3>
-                <span className="text-[10px] font-bold text-[#FFD54F] bg-[#FFD54F]/10 border border-[#FFD54F]/30 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                  ★ Upgrade Anytime
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Free Plan Card */}
-                <div className="p-5 rounded-3xl bg-[#151A35]/60 border border-white/10 backdrop-blur-md space-y-4">
-                  <div className="space-y-1">
-                    <h4 className="text-base font-black text-slate-200">Free Starter</h4>
-                    <p className="text-xs text-slate-400 font-medium">Perfect for trying out Achivox AI</p>
-                  </div>
-                  
-                  <div className="space-y-2 text-xs font-semibold text-slate-300">
-                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> 10 AI Doubts</div>
-                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> 1 Mock Test</div>
-                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Limited Notes</div>
-                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Basic Planner</div>
-                  </div>
-                </div>
-
-                {/* Premium Plan Card */}
-                <div className="relative p-5 rounded-3xl bg-gradient-to-br from-[#7A5AF8]/30 via-[#151A35]/95 to-[#5B5CEB]/30 border-2 border-[#FFD54F]/60 backdrop-blur-xl space-y-4 shadow-[0_0_30px_rgba(255,213,79,0.15)]">
-                  <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-[#FFD54F] to-amber-500 text-[#0B1023] font-black text-[10px] uppercase tracking-wider shadow-md">
-                    👑 Most Popular
-                  </div>
-
-                  <div className="space-y-1">
-                    <h4 className="text-base font-black text-white flex items-center gap-2">
-                      Pro Topper <span className="text-[#FFD54F]">Pro</span>
-                    </h4>
-                    <p className="text-xs text-slate-200 font-medium">Unlimited Access for Board Success</p>
-                  </div>
-                  
-                  <div className="space-y-2 text-xs font-bold text-white">
-                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Unlimited AI Doubts</div>
-                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Unlimited Notes</div>
-                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Unlimited Mock Tests</div>
-                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Personal AI Mentor</div>
-                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Daily Planner & Analytics</div>
-                  </div>
-                </div>
               </div>
             </div>
 
           </div>
 
 
-          {/* RIGHT COLUMN: LOGIN PANEL (5 COLS - Viewport fitted) */}
-          <div className="lg:col-span-5 relative lg:sticky lg:top-8">
+          {/* RIGHT COLUMN: LOGIN PANEL (5 COLS - Perfect Centered Viewport Auto-fit) */}
+          <div className="lg:col-span-5 relative w-full max-w-md mx-auto flex items-center justify-center">
             {renderLoginPanel()}
           </div>
 
@@ -598,37 +544,37 @@ export default function Login() {
       {/* ========================================================
           BOTTOM CTA SECTION & TRUST BAR
          ======================================================== */}
-      <footer className="relative z-10 border-t border-white/10 mt-16 bg-[#070A17]/90 backdrop-blur-xl py-8 sm:py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
+      <footer className="relative z-10 border-t border-white/10 mt-12 bg-[#070A17]/90 backdrop-blur-xl py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
           
           {/* BOTTOM CTA CARD */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#5B5CEB]/25 via-[#7A5AF8]/35 to-[#38BDF8]/25 border border-[#7A5AF8]/40 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 text-center sm:text-left shadow-2xl">
+          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#5B5CEB]/25 via-[#7A5AF8]/35 to-[#38BDF8]/25 border border-[#7A5AF8]/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-2xl">
             <div className="space-y-1">
-              <h3 className="text-lg sm:text-2xl font-black text-white flex items-center justify-center sm:justify-start gap-2">
+              <h3 className="text-base sm:text-xl font-black text-white flex items-center justify-center sm:justify-start gap-2">
                 🚀 Unlock Your Full Learning Potential
               </h3>
-              <p className="text-xs sm:text-sm text-slate-200 font-semibold">
+              <p className="text-xs text-slate-200 font-semibold">
                 Upgrade Anytime · Personalized AI Tutor for CBSE & Board Exams
               </p>
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
-              <span className="text-xs font-black text-white px-4 py-2.5 rounded-full bg-white/10 border border-white/20 backdrop-blur">
+              <span className="text-xs font-black text-white px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur">
                 Visit: <strong className="text-[#38BDF8]">🌐 achivox.online</strong>
               </span>
             </div>
           </div>
 
           {/* BOTTOM TRUST BAR */}
-          <div className="pt-3 flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-slate-300 border-t border-white/10">
+          <div className="pt-3 flex flex-wrap items-center justify-between gap-3 text-xs font-bold text-slate-300 border-t border-white/10">
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-              <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-emerald-400" /> Secure Google Login</span>
-              <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-[#FFD54F]" /> Lightning Fast</span>
-              <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#38BDF8]" /> Privacy Protected</span>
-              <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-purple-400" /> Built for Indian Students</span>
+              <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-emerald-400" /> Secure Google Login</span>
+              <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-[#FFD54F]" /> Lightning Fast</span>
+              <span className="flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#38BDF8]" /> Privacy Protected</span>
+              <span className="flex items-center gap-1.5"><GraduationCap className="w-3.5 h-3.5 text-purple-400" /> Built for Indian Students</span>
             </div>
 
-            <div className="text-[11px] font-bold text-slate-400">
+            <div className="text-[10px] font-bold text-slate-400">
               ACHIVOX AI © 2026 · Made with ❤️ for India
             </div>
           </div>
