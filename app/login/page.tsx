@@ -134,7 +134,7 @@ export default function Login() {
       initial={{ opacity: 0, scale: 0.96, y: 10 }} 
       animate={{ opacity: 1, scale: 1, y: 0 }} 
       transition={{ type: "spring", stiffness: 100, damping: 20 }} 
-      className="relative p-4 sm:p-6 lg:p-6 xl:p-7 rounded-[28px] sm:rounded-[36px] bg-[#121735]/95 border border-[#7A5AF8]/50 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden space-y-4"
+      className="relative p-5 sm:p-6 lg:p-7 rounded-[28px] sm:rounded-[36px] bg-[#121735]/95 border border-[#7A5AF8]/50 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden space-y-4"
     >
       {/* Top Accent Line */}
       <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8]" />
@@ -147,7 +147,7 @@ export default function Login() {
           </div>
         </div>
 
-        <h2 className="text-lg sm:text-xl lg:text-2xl font-black tracking-tight text-white pt-1">
+        <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white pt-1">
           Welcome Back 👋
         </h2>
         <p className="text-xs font-semibold text-slate-300">
@@ -198,10 +198,10 @@ export default function Login() {
           whileTap={{ scale: 0.98 }}
           onClick={handleGoogleLogin} 
           disabled={loading}
-          className="w-full h-13 sm:h-14 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] hover:from-[#4F46E5] hover:to-[#0EA5E9] text-white font-black rounded-2xl px-4 flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(122,90,248,0.4)] transition-all border border-white/25 disabled:opacity-70 active:scale-95 cursor-pointer"
+          className="w-full h-14 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] hover:from-[#4F46E5] hover:to-[#0EA5E9] text-white font-black rounded-2xl px-4 flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(122,90,248,0.4)] transition-all border border-white/25 disabled:opacity-70 active:scale-95 cursor-pointer"
         >
-          <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
+            <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path fill="#ea4335" d="M12 5.04c1.63 0 3.1.56 4.25 1.66l3.19-3.19C17.51 1.68 14.99.5 12 .5 7.69.5 3.95 2.99 2.12 6.6l3.69 2.86C6.72 6.8 9.15 5.04 12 5.04z"/>
               <path fill="#4285f4" d="M23.49 12.275c0-.82-.07-1.64-.22-2.42H12v4.61h6.43c-.27 1.47-1.11 2.7-2.36 3.54l3.67 2.84c2.14-1.97 3.38-4.88 3.38-8.57z"/>
               <path fill="#fbbc05" d="M5.81 14.54c-.25-.74-.39-1.53-.39-2.35s.14-1.61.39-2.35L2.12 6.98C1.3 8.62.83 10.45.83 12.37s.47 3.75 1.29 5.39l3.69-2.86z"/>
@@ -217,7 +217,7 @@ export default function Login() {
           whileTap={{ scale: 0.98 }}
           onClick={() => setShowWarningModal(true)} 
           disabled={loading}
-          className="w-full h-11 sm:h-12 bg-white/[0.06] border border-white/15 hover:bg-white/[0.1] text-slate-200 hover:text-white font-bold rounded-2xl px-4 flex items-center justify-center gap-2 transition-all cursor-pointer"
+          className="w-full h-12 bg-white/[0.06] border border-white/15 hover:bg-white/[0.1] text-slate-200 hover:text-white font-bold rounded-2xl px-4 flex items-center justify-center gap-2 transition-all cursor-pointer"
         >
           <User className="w-4 h-4 text-slate-300" />
           <span className="text-xs sm:text-sm font-bold">Continue as Guest</span>
@@ -230,8 +230,8 @@ export default function Login() {
 
       {/* 🛡️ BOTTOM TRUST BADGES INSIDE PANEL */}
       <div className="pt-2.5 border-t border-white/10 text-[10px] font-bold text-slate-300 grid grid-cols-2 gap-2 text-center">
-        <span className="flex items-center justify-center gap-1"><Lock className="w-3 h-3 text-emerald-400" /> 100% Encrypted</span>
-        <span className="flex items-center justify-center gap-1"><ShieldCheck className="w-3 h-3 text-[#38BDF8]" /> Verified Portal</span>
+        <span className="flex items-center justify-center gap-1"><Lock className="w-3.5 h-3.5 text-emerald-400" /> 100% Encrypted</span>
+        <span className="flex items-center justify-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-[#38BDF8]" /> Verified Portal</span>
       </div>
     </motion.div>
   );
@@ -239,7 +239,7 @@ export default function Login() {
   return (
     <div 
       ref={containerRef} 
-      className="w-full relative min-h-screen overflow-x-hidden bg-[#0B1023] text-white selection:bg-[#7A5AF8] selection:text-white"
+      className="w-full relative min-h-[100dvh] overflow-y-auto overflow-x-hidden bg-[#0B1023] text-white selection:bg-[#7A5AF8] selection:text-white"
       style={{
         fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
       }}
@@ -286,7 +286,7 @@ export default function Login() {
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-4">
         
         {/* ========================================================
-            MOBILE & TABLET VIEW (screen < lg): STACKED VIEW WITH LOGIN TOP
+            MOBILE & TABLET VIEW (screen < lg): FULL STACKED VIEW
            ======================================================== */}
         <div className="block lg:hidden space-y-6">
           
@@ -313,7 +313,7 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Mobile Login Panel (FIRST priority on phone screens so user sees Google button right away!) */}
+          {/* Mobile Login Panel (FIRST priority on Android/iPhone screens so user sees Google button right away!) */}
           <div className="w-full max-w-md mx-auto">
             {renderLoginPanel()}
           </div>
@@ -374,16 +374,42 @@ export default function Login() {
               ))}
             </div>
           </div>
+
+          {/* Mobile Free vs Premium Comparison Table */}
+          <div className="space-y-3 pt-2">
+            <h3 className="text-[11px] font-black uppercase tracking-widest text-slate-400">Free vs Premium</h3>
+            <div className="grid grid-cols-1 gap-3">
+              <div className="p-4 rounded-2xl bg-[#151A35]/60 border border-white/10 space-y-2">
+                <h4 className="text-sm font-black text-slate-200">Free Starter</h4>
+                <div className="grid grid-cols-2 gap-1.5 text-xs text-slate-300 font-medium">
+                  <div>• 10 AI Doubts</div>
+                  <div>• 1 Mock Test</div>
+                  <div>• Limited Notes</div>
+                  <div>• Basic Planner</div>
+                </div>
+              </div>
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#7A5AF8]/30 to-[#151A35]/95 border-2 border-[#FFD54F]/60 space-y-2 relative">
+                <span className="absolute top-2 right-3 text-[9px] font-black text-[#FFD54F] uppercase">👑 Most Popular</span>
+                <h4 className="text-sm font-black text-white">Pro Topper <span className="text-[#FFD54F]">Pro</span></h4>
+                <div className="grid grid-cols-2 gap-1.5 text-xs text-white font-bold">
+                  <div>✔ Unlimited Doubts</div>
+                  <div>✔ Unlimited Notes</div>
+                  <div>✔ Unlimited Mocks</div>
+                  <div>✔ Personal Mentor</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
 
         {/* ========================================================
-            DESKTOP VIEW (screen >= lg): AUTO-RESIZING 2-COLUMN LAYOUT
+            DESKTOP VIEW (screen >= lg): 2-COLUMN SMOOTH SCROLLABLE LAYOUT
            ======================================================== */}
-        <div className="hidden lg:grid lg:grid-cols-12 gap-8 xl:gap-10 items-center min-h-[calc(100vh-100px)]">
+        <div className="hidden lg:grid lg:grid-cols-12 gap-8 xl:gap-10 items-start pt-2">
           
           {/* LEFT COLUMN: HERO, BONUS CARD, REVIEWS, FEATURES, COMPARISON (7 COLS) */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-6 pb-12">
             
             {/* 🏆 FLOATING BOARD BADGE */}
             <motion.div
@@ -530,11 +556,58 @@ export default function Login() {
               </div>
             </div>
 
+            {/* ⚖️ PREMIUM COMPARISON (Free vs Premium) */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[11px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                  <Award className="w-3.5 h-3.5 text-[#FFD54F]" /> Choose Your Plan
+                </h3>
+                <span className="text-[9px] font-bold text-[#FFD54F] bg-[#FFD54F]/10 border border-[#FFD54F]/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  ★ Upgrade Anytime
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {/* Free Plan Card */}
+                <div className="p-4 rounded-2xl bg-[#151A35]/60 border border-white/10 backdrop-blur-md space-y-3">
+                  <div className="space-y-0.5">
+                    <h4 className="text-sm font-black text-slate-200">Free Starter</h4>
+                    <p className="text-[11px] text-slate-400 font-medium">Perfect for trying out Achivox AI</p>
+                  </div>
+                  <div className="space-y-1.5 text-xs font-semibold text-slate-300">
+                    <div className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> 10 AI Doubts</div>
+                    <div className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> 1 Mock Test</div>
+                    <div className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Limited Notes</div>
+                    <div className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Basic Planner</div>
+                  </div>
+                </div>
+
+                {/* Premium Plan Card */}
+                <div className="relative p-4 rounded-2xl bg-gradient-to-br from-[#7A5AF8]/30 via-[#151A35]/95 to-[#5B5CEB]/30 border-2 border-[#FFD54F]/60 backdrop-blur-xl space-y-3 shadow-[0_0_25px_rgba(255,213,79,0.15)]">
+                  <div className="absolute -top-2.5 right-3 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#FFD54F] to-amber-500 text-[#0B1023] font-black text-[9px] uppercase tracking-wider shadow-md">
+                    👑 Most Popular
+                  </div>
+                  <div className="space-y-0.5">
+                    <h4 className="text-sm font-black text-white flex items-center gap-1.5">
+                      Pro Topper <span className="text-[#FFD54F]">Pro</span>
+                    </h4>
+                    <p className="text-[11px] text-slate-200 font-medium">Unlimited Access for Board Success</p>
+                  </div>
+                  <div className="space-y-1.5 text-xs font-bold text-white">
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#FFD54F]" /> Unlimited AI Doubts</div>
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#FFD54F]" /> Unlimited Notes</div>
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#FFD54F]" /> Unlimited Mock Tests</div>
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#FFD54F]" /> Personal AI Mentor</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
 
-          {/* RIGHT COLUMN: LOGIN PANEL (5 COLS - Perfect Centered Viewport Auto-fit) */}
-          <div className="lg:col-span-5 relative w-full max-w-md mx-auto flex items-center justify-center">
+          {/* RIGHT COLUMN: LOGIN PANEL (5 COLS - Smooth Sticky Container) */}
+          <div className="lg:col-span-5 w-full max-w-md mx-auto sticky top-4">
             {renderLoginPanel()}
           </div>
 
