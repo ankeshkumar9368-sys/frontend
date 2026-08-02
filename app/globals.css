@@ -50,6 +50,19 @@
   }
 }
 
+/* ── Login page scroll override ──────────────────────────────────────────
+   The global html/body uses position:fixed + overflow:hidden for Capacitor.
+   This class is added to <html> on the login page to restore normal scrolling.
+   ────────────────────────────────────────────────────────────────────── */
+.login-scroll-enabled,
+.login-scroll-enabled body {
+  position: static !important;
+  inset: auto !important;
+  overflow: visible !important;
+  height: auto !important;
+  overscroll-behavior-y: auto !important;
+}
+
 @layer components {
   .mobile-container {
     @apply w-full mx-auto bg-background relative flex flex-col transition-colors duration-300;

@@ -20,6 +20,15 @@ export default function Login() {
   const [showWarningModal, setShowWarningModal] = useState(false);
   const router = useRouter();
 
+  // Apply scroll class to <html> so login page can scroll normally
+  // (globals.css sets position:fixed + overflow:hidden for Capacitor app)
+  useEffect(() => {
+    document.documentElement.classList.add('login-scroll-enabled');
+    return () => {
+      document.documentElement.classList.remove('login-scroll-enabled');
+    };
+  }, []);
+
   useEffect(() => {
     const overlayStatusBar = async () => {
       try {
@@ -223,7 +232,7 @@ export default function Login() {
           PAGE WRAPPER — no overflow tricks, normal document flow
          ═══════════════════════════════════════════════════════ */}
       <div
-        className="relative w-full bg-[#0B1023] text-white"
+        className="relative w-full min-h-screen bg-[#0B1023] text-white"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
         {/* Background blobs — purely decorative, position:absolute so they never break scroll */}
