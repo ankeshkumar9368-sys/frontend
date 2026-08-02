@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Chrome, User, ShieldAlert, Sparkles, X, BookOpen, Rocket, Mic, Flame, Trophy } from "lucide-react";
+import { 
+  Chrome, User, ShieldAlert, Sparkles, X, BookOpen, Rocket, Mic, Flame, Trophy,
+  Star, Check, CheckCircle2, Zap, Globe, Lock, ShieldCheck, FileText, Bot, 
+  LineChart, Brain, GraduationCap, HelpCircle, BarChart2, RefreshCw, Award, ArrowRight
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { auth } from "../../lib/firebase";
@@ -127,276 +131,461 @@ export default function Login() {
   return (
     <div 
       ref={containerRef} 
-      className="w-full relative h-[100dvh] overflow-y-auto flex flex-col lg:flex-row bg-[#070518] text-white"
+      className="w-full relative min-h-screen overflow-x-hidden bg-[#0B1023] text-white selection:bg-[#7A5AF8] selection:text-white"
       style={{
-        backgroundImage: "radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%)"
+        fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
       }}
     >
-      {/* Glow Backdrops */}
-      <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] rounded-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] opacity-25 blur-[100px] pointer-events-none animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[280px] h-[280px] rounded-full bg-gradient-to-tr from-[#3B82F6] to-[#7C3AED] opacity-20 blur-[80px] pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
+      {/* 🌌 FUTURISTIC BACKGROUND GLOW BLOBS & AI NEURAL PARTICLES */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[#5B5CEB]/25 via-[#7A5AF8]/20 to-transparent blur-[140px] animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-gradient-to-l from-[#38BDF8]/20 via-[#8B5CF6]/15 to-transparent blur-[130px] animate-pulse" style={{ animationDuration: '6s' }} />
+        <div className="absolute -bottom-40 left-1/3 w-[550px] h-[550px] rounded-full bg-gradient-to-t from-[#7A5AF8]/20 via-[#5B5CEB]/10 to-transparent blur-[140px]" />
+        
+        {/* Subtle Grid Overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.03]" 
+          style={{
+            backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)`,
+            backgroundSize: '32px 32px'
+          }}
+        />
+      </div>
 
-      {/* LEFT PANEL: App Features Showcase & Reviews (Responsive: full width on mobile, 58% on desktop) */}
-      <div className="flex flex-col justify-center items-center lg:items-start p-8 lg:p-16 w-full lg:w-[58%] xl:w-[62%] relative z-10 space-y-8 select-none order-2 lg:order-1">
-        {/* Style injection for Testimonials Marquee animation */}
-        <style>{`
-          @keyframes marqueeUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-          }
-          .animate-marquee-up {
-            animation: marqueeUp 20s linear infinite;
-          }
-          .animate-marquee-up:hover {
-            animation-play-state: paused;
-          }
-        `}</style>
-
-        {/* India's #1 App Badge */}
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="mb-2 inline-flex items-center gap-2 border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 rounded-full text-[12px] font-black uppercase tracking-[0.18em] text-yellow-200 backdrop-blur shadow-[0_0_15px_rgba(234,179,8,0.15)] animate-pulse"
-        >
-          <Trophy className="h-4.5 w-4.5 text-yellow-400" />
-          🏆 INDIA'S #1 AI STUDY APP FOR BOARDS
-        </motion.div>
-
-        {/* Hero Title & Ratings */}
-        <div className="space-y-4 text-center lg:text-left">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.05] tracking-tight"
-          >
-            Study Smart. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">
-              Score 2x Faster.
-            </span>
-          </motion.h2>
-
-          {/* Rating Stars Info */}
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="flex flex-wrap items-center justify-center lg:justify-start gap-2 text-slate-300 font-bold text-[14px] mt-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-2 w-fit mx-auto lg:mx-0 backdrop-blur-md"
-          >
-            <div className="flex text-yellow-400">
-              {"⭐⭐⭐⭐⭐".split("").map((s, idx) => <span key={idx}>{s}</span>)}
+      {/* 🔝 TOP BRAND NAVIGATION BAR */}
+      <header className="relative z-20 max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] p-[1.5px] shadow-[0_0_25px_rgba(122,90,248,0.4)]">
+            <div className="w-full h-full bg-[#0B1023] rounded-[14px] flex items-center justify-center">
+              <BookOpen className="w-5 h-5 text-[#38BDF8]" />
             </div>
-            <span className="text-white font-extrabold">4.9/5</span>
-            <span className="text-slate-400">|</span>
-            <span className="text-cyan-300">50,000+ Students trust us</span>
-          </motion.div>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-black tracking-tight text-white flex items-center gap-1.5">
+              ACHIVOX <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7A5AF8] to-[#38BDF8] text-xs px-2 py-0.5 rounded-full bg-[#151A35] border border-[#7A5AF8]/30">AI</span>
+            </span>
+            <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Study Smarter. Score Better.</span>
+          </div>
         </div>
 
-        {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5 w-full max-w-2xl mt-2">
-          {[
-            {
-              icon: BookOpen,
-              title: "3D Smart Notes",
-              desc: "Quick visual summaries and important board questions for all chapters.",
-              color: "from-cyan-500/25 to-blue-600/15 border-cyan-500/20 text-cyan-400"
-            },
-            {
-              icon: Mic,
-              title: "24/7 Voice Teacher",
-              desc: "Ask questions by voice and get instant explanations in Hinglish.",
-              color: "from-purple-500/25 to-indigo-600/15 border-purple-500/20 text-purple-400"
-            },
-            {
-              icon: Flame,
-              title: "Weakness Heatmap",
-              desc: "Spot your red zones instantly and turn mistakes into revision targets.",
-              color: "from-rose-500/25 to-orange-600/15 border-rose-500/20 text-rose-400"
-            },
-            {
-              icon: Trophy,
-              title: "Daily Study Wagers",
-              desc: "Set study wagers, maintain your streak, and win coins with friends.",
-              color: "from-amber-500/25 to-yellow-600/15 border-amber-500/20 text-amber-400"
-            }
-          ].map((feat, i) => (
+        <div className="hidden sm:flex items-center gap-3 bg-[#151A35]/80 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md shadow-inner">
+          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <span className="text-xs font-semibold text-slate-300">
+            Targeting <span className="text-white font-bold">Class 9th–12th Boards</span>
+          </span>
+        </div>
+      </header>
+
+      {/* 🚀 MAIN CONTENT CONTAINER (2-COLUMN LANDING + LOGIN PANEL) */}
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          
+          {/* ========================================================
+              LEFT COLUMN: HERO, BONUS CARD, SOCIAL PROOF & FEATURES (7 COLS)
+             ======================================================== */}
+          <div className="lg:col-span-7 space-y-8">
+            
+            {/* 🏆 FLOATING BOARD BADGE */}
             <motion.div
-              key={feat.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.08 }}
-              whileHover={{ scale: 1.03, y: -4 }}
-              className={`p-4.5 rounded-[28px] border bg-gradient-to-br ${feat.color} shadow-lg backdrop-blur-md flex gap-4 transition-all duration-300`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#7A5AF8]/20 via-[#5B5CEB]/20 to-[#38BDF8]/20 border border-[#7A5AF8]/40 backdrop-blur-xl text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(122,90,248,0.2)]"
             >
-              <div className="p-3 bg-white/5 rounded-2xl h-fit shrink-0">
-                <feat.icon className="w-5.5 h-5.5" />
+              <Trophy className="w-4 h-4 text-[#FFD54F] shrink-0" />
+              <span>Designed for <strong className="text-white">CBSE · Bihar Board · ICSE · State Boards</strong></span>
+            </motion.div>
+
+            {/* 📚 HERO HEADINGS */}
+            <div className="space-y-4">
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight text-white"
+              >
+                📚 Study Smarter. <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#38BDF8] via-[#7A5AF8] to-[#FFD54F]">
+                  🎯 Score Better in Less Time.
+                </span>
+              </motion.h1>
+
+              <motion.p 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="text-lg sm:text-xl font-medium text-slate-300 leading-relaxed max-w-2xl"
+              >
+                India's AI Study Partner for School Students. <br className="hidden sm:inline" />
+                Learn Faster, Revise Smarter and Score Higher with AI.
+              </motion.p>
+            </div>
+
+            {/* ⭐ STATS & TRUST BADGES */}
+            <motion.div 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-wrap items-center gap-3 pt-1"
+            >
+              <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
+                <div className="flex text-[#FFD54F]">
+                  {"⭐⭐⭐⭐⭐".split("").map((s, idx) => <span key={idx}>{s}</span>)}
+                </div>
+                <span className="text-slate-300 ml-1">4.9/5 Rating</span>
               </div>
-              <div className="space-y-1">
-                <h4 className="font-extrabold text-[15px] text-white tracking-wide">{feat.title}</h4>
-                <p className="text-slate-400 text-xs font-medium leading-relaxed">{feat.desc}</p>
+
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
+                <span className="text-base">👨‍🎓</span>
+                <span>50,000+ Students</span>
+              </div>
+
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#151A35]/90 border border-white/10 text-xs font-bold text-white shadow-md">
+                <span className="text-base">🏫</span>
+                <span>Trusted Across India</span>
               </div>
             </motion.div>
-          ))}
-        </div>
 
-        {/* Live Student Comments Marquee section */}
-        <div className="w-full max-w-2xl mt-4 space-y-3">
-          <h4 className="text-[12px] font-black text-slate-500 tracking-widest uppercase flex items-center gap-2 select-text">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            Live Student Feedbacks
-          </h4>
-          
-          <div className="relative h-[110px] w-full overflow-hidden bg-white/[0.02] border border-white/5 rounded-[24px] backdrop-blur p-4">
-            <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-[#070518] to-transparent z-20 pointer-events-none" />
-            <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#070518] to-transparent z-20 pointer-events-none" />
-            
-            <div className="flex flex-col space-y-3 animate-marquee-up">
-              {[
-                { name: "Aarav Sharma", cls: "Class 10 (CBSE)", comment: "Bhai voice coach sach me kamaal hai! Pure math ke doubts instant clear ho gaye. 🔥" },
-                { name: "Sneha Patel", cls: "Class 10 (ICSE)", comment: "Weakness heatmap check karke read kiya. Biology me 98 marks aaye, thank you Achivox!" },
-                { name: "Priyanshu Roy", cls: "Class 12 (CBSE)", comment: "Iske 3D Smart Notes se chapter revision fast ho jata hai. Highly recommended!" },
-                { name: "Dev Adhikari", cls: "Class 11 (State Board)", comment: "Study wagers game ki tarah hai. Dosto ke sath study streak maintain karne me maza aata hai." },
-                { name: "Riya Verma", cls: "Class 12 (Boards)", comment: "No. 1 studying tool! Spaced revision signals se pta rehta hai kab kya padhna hai." },
-                // Duplicates for looping
-                { name: "Aarav Sharma", cls: "Class 10 (CBSE)", comment: "Bhai voice coach sach me kamaal hai! Pure math ke doubts instant clear ho gaye. 🔥" },
-                { name: "Sneha Patel", cls: "Class 10 (ICSE)", comment: "Weakness heatmap check karke read kiya. Biology me 98 marks aaye, thank you Achivox!" },
-                { name: "Priyanshu Roy", cls: "Class 12 (CBSE)", comment: "Iske 3D Smart Notes se chapter revision fast ho jata hai. Revision signals best hain!" },
-                { name: "Dev Adhikari", cls: "Class 11 (State Board)", comment: "Study wagers game ki tarah hai. Dosto ke sath study streak maintain karne me maza aata hai." },
-                { name: "Riya Verma", cls: "Class 12 (Boards)", comment: "No. 1 studying tool! Spaced revision signals se pta rehta hai kab kya padhna hai." }
-              ].map((t, idx) => (
-                <div key={idx} className="flex flex-col space-y-0.5 bg-white/[0.03] border border-white/5 rounded-2xl p-3 shrink-0 select-text">
-                  <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
-                    <span className="text-white font-extrabold">{t.name}</span>
-                    <span className="text-indigo-400">{t.cls}</span>
-                  </div>
-                  <p className="text-slate-300 text-xs font-semibold leading-normal">{t.comment}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* RIGHT PANEL: Login Action Panel (Responsive: full width on mobile, 42% on desktop) */}
-      <div className="flex flex-col justify-center items-center p-6 w-full lg:w-[42%] xl:w-[38%] relative z-10 order-1 lg:order-2 lg:border-l lg:border-white/5 bg-white/[0.01] backdrop-blur-3xl py-12 lg:py-0 lg:min-h-screen">
-        {/* Floating Animated Orbs */}
-        <div className="absolute top-[10%] right-[15%] w-12 h-12 rounded-full bg-gradient-to-br from-[#818CF8] to-[#C084FC] opacity-40 shadow-[0_0_20px_rgba(129,140,248,0.4)] pointer-events-none" />
-        <div className="absolute bottom-[10%] left-[10%] w-8 h-8 rounded-full bg-gradient-to-tr from-[#F472B6] to-[#FB7185] opacity-30 shadow-[0_0_15px_rgba(244,114,182,0.3)] pointer-events-none" />
-
-        {/* Main Glassmorphic Container Card */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }} 
-          animate={{ opacity: 1, scale: 1 }} 
-          transition={{ type: "spring", stiffness: 90, damping: 18, delay: 0.1 }} 
-          className="backdrop-blur-2xl bg-white/[0.03] border border-white/[0.07] rounded-[45px] p-8 shadow-[0_30px_70px_rgba(0,0,0,0.5)] w-full max-w-[400px] flex flex-col items-center py-10 transform-gpu relative overflow-hidden"
-          style={{
-            boxShadow: "inset 0 1px 1px rgba(255,255,255,0.1), 0 30px 70px rgba(0,0,0,0.5)"
-          }}
-        >
-          {/* Glowing Logo Circle */}
-          <motion.div 
-            className="w-[100px] h-[100px] bg-gradient-to-br from-[#818CF8]/20 via-[#C084FC]/20 to-[#F472B6]/20 rounded-[35px] border border-white/20 shadow-[0_15px_35px_rgba(0,0,0,0.3)] flex items-center justify-center pointer-events-none will-change-transform transform-gpu"
-          >
-            <BookOpen className="text-white w-[45px] h-[45px]" />
-          </motion.div>
-
-          {/* Title */}
-          <h1 className="text-[34px] font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-white/70 tracking-wider mt-5 select-text">
-            ACHIVOX
-          </h1>
-
-          <p className="text-slate-400 text-[13px] mt-1.5 font-bold tracking-wide uppercase select-text flex items-center gap-1.5">
-            Padho Kam, Score Zyada <Sparkles className="w-4.5 h-4.5 text-yellow-400 animate-pulse" />
-          </p>
-
-          <h2 className="text-white text-[24px] font-extrabold mt-8 select-text">
-            Welcome Back 👋
-          </h2>
-
-          <p className="text-slate-400 text-xs mt-1 text-center font-semibold select-text">
-            Start your learning journey today
-          </p>
-
-          {/* Welcome/Sign-in Reward Callout */}
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="w-full mt-6 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-2.5 shadow-[0_0_15px_rgba(16,185,129,0.05)] select-none text-left"
-          >
-            <Sparkles className="w-5 h-5 text-emerald-400 shrink-0 animate-pulse" />
-            <div>
-              <p className="text-[11px] font-black text-emerald-300 uppercase tracking-wider leading-none">FREE SIGN-IN BONUS</p>
-              <p className="text-[10px] text-slate-300 font-bold mt-1.5 leading-tight">Get 500 Coins + 3D summaries instantly on login!</p>
-            </div>
-          </motion.div>
-
-          {/* Visible Error Box */}
-          {errorMsg && (
-            <div className="w-full mt-5 p-3 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-300 text-xs font-mono text-center break-all">
-              ❌ {errorMsg}
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="space-y-4 w-full mt-8">
-            {/* Google Login */}
-            <motion.button 
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleGoogleLogin} 
-              disabled={loading}
-              className="w-full h-[60px] bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#EC4899] text-white font-black rounded-[25px] py-4 px-6 flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(124,58,237,0.3)] hover:brightness-110 disabled:opacity-70 transition-all border border-white/10"
+            {/* 🎁 FREE BONUS CARD */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.25 }}
+              whileHover={{ y: -3 }}
+              className="relative p-6 rounded-3xl bg-gradient-to-br from-[#151A35]/90 via-[#0B1023]/95 to-[#151A35]/90 border border-[#7A5AF8]/40 shadow-[0_15px_40px_rgba(122,90,248,0.15)] backdrop-blur-xl overflow-hidden group"
             >
-              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
-                <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="#ea4335" d="M12 5.04c1.63 0 3.1.56 4.25 1.66l3.19-3.19C17.51 1.68 14.99.5 12 .5 7.69.5 3.95 2.99 2.12 6.6l3.69 2.86C6.72 6.8 9.15 5.04 12 5.04z"/>
-                  <path fill="#4285f4" d="M23.49 12.275c0-.82-.07-1.64-.22-2.42H12v4.61h6.43c-.27 1.47-1.11 2.7-2.36 3.54l3.67 2.84c2.14-1.97 3.38-4.88 3.38-8.57z"/>
-                  <path fill="#fbbc05" d="M5.81 14.54c-.25-.74-.39-1.53-.39-2.35s.14-1.61.39-2.35L2.12 6.98C1.3 8.62.83 10.45.83 12.37s.47 3.75 1.29 5.39l3.69-2.86z"/>
-                  <path fill="#34a853" d="M12 23.5c3.11 0 5.71-1.03 7.61-2.8l-3.67-2.84c-1.02.68-2.33 1.09-3.94 1.09-2.85 0-5.28-1.76-6.19-4.42L2.12 17.39c1.83 3.61 5.57 6.11 9.88 6.11z"/>
-                </svg>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#7A5AF8]/30 to-transparent rounded-bl-full pointer-events-none group-hover:from-[#7A5AF8]/50 transition-all duration-500" />
+              
+              <div className="flex items-center gap-2 text-sm font-black text-[#FFD54F] uppercase tracking-wider mb-4">
+                <span className="text-lg">🎁</span> Login Today & Get FREE:
               </div>
-              <span className="text-md font-bold tracking-wide">Continue with Google</span>
-            </motion.button>
 
-            {/* Guest Login */}
-            <motion.button 
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setShowWarningModal(true)} 
-              disabled={loading}
-              className="w-full h-[60px] bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.08] text-slate-300 hover:text-white font-bold rounded-[25px] py-4 px-6 flex items-center justify-center gap-3 transition-all"
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {[
+                  "AI Smart Notes",
+                  "10 AI Doubts",
+                  "Chapter-wise Revision",
+                  "Study Planner",
+                  "AI Mock Test"
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/5 text-xs font-bold text-slate-200">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-bold text-slate-400">
+                <span>⚡ Instant access on login</span>
+                <span className="text-[#FFD54F] font-extrabold">No Credit Card Required</span>
+              </div>
+            </motion.div>
+
+            {/* ⭐ SOCIAL PROOF REVIEWS */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#7A5AF8] animate-ping" />
+                What Indian Toppers Say
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  {
+                    name: "Rahul",
+                    cls: "Class 10 · CBSE",
+                    review: "Aaj revision sirf 2 ghante me complete ho gaya.",
+                    avatar: "👨‍🎓"
+                  },
+                  {
+                    name: "Priya",
+                    cls: "Class 12 · Bihar Board",
+                    review: "Boards ke liye best AI app.",
+                    avatar: "👩‍🎓"
+                  },
+                  {
+                    name: "Aditya",
+                    cls: "Class 9",
+                    review: "Mock Tests helped improve my confidence.",
+                    avatar: "🧑‍🎓"
+                  }
+                ].map((rev, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    className="p-4 rounded-2xl bg-[#151A35]/80 border border-white/10 backdrop-blur-md flex flex-col justify-between space-y-3"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex text-[#FFD54F] text-xs">
+                        {"⭐⭐⭐⭐⭐".split("").map((s, idx) => <span key={idx}>{s}</span>)}
+                      </div>
+                      <p className="text-xs font-bold text-slate-200 leading-snug">"{rev.review}"</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2 border-t border-white/5 text-[11px]">
+                      <span className="text-base">{rev.avatar}</span>
+                      <div>
+                        <p className="font-black text-white leading-tight">{rev.name}</p>
+                        <p className="text-[10px] text-slate-400 font-medium">{rev.cls}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* 📄 FEATURE GRID */}
+            <div className="space-y-4 pt-4">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#38BDF8]" /> Everything You Need To Score 95%+
+              </h3>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { icon: FileText, title: "AI Smart Notes", color: "text-[#38BDF8] bg-[#38BDF8]/10 border-[#38BDF8]/20" },
+                  { icon: Bot, title: "Instant AI Doubt Solver", color: "text-[#7A5AF8] bg-[#7A5AF8]/10 border-[#7A5AF8]/20" },
+                  { icon: LineChart, title: "Progress Tracking", color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" },
+                  { icon: Brain, title: "Personalized Study Planner", color: "text-[#FFD54F] bg-[#FFD54F]/10 border-[#FFD54F]/20" },
+                  { icon: BookOpen, title: "Previous Year Questions", color: "text-rose-400 bg-rose-400/10 border-rose-400/20" },
+                  { icon: BarChart2, title: "AI Mock Tests", color: "text-purple-400 bg-purple-400/10 border-purple-400/20" },
+                  { icon: RefreshCw, title: "Revision Mode", color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/20" },
+                  { icon: Globe, title: "Learn in Hindi, English & Hinglish", color: "text-amber-400 bg-amber-400/10 border-amber-400/20" }
+                ].map((feat, idx) => (
+                  <motion.div
+                    key={idx}
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    className="p-3.5 rounded-2xl bg-[#151A35]/60 border border-white/10 backdrop-blur-md flex flex-col gap-2.5"
+                  >
+                    <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${feat.color}`}>
+                      <feat.icon className="w-4.5 h-4.5" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-200 leading-tight">{feat.title}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* ⚖️ PREMIUM COMPARISON (Free vs Premium) */}
+            <div className="space-y-4 pt-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                  <Award className="w-4 h-4 text-[#FFD54F]" /> Choose Your Plan
+                </h3>
+                <span className="text-[10px] font-bold text-[#FFD54F] bg-[#FFD54F]/10 border border-[#FFD54F]/30 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                  ★ Upgrade Anytime
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Free Plan Card */}
+                <div className="p-5 rounded-3xl bg-[#151A35]/50 border border-white/10 backdrop-blur-md space-y-4">
+                  <div className="space-y-1">
+                    <h4 className="text-base font-black text-slate-200">Free Starter</h4>
+                    <p className="text-xs text-slate-400 font-medium">Perfect for trying out Achivox AI</p>
+                  </div>
+                  
+                  <div className="space-y-2 text-xs font-semibold text-slate-300">
+                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> 10 AI Doubts</div>
+                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> 1 Mock Test</div>
+                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Limited Notes</div>
+                    <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Basic Planner</div>
+                  </div>
+                </div>
+
+                {/* Premium Plan Card */}
+                <div className="relative p-5 rounded-3xl bg-gradient-to-br from-[#7A5AF8]/30 via-[#151A35]/90 to-[#5B5CEB]/30 border-2 border-[#FFD54F]/60 backdrop-blur-xl space-y-4 shadow-[0_0_30px_rgba(255,213,79,0.15)]">
+                  <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-[#FFD54F] to-amber-500 text-[#0B1023] font-black text-[10px] uppercase tracking-wider shadow-md">
+                    👑 Most Popular
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="text-base font-black text-white flex items-center gap-2">
+                      Pro Topper <span className="text-[#FFD54F]">Pro</span>
+                    </h4>
+                    <p className="text-xs text-slate-300 font-medium">Unlimited Access for Board Success</p>
+                  </div>
+                  
+                  <div className="space-y-2 text-xs font-bold text-white">
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Unlimited AI Doubts</div>
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Unlimited Notes</div>
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Unlimited Mock Tests</div>
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Personal AI Mentor</div>
+                    <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#FFD54F]" /> Daily Planner & Analytics</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+          {/* ========================================================
+              RIGHT COLUMN: PREMIUM GLASS LOGIN PANEL (5 COLS)
+             ======================================================== */}
+          <div className="lg:col-span-5 sticky top-6">
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 15 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              transition={{ type: "spring", stiffness: 90, damping: 18 }} 
+              className="relative p-6 sm:p-8 rounded-[36px] bg-gradient-to-b from-[#151A35]/95 via-[#0B1023]/95 to-[#151A35]/95 border border-[#7A5AF8]/50 shadow-[0_25px_60px_rgba(0,0,0,0.6)] backdrop-blur-2xl overflow-hidden space-y-6"
             >
-              <User className="w-5 h-5 text-slate-400" />
-              <span className="text-md font-bold tracking-wide">Continue as Guest</span>
-            </motion.button>
+              {/* Top Accent Line */}
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8]" />
+
+              {/* LOGO & WELCOME */}
+              <div className="text-center space-y-2">
+                <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] p-[1.5px] shadow-[0_0_30px_rgba(122,90,248,0.4)] flex items-center justify-center">
+                  <div className="w-full h-full bg-[#0B1023] rounded-[14px] flex items-center justify-center">
+                    <BookOpen className="w-8 h-8 text-[#38BDF8]" />
+                  </div>
+                </div>
+
+                <h2 className="text-2xl font-black tracking-tight text-white pt-2">
+                  Welcome Back 👋
+                </h2>
+                <p className="text-xs font-semibold text-slate-400">
+                  Continue Your Learning Journey
+                </p>
+              </div>
+
+              {/* ⚠️ VISIBLE ERROR MESSAGE IF ANY */}
+              {errorMsg && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-rose-300 text-xs font-mono text-center break-all">
+                  ❌ {errorMsg}
+                </div>
+              )}
+
+              {/* 🔥 EXAMS ARE NEAR BANNER (CRITICAL REQ: PLACED JUST ABOVE LOGIN BUTTON) */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-500/15 via-amber-500/15 to-purple-500/15 border border-amber-500/40 backdrop-blur-md space-y-2 text-center">
+                <div className="flex items-center justify-center gap-1.5 text-xs font-black text-[#FFD54F] uppercase tracking-wider">
+                  <Flame className="w-4 h-4 text-amber-400 animate-bounce" /> 🔥 Exams are Near!
+                </div>
+                <p className="text-xs font-bold text-white">
+                  Join 50,000+ Students Already Learning with Achivox AI
+                </p>
+                <div className="flex flex-wrap justify-center gap-2 pt-1 text-[11px] font-bold text-slate-300">
+                  <span className="px-2 py-0.5 rounded-md bg-white/10">✔ CBSE</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/10">✔ Bihar Board</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/10">✔ ICSE</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/10">✔ State Boards</span>
+                </div>
+                <div className="text-[10px] font-extrabold text-emerald-400 pt-1 flex items-center justify-center gap-1">
+                  Start FREE Today <ArrowRight className="w-3 h-3" />
+                </div>
+              </div>
+
+              {/* 🎁 FREE SIGN-IN BONUS CALLOUT */}
+              <div className="p-3.5 rounded-2xl bg-[#7A5AF8]/10 border border-[#7A5AF8]/30 flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-[#FFD54F] shrink-0 animate-pulse" />
+                <div className="text-left">
+                  <span className="text-[10px] font-black text-[#FFD54F] uppercase tracking-wider block">FREE SIGN-IN BONUS</span>
+                  <span className="text-xs font-bold text-slate-200">Get AI Credits + Chapter Notes instantly after login.</span>
+                </div>
+              </div>
+
+              {/* 🔘 LOGIN ACTION BUTTONS */}
+              <div className="space-y-3 pt-2">
+                {/* Primary Button: Continue with Google */}
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleGoogleLogin} 
+                  disabled={loading}
+                  className="w-full h-14 bg-gradient-to-r from-[#5B5CEB] via-[#7A5AF8] to-[#38BDF8] hover:from-[#4F46E5] hover:to-[#0EA5E9] text-white font-black rounded-2xl px-6 flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(122,90,248,0.4)] transition-all border border-white/20 disabled:opacity-70 group"
+                >
+                  <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="#ea4335" d="M12 5.04c1.63 0 3.1.56 4.25 1.66l3.19-3.19C17.51 1.68 14.99.5 12 .5 7.69.5 3.95 2.99 2.12 6.6l3.69 2.86C6.72 6.8 9.15 5.04 12 5.04z"/>
+                      <path fill="#4285f4" d="M23.49 12.275c0-.82-.07-1.64-.22-2.42H12v4.61h6.43c-.27 1.47-1.11 2.7-2.36 3.54l3.67 2.84c2.14-1.97 3.38-4.88 3.38-8.57z"/>
+                      <path fill="#fbbc05" d="M5.81 14.54c-.25-.74-.39-1.53-.39-2.35s.14-1.61.39-2.35L2.12 6.98C1.3 8.62.83 10.45.83 12.37s.47 3.75 1.29 5.39l3.69-2.86z"/>
+                      <path fill="#34a853" d="M12 23.5c3.11 0 5.71-1.03 7.61-2.8l-3.67-2.84c-1.02.68-2.33 1.09-3.94 1.09-2.85 0-5.28-1.76-6.19-4.42L2.12 17.39c1.83 3.61 5.57 6.11 9.88 6.11z"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-bold tracking-wide">Continue with Google</span>
+                </motion.button>
+
+                {/* Secondary Button: Continue as Guest */}
+                <motion.button 
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowWarningModal(true)} 
+                  disabled={loading}
+                  className="w-full h-12 bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] text-slate-300 hover:text-white font-bold rounded-2xl px-6 flex items-center justify-center gap-2 transition-all"
+                >
+                  <User className="w-4 h-4 text-slate-400" />
+                  <span className="text-xs font-bold">Continue as Guest</span>
+                </motion.button>
+
+                <p className="text-center text-[11px] text-slate-400 font-medium">
+                  Limited Features Available
+                </p>
+              </div>
+
+              {/* 🛡️ BOTTOM TRUST BADGES INSIDE PANEL */}
+              <div className="pt-4 border-t border-white/5 text-[10px] font-bold text-slate-400 grid grid-cols-2 gap-2 text-center">
+                <span className="flex items-center justify-center gap-1"><Lock className="w-3 h-3 text-emerald-400" /> 100% Encrypted</span>
+                <span className="flex items-center justify-center gap-1"><ShieldCheck className="w-3 h-3 text-[#38BDF8]" /> Verified Portal</span>
+              </div>
+            </motion.div>
+            
           </div>
 
-          {/* Rocket Icon */}
-          <div className="w-full flex justify-center mt-7 pointer-events-none">
-            <Rocket className="text-[#A855F7] w-[50px] h-[50px] animate-bounce" style={{ animationDuration: '3s' }} />
+        </div>
+      </main>
+
+      {/* ========================================================
+          BOTTOM CTA SECTION & TRUST BAR
+         ======================================================== */}
+      <footer className="relative z-10 border-t border-white/10 mt-16 bg-[#070A17]/80 backdrop-blur-xl py-10">
+        <div className="max-w-7xl mx-auto px-6 space-y-8">
+          
+          {/* BOTTOM CTA CARD */}
+          <div className="p-8 rounded-3xl bg-gradient-to-r from-[#5B5CEB]/20 via-[#7A5AF8]/30 to-[#38BDF8]/20 border border-[#7A5AF8]/40 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left shadow-2xl">
+            <div className="space-y-1">
+              <h3 className="text-xl sm:text-2xl font-black text-white flex items-center justify-center sm:justify-start gap-2">
+                🚀 Unlock Your Full Learning Potential
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 font-semibold">
+                Upgrade Anytime · Personalized AI Tutor for CBSE & Board Exams
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-xs font-black text-white px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur">
+                Visit: <strong className="text-[#38BDF8]">🌐 achivox.online</strong>
+              </span>
+            </div>
           </div>
 
-          {/* Footer Info */}
-          <div className="text-slate-500 text-[10px] text-center mt-6 leading-relaxed font-bold select-text uppercase tracking-widest">
-            Secure Login &bull; Achivox Secure Student Portal
-          </div>
-        </motion.div>
-      </div>
+          {/* BOTTOM TRUST BAR */}
+          <div className="pt-4 flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-slate-400 border-t border-white/5">
+            <div className="flex flex-wrap items-center gap-6">
+              <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-emerald-400" /> Secure Google Login</span>
+              <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-[#FFD54F]" /> Lightning Fast</span>
+              <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#38BDF8]" /> Privacy Protected</span>
+              <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-purple-400" /> Built for Indian Students</span>
+            </div>
 
-      {/* Guest Warning Modal */}
+            <div className="text-[11px] font-bold text-slate-500">
+              ACHIVOX AI © 2026 · Made with ❤️ for India
+            </div>
+          </div>
+
+        </div>
+      </footer>
+
+      {/* 🛡️ GUEST WARNING MODAL */}
       <AnimatePresence>
         {showWarningModal && (
-          <div className="fixed inset-0 z-[200] bg-slate-950/75 backdrop-blur-xl flex items-center justify-center p-5">
+          <div className="fixed inset-0 z-[200] bg-[#0B1023]/80 backdrop-blur-xl flex items-center justify-center p-5">
             <motion.div 
               initial={{ scale: 0.95, opacity: 0, y: 20 }} 
               animate={{ scale: 1, opacity: 1, y: 0 }} 
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", stiffness: 350, damping: 26 }}
-              className="bg-[#130f35]/90 border border-white/10 w-full max-w-sm rounded-[35px] shadow-[0_30px_70px_rgba(0,0,0,0.6)] p-6 relative overflow-hidden backdrop-blur-md"
+              className="bg-[#151A35] border border-white/10 w-full max-w-sm rounded-[32px] shadow-[0_30px_70px_rgba(0,0,0,0.6)] p-6 relative overflow-hidden backdrop-blur-md"
             >
               <div className="absolute -right-20 -top-20 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -left-20 -bottom-20 w-40 h-40 bg-[#4F46E5]/15 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -left-20 -bottom-20 w-40 h-40 bg-[#7A5AF8]/15 rounded-full blur-2xl pointer-events-none" />
 
               <div className="relative z-10 space-y-5">
                 <div className="flex justify-between items-start">
@@ -414,7 +603,7 @@ export default function Login() {
 
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-black text-rose-400 tracking-tight">⚠️ Guest Warning!</h3>
-                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wide leading-relaxed">
+                  <p className="text-[11px] text-slate-300 font-bold uppercase tracking-wide leading-relaxed">
                     Guest Account select karne par, logout karne par aapka data permanently delete ho jayega!
                   </p>
                 </div>
@@ -423,7 +612,7 @@ export default function Login() {
                   <div className="flex items-center gap-1.5 text-[9.5px] font-black text-emerald-400 uppercase tracking-widest">
                     <Sparkles className="w-3 h-3 animate-pulse" /> Google account perks:
                   </div>
-                  <ul className="text-[9.5px] text-slate-400 space-y-1.5 list-disc list-inside font-bold leading-tight">
+                  <ul className="text-[10px] text-slate-300 space-y-1.5 list-disc list-inside font-bold leading-tight">
                     <li>Lifetime permanent progress saves</li>
                     <li>Sync streak across multiple devices</li>
                     <li>Unique Scholar Student ID</li>
@@ -439,7 +628,7 @@ export default function Login() {
                       setShowWarningModal(false);
                       handleGoogleLogin();
                     }}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-[10px] uppercase tracking-widest py-3.5 rounded-xl shadow-md shadow-emerald-500/10 flex items-center justify-center gap-2"
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-widest py-3.5 rounded-2xl shadow-md shadow-emerald-500/10 flex items-center justify-center gap-2"
                   >
                     <Chrome className="w-4 h-4" /> Sign in with Google
                   </motion.button>
@@ -447,7 +636,7 @@ export default function Login() {
                   <motion.button 
                     whileTap={{ scale: 0.98 }}
                     onClick={handleGuestLoginActual}
-                    className="w-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white font-black text-[9px] uppercase py-3 rounded-xl flex items-center justify-center tracking-widest border border-white/10"
+                    className="w-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white font-bold text-[10px] uppercase py-3 rounded-2xl flex items-center justify-center tracking-widest border border-white/10"
                   >
                     Continue as Guest Anyway
                   </motion.button>
