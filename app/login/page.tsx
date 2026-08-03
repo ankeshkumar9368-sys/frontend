@@ -516,6 +516,25 @@ export default function Login() {
               </div>
             </div>
 
+            {/* 🌐 SEO POPULAR SEARCHES & KEYWORD CLOUD FOR RANKING #1 ON GOOGLE */}
+            <div className="pt-4 border-t border-white/8 space-y-3">
+              <h2 className="text-xs font-black text-slate-300 uppercase tracking-widest">
+                Popular Searches & Study Resources on Achivox AI:
+              </h2>
+              <div className="flex flex-wrap gap-1.5 text-[10px] font-semibold text-slate-400">
+                {[
+                  "Class 9 Study Notes", "Class 10 CBSE Topper Notes", "Class 11 Chemistry Notes", "Class 12 Bihar Board Notes (BSEB)",
+                  "Free NCERT Solutions PDF", "AI Doubt Solver 24/7", "Physics Formula Cheat Sheet", "Maths Important PYQs",
+                  "School & Coaching AI Partner", "Online Study App for Students", "Matric Inter Exam Preparation", "Previous Year Question Papers",
+                  "Class 10 Science Notes PDF", "Class 12 Biology Handwritten Notes", "Free Online Mock Tests Class 9-12", "Padho Kam Score Zyada"
+                ].map((tag, idx) => (
+                  <span key={idx} className="px-2 py-1 rounded-md bg-white/[0.03] border border-white/5 text-slate-300 hover:text-white transition-colors">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] font-bold text-slate-400 pt-2 border-t border-white/8">
               <div className="flex flex-wrap gap-4">
                 <span className="flex items-center gap-1"><Lock className="w-3 h-3 text-emerald-400" /> Secure Login</span>

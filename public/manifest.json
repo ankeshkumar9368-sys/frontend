@@ -1,0 +1,31 @@
+{
+  "name": "Achivox AI - India's #1 Study Partner for Class 9-12",
+  "short_name": "Achivox AI",
+  "description": "Padho Kam, Score Zyada! Achivox AI is India's premier educational platform for CBSE, Bihar Board (BSEB), ICSE & State Boards. Get Toppers Handwritten Notes, Instant AI Doubt Solver, Chapter PYQs & AI Mock Tests.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1023",
+  "theme_color": "#7A5AF8",
+  "orientation": "portrait-primary",
+  "categories": [
+    "education",
+    "books",
+    "productivity",
+    "study",
+    "coaching"
+  ],
+  "icons": [
+    {
+      "src": "/achivox-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/achivox-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
