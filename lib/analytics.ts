@@ -870,3 +870,68 @@ export const logGenerationMetric = async (board: string, subject: string, conten
     console.error("Failed to log generation metric", e);
   }
 };
+
+/**
+ * Updates a student's topic mastery score (Strong/Moderate/Weak) for teacher analytics.
+ */
+export interface TopicMasteryRecord {
+  subject: string;
+  topic: string;
+  totalQuestions: number;
+  correctQuestions: number;
+  accuracyPct: number;
+  status: "Strong" | "Moderate" | "Weak";
+  lastTested: string;
+}
+
+export const updateStudentTopicMastery = async (
+  userId: string,
+  subject: string,
+  topic: string,
+  correctCount: number,
+  totalCount: number
+) => {
+  if (!userId || !subject || !topic || totalCount <= 0) return;
+  try {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    const existingData = userSnap.exists() ? userSnap.data() : {};
+    const existingMastery = existingData.topicMastery || {};
+
+    const key = `${subject}_${topic}`.replace(/[^a-zA-Z0-9_]/g, '_');
+    const currentRecord = existingMastery[key] || {
+      subject,
+      topic,
+      totalQuestions: 0,
+      correctQuestions: 0,
+    };
+
+    const newTotal = currentRecord.totalQuestions + totalCount;
+    const newCorrect = currentRecord.correctQuestions + correctCount;
+    const accuracy = Math.round((newCorrect / newTotal) * 100);
+
+    let status: "Strong" | "Moderate" | "Weak" = "Moderate";
+    if (accuracy >= 75) status = "Strong";
+    else if (accuracy < 50) status = "Weak";
+
+    const updatedRecord: TopicMasteryRecord = {
+      subject,
+      topic,
+      totalQuestions: newTotal,
+      correctQuestions: newCorrect,
+      accuracyPct: accuracy,
+      status,
+      lastTested: new Date().toISOString()
+    };
+
+    await setDoc(userRef, {
+      topicMastery: {
+        ...existingMastery,
+        [key]: updatedRecord
+      }
+    }, { merge: true });
+  } catch (e) {
+    console.error("Error updating student topic mastery:", e);
+  }
+};
+

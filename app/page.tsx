@@ -20,6 +20,7 @@ import { doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, ser
 import AIDoubtSolver from "../components/AIDoubtSolver";
 import { fetchContent, fetchQuestions, ContentItem, fetchDoubtResponse, generateAIPYQs, fetchChapterNotes, generateAIQuestions, getTestBankId, generateSingleReplacementQuestion } from "../lib/content";
 import ExploreEngine from "../components/ExploreEngine";
+import AssignedTestsList from "../components/AssignedTestsList";
 import { trackTopicOpen, trackTopicClose, recordTestResult, updateStreak, getAISuggestion, AISuggestion, calculateWeightedAccuracy, checkAndIncrementUsage, clearLocalAnalytics, getLocalData, setLocalData } from "../lib/analytics";
 const MockTestEngine = dynamic(() => import("../components/MockTestEngine"));
 const SchoolTestEngine = dynamic(() => import("../components/SchoolTestEngine"));
@@ -1765,6 +1766,7 @@ export default function Home() {
                                                 })
                                             ]
                                         }),
+                                        /*#__PURE__*/ _jsx(AssignedTestsList, {}),
                                         /*#__PURE__*/ _jsx(ExploreEngine, {
                                             mode: mode,
                                             isSubscribed: isSubscribed,
