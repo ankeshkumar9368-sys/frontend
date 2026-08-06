@@ -13,6 +13,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import StudentPerformanceAnalytics from "../../components/StudentPerformanceAnalytics";
 import CreateCoachingTest from "../../components/CreateCoachingTest";
+import TeacherAuthGate from "../../components/TeacherAuthGate";
+import TeacherStudentLeaderboard from "../../components/TeacherStudentLeaderboard";
+import TeacherTestArchive from "../../components/TeacherTestArchive";
+import FinalMixScorePredictor from "../../components/FinalMixScorePredictor";
 
 interface Batch {
   batchId: string;
@@ -41,7 +45,7 @@ interface CoachingTest {
 }
 
 export default function TeacherPortal() {
-  const [activeTab, setActiveTab] = useState<"analytics" | "batches" | "tests" | "results">("analytics");
+  const [activeTab, setActiveTab] = useState<"analytics" | "batches" | "tests" | "results" | "leaderboard" | "archive" | "predictor">("analytics");
   const [batches, setBatches] = useState<Batch[]>([]);
   const [createdTests, setCreatedTests] = useState<CoachingTest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -174,6 +178,7 @@ export default function TeacherPortal() {
   const allStudentIds = Array.from(new Set(batches.flatMap(b => b.studentIds)));
 
   return (
+    <TeacherAuthGate>
     <div className="min-h-screen bg-[#0B1023] text-white selection:bg-[#7A5AF8] selection:text-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       
       {/* 🌌 Background Glow Blobs */}
@@ -269,30 +274,56 @@ export default function TeacherPortal() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-[#121735]/80 border border-white/10 w-fit backdrop-blur-md">
+        <div className="flex flex-wrap items-center gap-2">
           {[
-            { id: "analytics", label: "📊 Student Performance Analytics", badge: allStudentIds.length },
-            { id: "batches", label: "👥 Batches & Join Codes", badge: batches.length },
-            { id: "tests", label: "📝 Assigned Coaching Tests", badge: createdTests.length }
+            { id: "analytics", label: "📊 Performance", badge: allStudentIds.length },
+            { id: "leaderboard", label: "🏆 Leaderboard", badge: null },
+            { id: "archive", label: "🗄️ Test Archive", badge: createdTests.length },
+            { id: "predictor", label: "🔮 Score Predictor", badge: null },
+            { id: "batches", label: "👥 Batches", badge: batches.length },
+            { id: "tests", label: "📝 Assign Tests", badge: createdTests.length }
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
                 activeTab === tab.id
-                  ? "bg-gradient-to-r from-[#5B5CEB] to-[#7A5AF8] text-white shadow-md border border-white/20"
-                  : "text-slate-300 hover:text-white hover:bg-white/5"
+                  ? "bg-gradient-to-r from-[#5B5CEB] to-[#7A5AF8] text-white shadow-md border-white/20"
+                  : "text-slate-300 hover:text-white hover:bg-white/5 bg-[#121735]/80 border-white/10"
               }`}
             >
               <span>{tab.label}</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/20 font-extrabold">{tab.badge}</span>
+              {tab.badge !== null && (
+                <span className="text-[10px] px-1.5 rounded-full bg-white/20 font-extrabold">{tab.badge}</span>
+              )}
             </button>
           ))}
         </div>
 
-        {/* TAB 1: STUDENT PERFORMANCE ANALYTICS (STRONG VS WEAK TOPICS) */}
+        {/* TAB 1: STUDENT PERFORMANCE ANALYTICS */}
         {activeTab === "analytics" && (
           <StudentPerformanceAnalytics studentIds={allStudentIds} />
+        )}
+
+        {/* TAB: STUDENT LEADERBOARD */}
+        {activeTab === "leaderboard" && (
+          <div className="bg-[#121735]/80 border border-white/10 rounded-3xl p-6">
+            <TeacherStudentLeaderboard />
+          </div>
+        )}
+
+        {/* TAB: TEST ARCHIVE */}
+        {activeTab === "archive" && (
+          <div className="bg-[#121735]/80 border border-white/10 rounded-3xl p-6">
+            <TeacherTestArchive teacherUid={auth.currentUser?.uid} />
+          </div>
+        )}
+
+        {/* TAB: AI SCORE PREDICTOR */}
+        {activeTab === "predictor" && (
+          <div className="bg-[#121735]/80 border border-white/10 rounded-3xl p-6">
+            <FinalMixScorePredictor />
+          </div>
         )}
 
         {/* TAB 2: BATCHES & JOIN CODES */}
@@ -500,5 +531,6 @@ export default function TeacherPortal() {
       </AnimatePresence>
 
     </div>
+    </TeacherAuthGate>
   );
 }
