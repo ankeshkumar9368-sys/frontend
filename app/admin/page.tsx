@@ -240,6 +240,43 @@ export default function AdminDashboard() {
     } catch (e: any) { alert(e.message); } finally { setIsBlocking(false); }
   };
 
+  const [isTogglingTeacher, setIsTogglingTeacher] = useState(false);
+  const handleToggleTeacherRole = async () => {
+    if (!selectedUserForXRay) return;
+    const currentIsTeacher = selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher === true || selectedUserForXRay.teacherVerified === true;
+    const actionName = currentIsTeacher ? "Revoke Teacher Role" : "Grant Teacher Role";
+    if (!confirm(`Are you sure you want to ${actionName} for ${selectedUserForXRay.name || selectedUserForXRay.email}?`)) return;
+    
+    setIsTogglingTeacher(true);
+    try {
+      const userRef = doc(db, "users", selectedUserForXRay.id);
+      const newTeacherState = !currentIsTeacher;
+      await updateDoc(userRef, {
+        role: newTeacherState ? "teacher" : "student",
+        isTeacher: newTeacherState,
+        teacherVerified: newTeacherState,
+        teacherVerifiedAt: newTeacherState ? new Date().toISOString() : null
+      });
+      alert(`User ${selectedUserForXRay.name || selectedUserForXRay.email} is now ${newTeacherState ? "a TEACHER 🎓" : "a STUDENT 🎓"}.`);
+      setSelectedUserForXRay({
+        ...selectedUserForXRay,
+        role: newTeacherState ? "teacher" : "student",
+        isTeacher: newTeacherState,
+        teacherVerified: newTeacherState
+      });
+      setRealUsers(prev => prev.map(u => u.id === selectedUserForXRay.id ? {
+        ...u,
+        role: newTeacherState ? "teacher" : "student",
+        isTeacher: newTeacherState,
+        teacherVerified: newTeacherState
+      } : u));
+    } catch (e: any) {
+      alert("Failed to update teacher role: " + e.message);
+    } finally {
+      setIsTogglingTeacher(false);
+    }
+  };
+
   const handleDeleteUser = async () => {
     if (!selectedUserForXRay || !confirm("Are you sure you want to permanently delete this user from the database? This action cannot be undone.")) return;
     setIsDeletingUser(true);
@@ -3163,10 +3200,15 @@ export default function AdminDashboard() {
                     {(selectedUserForXRay.name || "U")[0]}
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-2xl font-black text-slate-800 leading-none">{selectedUserForXRay.name || "Aspirant"}</h3>
                       {selectedUserForXRay.isSubscribed && <Star className="w-5 h-5 text-amber-500 fill-amber-500" />}
                       {selectedUserForXRay.isBlocked && <span className="bg-rose-100 text-rose-600 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest">Blocked</span>}
+                      {(selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher || selectedUserForXRay.teacherVerified) && (
+                        <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest flex items-center gap-1 border border-purple-200">
+                          🎓 Verified Teacher
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs font-bold text-slate-400 mt-2">{selectedUserForXRay.email}</p>
                     <div className="flex items-center gap-2 mt-1">
@@ -3297,6 +3339,17 @@ export default function AdminDashboard() {
 
               {/* God Mode Actions Footer */}
               <div className="p-6 bg-slate-900 border-t border-slate-800 flex gap-3">
+                 <button 
+                   onClick={handleToggleTeacherRole}
+                   disabled={isTogglingTeacher}
+                   className={`flex-1 ${
+                     selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher || selectedUserForXRay.teacherVerified
+                       ? "bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30"
+                       : "bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30"
+                   } rounded-2xl py-4 font-black uppercase text-[10px] tracking-widest transition-all disabled:opacity-30 flex items-center justify-center gap-1`}
+                 >
+                   {isTogglingTeacher ? "Updating..." : (selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher || selectedUserForXRay.teacherVerified) ? "🎓 Revoke Teacher" : "🎓 Grant Teacher Role"}
+                 </button>
                  <button 
                    onClick={handleRevokePremium}
                    disabled={isRevoking || !selectedUserForXRay.isSubscribed}
