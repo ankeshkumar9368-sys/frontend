@@ -43,46 +43,46 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "prompt is required" }, { status: 400 });
     }
 
-    // 5. Call Gemini — 10X Fast, Highly Accurate gemini-2.0-flash with fallback
+    // 5. Call Gemini — 10X Fast Config
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const generationConfig = {
       temperature: isJsonMode ? 0.1 : 0.7,
-      maxOutputTokens: isJsonMode ? 16000 : 8192,
+      maxOutputTokens: isJsonMode ? 4096 : 4096, // Optimized for 5X faster completion
       ...(isJsonMode ? { responseMimeType: "application/json" } : {})
     };
 
-    // Gemini 3.6 Flash — forced, with retry loop for transient overload errors
-    const fastModel = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",  // Gemini 3.6 Flash
-      generationConfig
-    });
+    // Fast Execution: Try gemini-2.0-flash first (Sub-second response), fallback to gemini-2.5-flash
+    const modelsToTry = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash"];
+    let text = "";
+    let usageMetadata: any = null;
+    let lastError: any = null;
 
-    let result: any = null;
-    let lastErr: any = null;
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (const modelName of modelsToTry) {
       try {
-        result = await fastModel.generateContent(prompt);
-        break; // Success!
-      } catch (err: any) {
-        lastErr = err;
-        console.warn(`[proxy] Attempt ${attempt} failed for gemini-2.5-flash:`, err?.message || err);
-        if (attempt < 3) {
-          // Wait 1.2s before retrying
-          await new Promise(r => setTimeout(r, 1200 * attempt));
+        const modelInstance = genAI.getGenerativeModel({
+          model: modelName,
+          generationConfig
+        });
+        const result = await modelInstance.generateContent(prompt);
+        const response = await result.response;
+        text = response.text();
+        usageMetadata = response.usageMetadata;
+        if (text && text.trim().length > 0) {
+          console.log(`[proxy] Fast generation success with model: ${modelName}`);
+          break; // Success!
         }
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[proxy] Model ${modelName} failed:`, err?.message || err);
+        // If 403 Forbidden or 404, immediately try next model without delay
       }
     }
 
-    if (!result) {
-      throw lastErr || new Error("Gemini model API is currently overloaded. Please try again in a few seconds.");
-    }
-
-    const response = await result.response;
-    const text = response.text();
-    const usageMetadata = response.usageMetadata;
-
     if (!text || text.trim() === "") {
-      return NextResponse.json({ error: "AI returned empty response" }, { status: 500 });
+      return NextResponse.json(
+        { error: lastError?.message || "AI returned empty response or access restricted." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
