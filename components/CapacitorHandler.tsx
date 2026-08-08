@@ -8,9 +8,12 @@ export default function CapacitorHandler() {
   const router = useRouter();
 
   useEffect(() => {
-    // We only want to run Capacitor logic in a native environment or browser
-    // but we must ensure we don't break SSR.
-    
+    // Global guard: If user lands on /teacher, force immediate redirect to home
+    if (pathname && pathname.startsWith('/teacher')) {
+      window.location.replace('/');
+      return;
+    }
+
     const initCapacitor = async () => {
       try {
         // Dynamic imports to prevent SSR issues
