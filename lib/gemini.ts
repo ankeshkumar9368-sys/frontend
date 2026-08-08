@@ -23,7 +23,7 @@ const genAI = isLocalGenAIEnabled ? new GoogleGenerativeAI(apiKey) : null;
 const createDirectModel = (isJsonMode = false) => {
   if (genAI) {
     return genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash',  // 10X Ultra-fast real-time model
+      model: 'gemini-3.5-flash-lite',  // Gemini 3.5 Flash-Lite (Fast & Responsive)
       generationConfig: isJsonMode
         ? {
             responseMimeType: 'application/json',

@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
       ...(isJsonMode ? { responseMimeType: "application/json" } : {})
     };
 
-    // Fast Execution: Try gemini-2.0-flash first (Sub-second response), fallback to gemini-2.5-flash
-    const modelsToTry = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash"];
+    // Fast Execution with Gemini 3.5 Flash-Lite
+    const modelsToTry = ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-2.5-flash"];
     let text = "";
     let usageMetadata: any = null;
     let lastError: any = null;
