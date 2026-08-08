@@ -39,10 +39,7 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
         const snap = await getDoc(doc(db, "users", user.uid));
         if (snap.exists()) {
           const data = snap.data();
-          const isTeacherApproved = 
-            data.role === "teacher" || 
-            data.isTeacher === true || 
-            data.teacherVerified === true;
+          const isTeacherApproved = data.adminAssignedTeacher === true;
 
           if (isTeacherApproved) {
             setGateState("granted");

@@ -243,7 +243,7 @@ export default function AdminDashboard() {
   const [isTogglingTeacher, setIsTogglingTeacher] = useState(false);
   const handleToggleTeacherRole = async () => {
     if (!selectedUserForXRay) return;
-    const currentIsTeacher = selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher === true || selectedUserForXRay.teacherVerified === true;
+    const currentIsTeacher = selectedUserForXRay.adminAssignedTeacher === true;
     const actionName = currentIsTeacher ? "Revoke Teacher Role" : "Grant Teacher Role";
     if (!confirm(`Are you sure you want to ${actionName} for ${selectedUserForXRay.name || selectedUserForXRay.email}?`)) return;
     
@@ -252,6 +252,7 @@ export default function AdminDashboard() {
       const userRef = doc(db, "users", selectedUserForXRay.id);
       const newTeacherState = !currentIsTeacher;
       await updateDoc(userRef, {
+        adminAssignedTeacher: newTeacherState,
         role: newTeacherState ? "teacher" : "student",
         isTeacher: newTeacherState,
         teacherVerified: newTeacherState,
@@ -260,12 +261,14 @@ export default function AdminDashboard() {
       alert(`User ${selectedUserForXRay.name || selectedUserForXRay.email} is now ${newTeacherState ? "a TEACHER 🎓" : "a STUDENT 🎓"}.`);
       setSelectedUserForXRay({
         ...selectedUserForXRay,
+        adminAssignedTeacher: newTeacherState,
         role: newTeacherState ? "teacher" : "student",
         isTeacher: newTeacherState,
         teacherVerified: newTeacherState
       });
       setRealUsers(prev => prev.map(u => u.id === selectedUserForXRay.id ? {
         ...u,
+        adminAssignedTeacher: newTeacherState,
         role: newTeacherState ? "teacher" : "student",
         isTeacher: newTeacherState,
         teacherVerified: newTeacherState
@@ -2029,9 +2032,14 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-5">
                         <div className="w-14 h-14 bg-white rounded-2xl border border-slate-100 flex items-center justify-center font-black text-indigo-600 shadow-sm">{(u.name || "U")[0]}</div>
                         <div className="flex flex-col">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-black text-lg text-slate-800 leading-none">{u.name || "Aspirant"}</span>
                             {u.isSubscribed && <Star className="w-4 h-4 text-amber-500 fill-amber-500" />}
+                            {u.adminAssignedTeacher && (
+                              <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest border border-purple-200">
+                                🎓 Teacher
+                              </span>
+                            )}
                           </div>
                           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">{u.email}</span>
                         </div>
@@ -3204,7 +3212,7 @@ export default function AdminDashboard() {
                       <h3 className="text-2xl font-black text-slate-800 leading-none">{selectedUserForXRay.name || "Aspirant"}</h3>
                       {selectedUserForXRay.isSubscribed && <Star className="w-5 h-5 text-amber-500 fill-amber-500" />}
                       {selectedUserForXRay.isBlocked && <span className="bg-rose-100 text-rose-600 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest">Blocked</span>}
-                      {(selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher || selectedUserForXRay.teacherVerified) && (
+                      {selectedUserForXRay.adminAssignedTeacher === true && (
                         <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest flex items-center gap-1 border border-purple-200">
                           🎓 Verified Teacher
                         </span>
@@ -3343,12 +3351,12 @@ export default function AdminDashboard() {
                    onClick={handleToggleTeacherRole}
                    disabled={isTogglingTeacher}
                    className={`flex-1 ${
-                     selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher || selectedUserForXRay.teacherVerified
+                     selectedUserForXRay.adminAssignedTeacher === true
                        ? "bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30"
                        : "bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30"
                    } rounded-2xl py-4 font-black uppercase text-[10px] tracking-widest transition-all disabled:opacity-30 flex items-center justify-center gap-1`}
                  >
-                   {isTogglingTeacher ? "Updating..." : (selectedUserForXRay.role === "teacher" || selectedUserForXRay.isTeacher || selectedUserForXRay.teacherVerified) ? "🎓 Revoke Teacher" : "🎓 Grant Teacher Role"}
+                   {isTogglingTeacher ? "Updating..." : selectedUserForXRay.adminAssignedTeacher === true ? "🎓 Revoke Teacher" : "🎓 Grant Teacher Role"}
                  </button>
                  <button 
                    onClick={handleRevokePremium}

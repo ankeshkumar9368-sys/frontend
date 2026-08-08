@@ -27,7 +27,7 @@ service cloud.firestore {
       // Block self-assignment of teacher role, subscription, or payment fields
       return !affected.hasAny([
         'isSubscribed', 'isBlocked', 'planType', 'subscriptionId', 'paymentVerifiedAt',
-        'role', 'isTeacher', 'teacherVerified', 'teacherVerifiedAt'
+        'role', 'isTeacher', 'teacherVerified', 'teacherVerifiedAt', 'adminAssignedTeacher'
       ]);
     }
     
