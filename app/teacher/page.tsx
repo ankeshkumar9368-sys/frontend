@@ -7,13 +7,12 @@ import {
 } from "firebase/firestore";
 import { 
   GraduationCap, Users, Plus, BookOpen, BarChart3, FileText, Sparkles, 
-  Copy, Check, Trophy, ShieldCheck, ArrowLeft, Search, Layers, RefreshCw, Flame, X
+  Copy, Check, Trophy, ShieldCheck, ArrowLeft, Search, Layers, RefreshCw, Flame, X, LogOut
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import StudentPerformanceAnalytics from "../../components/StudentPerformanceAnalytics";
 import CreateCoachingTest from "../../components/CreateCoachingTest";
-import TeacherAuthGate from "../../components/TeacherAuthGate";
 import TeacherStudentLeaderboard from "../../components/TeacherStudentLeaderboard";
 import TeacherTestArchive from "../../components/TeacherTestArchive";
 import FinalMixScorePredictor from "../../components/FinalMixScorePredictor";
@@ -185,8 +184,12 @@ export default function TeacherPortal() {
   // Collect all student IDs across teacher's batches
   const allStudentIds = Array.from(new Set(batches.flatMap(b => b.studentIds)));
 
+  const handleLogout = async () => {
+    await fetch("/api/teacher-auth", { method: "DELETE" });
+    window.location.href = "/teacher/login";
+  };
+
   return (
-    <TeacherAuthGate>
     <div className="min-h-screen bg-[#0B1023] text-white selection:bg-[#7A5AF8] selection:text-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       
       {/* 🌌 Background Glow Blobs */}
@@ -231,6 +234,14 @@ export default function TeacherPortal() {
             className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-xs flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4 text-emerald-400" /> Add Batch
+          </button>
+
+          <button
+            onClick={handleLogout}
+            title="Logout Teacher Session"
+            className="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-300 font-bold text-xs flex items-center gap-1.5 transition-all"
+          >
+            <LogOut className="w-4 h-4" /> Logout
           </button>
         </div>
       </header>
@@ -539,6 +550,5 @@ export default function TeacherPortal() {
       </AnimatePresence>
 
     </div>
-    </TeacherAuthGate>
   );
 }
