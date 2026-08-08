@@ -240,72 +240,6 @@ export default function AdminDashboard() {
     } catch (e: any) { alert(e.message); } finally { setIsBlocking(false); }
   };
 
-  const [isTogglingTeacher, setIsTogglingTeacher] = useState(false);
-  const handleToggleTeacherRole = async () => {
-    if (!selectedUserForXRay) return;
-    const currentIsTeacher = selectedUserForXRay.adminAssignedTeacher === true;
-    const actionName = currentIsTeacher ? "Revoke Teacher Role" : "Grant Teacher Role & Create Password";
-    
-    let generatedPass = "";
-    if (!currentIsTeacher) {
-      const autoPass = "ACH-T" + Math.floor(1000 + Math.random() * 9000);
-      const inputPass = window.prompt(
-        `Enter a Password for Teacher (${selectedUserForXRay.email || selectedUserForXRay.name}):\n(Leave default or enter custom password)`,
-        autoPass
-      );
-      if (inputPass === null) return; // Cancelled
-      generatedPass = inputPass.trim() || autoPass;
-    } else {
-      if (!confirm(`Are you sure you want to REVOKE Teacher access for ${selectedUserForXRay.name || selectedUserForXRay.email}?`)) return;
-    }
-    
-    setIsTogglingTeacher(true);
-    try {
-      const userRef = doc(db, "users", selectedUserForXRay.id);
-      const newTeacherState = !currentIsTeacher;
-      await updateDoc(userRef, {
-        adminAssignedTeacher: newTeacherState,
-        role: newTeacherState ? "teacher" : "student",
-        isTeacher: newTeacherState,
-        teacherVerified: newTeacherState,
-        teacherPassword: newTeacherState ? generatedPass : deleteField(),
-        teacherVerifiedAt: newTeacherState ? new Date().toISOString() : null
-      });
-
-      if (newTeacherState) {
-        alert(
-          `🎉 TEACHER ROLE GRANTED SUCCESSFULLY!\n\n` +
-          `📧 Teacher Email: ${selectedUserForXRay.email || "No email"}\n` +
-          `🔑 Teacher Password: ${generatedPass}\n\n` +
-          `Give these credentials to the teacher so they can log in at achivox.online/teacher !`
-        );
-      } else {
-        alert(`Teacher access revoked for ${selectedUserForXRay.name || selectedUserForXRay.email}.`);
-      }
-
-      setSelectedUserForXRay({
-        ...selectedUserForXRay,
-        adminAssignedTeacher: newTeacherState,
-        role: newTeacherState ? "teacher" : "student",
-        isTeacher: newTeacherState,
-        teacherVerified: newTeacherState,
-        teacherPassword: newTeacherState ? generatedPass : undefined
-      });
-
-      setRealUsers(prev => prev.map(u => u.id === selectedUserForXRay.id ? {
-        ...u,
-        adminAssignedTeacher: newTeacherState,
-        role: newTeacherState ? "teacher" : "student",
-        isTeacher: newTeacherState,
-        teacherVerified: newTeacherState,
-        teacherPassword: newTeacherState ? generatedPass : undefined
-      } : u));
-    } catch (e: any) {
-      alert("Failed to update teacher role: " + e.message);
-    } finally {
-      setIsTogglingTeacher(false);
-    }
-  };
 
   const handleDeleteUser = async () => {
     if (!selectedUserForXRay || !confirm("Are you sure you want to permanently delete this user from the database? This action cannot be undone.")) return;
@@ -2062,11 +1996,6 @@ export default function AdminDashboard() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-black text-lg text-slate-800 leading-none">{u.name || "Aspirant"}</span>
                             {u.isSubscribed && <Star className="w-4 h-4 text-amber-500 fill-amber-500" />}
-                            {u.adminAssignedTeacher && (
-                              <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest border border-purple-200">
-                                🎓 Teacher
-                              </span>
-                            )}
                           </div>
                           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">{u.email}</span>
                         </div>
@@ -3239,11 +3168,6 @@ export default function AdminDashboard() {
                       <h3 className="text-2xl font-black text-slate-800 leading-none">{selectedUserForXRay.name || "Aspirant"}</h3>
                       {selectedUserForXRay.isSubscribed && <Star className="w-5 h-5 text-amber-500 fill-amber-500" />}
                       {selectedUserForXRay.isBlocked && <span className="bg-rose-100 text-rose-600 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest">Blocked</span>}
-                      {selectedUserForXRay.adminAssignedTeacher === true && (
-                        <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest flex items-center gap-1 border border-purple-200">
-                          🎓 Verified Teacher {selectedUserForXRay.teacherPassword ? `(Pass: ${selectedUserForXRay.teacherPassword})` : ""}
-                        </span>
-                      )}
                     </div>
                     <p className="text-xs font-bold text-slate-400 mt-2">{selectedUserForXRay.email}</p>
                     <div className="flex items-center gap-2 mt-1">
@@ -3374,17 +3298,6 @@ export default function AdminDashboard() {
 
               {/* God Mode Actions Footer */}
               <div className="p-6 bg-slate-900 border-t border-slate-800 flex gap-3">
-                 <button 
-                   onClick={handleToggleTeacherRole}
-                   disabled={isTogglingTeacher}
-                   className={`flex-1 ${
-                     selectedUserForXRay.adminAssignedTeacher === true
-                       ? "bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30"
-                       : "bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30"
-                   } rounded-2xl py-4 font-black uppercase text-[10px] tracking-widest transition-all disabled:opacity-30 flex items-center justify-center gap-1`}
-                 >
-                   {isTogglingTeacher ? "Updating..." : selectedUserForXRay.adminAssignedTeacher === true ? "🎓 Revoke Teacher" : "🎓 Grant Teacher Role"}
-                 </button>
                  <button 
                    onClick={handleRevokePremium}
                    disabled={isRevoking || !selectedUserForXRay.isSubscribed}
