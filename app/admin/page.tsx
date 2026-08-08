@@ -244,8 +244,20 @@ export default function AdminDashboard() {
   const handleToggleTeacherRole = async () => {
     if (!selectedUserForXRay) return;
     const currentIsTeacher = selectedUserForXRay.adminAssignedTeacher === true;
-    const actionName = currentIsTeacher ? "Revoke Teacher Role" : "Grant Teacher Role";
-    if (!confirm(`Are you sure you want to ${actionName} for ${selectedUserForXRay.name || selectedUserForXRay.email}?`)) return;
+    const actionName = currentIsTeacher ? "Revoke Teacher Role" : "Grant Teacher Role & Create Password";
+    
+    let generatedPass = "";
+    if (!currentIsTeacher) {
+      const autoPass = "ACH-T" + Math.floor(1000 + Math.random() * 9000);
+      const inputPass = window.prompt(
+        `Enter a Password for Teacher (${selectedUserForXRay.email || selectedUserForXRay.name}):\n(Leave default or enter custom password)`,
+        autoPass
+      );
+      if (inputPass === null) return; // Cancelled
+      generatedPass = inputPass.trim() || autoPass;
+    } else {
+      if (!confirm(`Are you sure you want to REVOKE Teacher access for ${selectedUserForXRay.name || selectedUserForXRay.email}?`)) return;
+    }
     
     setIsTogglingTeacher(true);
     try {
@@ -256,22 +268,37 @@ export default function AdminDashboard() {
         role: newTeacherState ? "teacher" : "student",
         isTeacher: newTeacherState,
         teacherVerified: newTeacherState,
+        teacherPassword: newTeacherState ? generatedPass : deleteField(),
         teacherVerifiedAt: newTeacherState ? new Date().toISOString() : null
       });
-      alert(`User ${selectedUserForXRay.name || selectedUserForXRay.email} is now ${newTeacherState ? "a TEACHER 🎓" : "a STUDENT 🎓"}.`);
+
+      if (newTeacherState) {
+        alert(
+          `🎉 TEACHER ROLE GRANTED SUCCESSFULLY!\n\n` +
+          `📧 Teacher Email: ${selectedUserForXRay.email || "No email"}\n` +
+          `🔑 Teacher Password: ${generatedPass}\n\n` +
+          `Give these credentials to the teacher so they can log in at achivox.online/teacher !`
+        );
+      } else {
+        alert(`Teacher access revoked for ${selectedUserForXRay.name || selectedUserForXRay.email}.`);
+      }
+
       setSelectedUserForXRay({
         ...selectedUserForXRay,
         adminAssignedTeacher: newTeacherState,
         role: newTeacherState ? "teacher" : "student",
         isTeacher: newTeacherState,
-        teacherVerified: newTeacherState
+        teacherVerified: newTeacherState,
+        teacherPassword: newTeacherState ? generatedPass : undefined
       });
+
       setRealUsers(prev => prev.map(u => u.id === selectedUserForXRay.id ? {
         ...u,
         adminAssignedTeacher: newTeacherState,
         role: newTeacherState ? "teacher" : "student",
         isTeacher: newTeacherState,
-        teacherVerified: newTeacherState
+        teacherVerified: newTeacherState,
+        teacherPassword: newTeacherState ? generatedPass : undefined
       } : u));
     } catch (e: any) {
       alert("Failed to update teacher role: " + e.message);
@@ -3214,7 +3241,7 @@ export default function AdminDashboard() {
                       {selectedUserForXRay.isBlocked && <span className="bg-rose-100 text-rose-600 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest">Blocked</span>}
                       {selectedUserForXRay.adminAssignedTeacher === true && (
                         <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded uppercase text-[9px] font-black tracking-widest flex items-center gap-1 border border-purple-200">
-                          🎓 Verified Teacher
+                          🎓 Verified Teacher {selectedUserForXRay.teacherPassword ? `(Pass: ${selectedUserForXRay.teacherPassword})` : ""}
                         </span>
                       )}
                     </div>
