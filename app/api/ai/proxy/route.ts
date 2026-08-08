@@ -51,31 +51,35 @@ export async function POST(req: NextRequest) {
       ...(isJsonMode ? { responseMimeType: "application/json" } : {})
     };
 
-    let text = "";
-    let usageMetadata: any = null;
+    // Gemini 3.6 Flash — forced, with retry loop for transient overload errors
+    const fastModel = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",  // Gemini 3.6 Flash
+      generationConfig
+    });
 
-    try {
-      // Primary attempt: gemini-2.5-flash
-      const fastModel = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
-        generationConfig
-      });
-      const result = await fastModel.generateContent(prompt);
-      const response = await result.response;
-      text = response.text();
-      usageMetadata = response.usageMetadata;
-    } catch (primaryErr) {
-      console.warn("[proxy] gemini-2.5-flash call failed, falling back to gemini-2.0-flash:", primaryErr);
-      // Fallback attempt: gemini-2.0-flash
-      const fallbackModel = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        generationConfig
-      });
-      const result = await fallbackModel.generateContent(prompt);
-      const response = await result.response;
-      text = response.text();
-      usageMetadata = response.usageMetadata;
+    let result: any = null;
+    let lastErr: any = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        result = await fastModel.generateContent(prompt);
+        break; // Success!
+      } catch (err: any) {
+        lastErr = err;
+        console.warn(`[proxy] Attempt ${attempt} failed for gemini-2.5-flash:`, err?.message || err);
+        if (attempt < 3) {
+          // Wait 1.2s before retrying
+          await new Promise(r => setTimeout(r, 1200 * attempt));
+        }
+      }
     }
+
+    if (!result) {
+      throw lastErr || new Error("Gemini model API is currently overloaded. Please try again in a few seconds.");
+    }
+
+    const response = await result.response;
+    const text = response.text();
+    const usageMetadata = response.usageMetadata;
 
     if (!text || text.trim() === "") {
       return NextResponse.json({ error: "AI returned empty response" }, { status: 500 });
