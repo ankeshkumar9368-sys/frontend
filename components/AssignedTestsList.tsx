@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { updateStudentTopicMastery } from "../lib/analytics";
-import JoinBatchModal from "./JoinBatchModal";
+
 
 interface Question {
   id: number;
@@ -38,7 +38,6 @@ export default function AssignedTestsList() {
   const [tests, setTests] = useState<CoachingTest[]>([]);
   const [completedTestIds, setCompletedTestIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showJoinModal, setShowJoinModal] = useState(false);
 
   // Active quiz attempt state
   const [activeTest, setActiveTest] = useState<CoachingTest | null>(null);
@@ -202,13 +201,6 @@ export default function AssignedTestsList() {
         <h3 className="text-sm font-black text-white flex items-center gap-2 uppercase tracking-wider">
           <FileText className="w-4 h-4 text-[#38BDF8]" /> Assigned Coaching Tests
         </h3>
-        
-        <button
-          onClick={() => setShowJoinModal(true)}
-          className="text-xs font-bold px-3 py-1 rounded-xl bg-gradient-to-r from-amber-500/20 to-purple-500/20 border border-amber-400/40 text-amber-300 flex items-center gap-1.5 hover:bg-white/10 transition-colors"
-        >
-          <Users className="w-3.5 h-3.5" /> Join Teacher Batch
-        </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -366,19 +358,6 @@ export default function AssignedTestsList() {
         )}
       </AnimatePresence>
 
-      {/* JOIN TEACHER BATCH MODAL */}
-      <AnimatePresence>
-        {showJoinModal && (
-          <JoinBatchModal
-            onClose={() => setShowJoinModal(false)}
-            onSuccess={(batchName) => {
-              setShowJoinModal(false);
-              alert(`Successfully joined batch: ${batchName}! Assigned tests will now appear here.`);
-              window.location.reload();
-            }}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }

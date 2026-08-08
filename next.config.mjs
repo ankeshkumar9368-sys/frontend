@@ -7,6 +7,8 @@ const nextConfig = {
   trailingSlash: true,
   async rewrites() {
     return [
+      { source: '/teacher', destination: '/' },
+      { source: '/teacher/', destination: '/' },
       { source: '/explore', destination: '/' },
       { source: '/explore/', destination: '/' },
       { source: '/tools', destination: '/' },
