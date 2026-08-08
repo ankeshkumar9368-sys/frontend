@@ -22,7 +22,8 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (!user) {
+      // 🔒 STRICT CHECK: Guest/Anonymous users or unauthenticated users CANNOT enter
+      if (!user || user.isAnonymous || !user.email) {
         setGateState("need_login");
         setCurrentUser(null);
         return;
@@ -30,8 +31,8 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
 
       setCurrentUser({
         uid: user.uid,
-        email: user.email || "No email",
-        name: user.displayName || user.email?.split("@")[0] || "User",
+        email: user.email,
+        name: user.displayName || user.email.split("@")[0] || "User",
       });
 
       try {
@@ -46,7 +47,7 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
             return;
           }
         }
-        // User logged in but not assigned as teacher by admin
+        // User logged in with Google but NOT assigned as teacher by admin
         setGateState("denied");
       } catch (err) {
         console.error("Error checking teacher authorization:", err);
@@ -142,13 +143,13 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
               </div>
             </div>
 
-            {/* STATE 1: NOT LOGGED IN */}
+            {/* STATE 1: NOT LOGGED IN OR GUEST ACCOUNT */}
             {gateState === "need_login" && (
               <div className="space-y-5">
                 <div className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-400/30">
                   <Lock className="w-5 h-5 text-amber-300 shrink-0" />
                   <p className="text-xs font-bold text-amber-200 leading-snug">
-                    Admin Approval Required — Please sign in to verify if your account has Teacher permissions.
+                    🔒 Restricted Access — Guest accounts are blocked. Please sign in with your verified Teacher Google account.
                   </p>
                 </div>
 
@@ -174,7 +175,7 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
               </div>
             )}
 
-            {/* STATE 2: LOGGED IN BUT ACCESS DENIED */}
+            {/* STATE 2: LOGGED IN BUT NOT ASSIGNED TEACHER BY ADMIN */}
             {gateState === "denied" && (
               <div className="space-y-5">
                 {/* Account Details Box */}
@@ -201,10 +202,10 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
                     <span>RESTRICTED ACCESS</span>
                   </div>
                   <p className="text-xs text-rose-200 leading-relaxed font-medium">
-                    Only users assigned the <strong className="text-white font-bold">"Teacher Role"</strong> by an Administrator in the Admin Panel can access this page.
+                    Only accounts assigned the <strong className="text-white font-bold">"Teacher Role"</strong> by an Administrator in the Admin Panel can access this portal.
                   </p>
                   <p className="text-[11px] text-rose-300/80 italic pt-1">
-                    Contact Achivox Admin to request Teacher authorization for your account.
+                    Contact Achivox Admin to grant Teacher access to your email ({currentUser?.email}).
                   </p>
                 </div>
 
@@ -222,7 +223,7 @@ export default function TeacherAuthGate({ children }: TeacherAuthGateProps) {
         </div>
 
         <p className="text-center text-[10px] text-slate-500 font-medium mt-4">
-          ACHIVOX AI · Strict Admin-Controlled Role Security · 2026
+          ACHIVOX AI · Admin-Controlled Teacher Security · 2026
         </p>
       </motion.div>
     </div>

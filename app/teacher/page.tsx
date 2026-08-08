@@ -72,7 +72,11 @@ export default function TeacherPortal() {
     setLoading(true);
     try {
       const user = auth.currentUser;
-      const teacherId = user?.uid || "guest_teacher";
+      if (!user || user.isAnonymous) {
+        setLoading(false);
+        return;
+      }
+      const teacherId = user.uid;
 
       // 1. Fetch Teacher's Batches
       const batchesRef = collection(db, "batches");
@@ -133,7 +137,11 @@ export default function TeacherPortal() {
 
     try {
       const user = auth.currentUser;
-      const teacherId = user?.uid || "guest_teacher";
+      if (!user || user.isAnonymous) {
+        setIsCreatingBatch(false);
+        return;
+      }
+      const teacherId = user.uid;
       
       // Generate unique 6-character Batch Join Code
       const code = "ACH" + Math.floor(100 + Math.random() * 900);
