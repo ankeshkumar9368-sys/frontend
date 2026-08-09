@@ -28,15 +28,17 @@ export default function SubscriptionPage() {
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponError, setCouponError] = useState("");
 
-  // Real Persistent Timer — stored in localStorage so it survives page refresh
-  const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 59 });
+  // Real Persistent Timer — 🇮🇳 15th August Independence Day Offer (Ends 15th Aug 23:59:59 PM)
+  const INDEPENDENCE_DAY_DEADLINE = new Date(2026, 7, 15, 23, 59, 59).getTime();
+
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 23, minutes: 59, seconds: 59 });
   const [offerExpired, setOfferExpired] = useState(false);
 
   // Unified Price Definitions: Single Source of Truth
-  // Active: Pro Annual = ₹399, Pro Monthly = ₹79, Exam Pass = ₹99
-  // Expired: Pro Annual = ₹599 (standard rate), Pro Monthly = ₹99, Exam Pass = ₹99
-  const baseAnnualPrice = offerExpired ? 599 : 399;
-  const baseMonthlyPrice = offerExpired ? 99 : 79;
+  // 🇮🇳 Active (till 15th Aug 11:59 PM): Pro Annual = ₹299, Pro Monthly = ₹49, Exam Pass = ₹99
+  // Expired (from 16th Aug 00:00 AM): Pro Annual = ₹599 (standard rate), Pro Monthly = ₹99, Exam Pass = ₹99
+  const baseAnnualPrice = offerExpired ? 599 : 299;
+  const baseMonthlyPrice = offerExpired ? 99 : 49;
   const baseExamPassPrice = 99;
 
   const finalAnnualPrice = discountPercent > 0 ? Math.round(baseAnnualPrice * (1 - discountPercent / 100)) : baseAnnualPrice;
@@ -48,12 +50,12 @@ export default function SubscriptionPage() {
   const [viewingCount, setViewingCount] = useState(127);
 
   const rotatingOffers = [
-    { icon: Gift, text: "🎉 New User Offer: 7 Days Pro FREE on Annual Plan", badge: "Trial" },
-    { icon: Flame, text: `⚡ Flash Sale: Save 60% OFF Launch Pass today (₹${baseAnnualPrice})`, badge: "Hot" },
+    { icon: Gift, text: "🇮🇳 Independence Day Special: Achivox Pro Annual Pass at ₹299 (Save 70%)", badge: "15th Aug 🇮🇳" },
+    { icon: Flame, text: `⚡ Swatantrata Diwas Flash Sale: Full Year Access for ₹${baseAnnualPrice} (Ends 15th Aug)`, badge: "Hot 🇮🇳" },
     { icon: Users, text: "👥 Refer 3 Friends: Get 30 Days Premium FREE", badge: "Bonus" },
     { icon: Award, text: "🏆 Maintain 30-Day Streak: Unlock 1 Month Premium", badge: "Earn" },
     { icon: Percent, text: "🎓 School/Coaching Code: Use 'SCHOOL20' for extra 20% OFF", badge: "Coupon" },
-    { icon: Sparkles, text: `📚 Board Exam Special: Launch Pass for ₹${baseAnnualPrice} (Limited Time)`, badge: "Special" },
+    { icon: Sparkles, text: `🇮🇳 Freedom Offer: Full Year Pro for ₹${baseAnnualPrice} (Valid till 15th Aug Midnight)`, badge: "Special" },
     { icon: Gift, text: "🎁 First Payment Reward: Instant 500 Achivox Coins", badge: "Coins" }
   ];
 
@@ -66,32 +68,21 @@ export default function SubscriptionPage() {
     return () => unsubscribe();
   }, []);
 
-  // Real Persistent Countdown Timer
+  // Real Countdown Timer ending 15th August 11:59:59 PM
   useEffect(() => {
-    const OFFER_KEY = "achivox_offer_deadline";
-    const OFFER_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
-
-    let deadline: number;
-    const stored = localStorage.getItem(OFFER_KEY);
-    if (stored) {
-      deadline = parseInt(stored, 10);
-    } else {
-      deadline = Date.now() + OFFER_DURATION_MS;
-      localStorage.setItem(OFFER_KEY, String(deadline));
-    }
-
     const updateTimer = () => {
-      const remaining = deadline - Date.now();
+      const remaining = INDEPENDENCE_DAY_DEADLINE - Date.now();
       if (remaining <= 0) {
-        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         setOfferExpired(true);
         return;
       }
-      const totalSecs = Math.floor(remaining / 1000);
+      const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+      const totalSecs = Math.floor((remaining % (1000 * 60 * 60 * 24)) / 1000);
       const hours = Math.floor(totalSecs / 3600);
       const minutes = Math.floor((totalSecs % 3600) / 60);
       const seconds = totalSecs % 60;
-      setTimeLeft({ hours, minutes, seconds });
+      setTimeLeft({ days, hours, minutes, seconds });
       setOfferExpired(false);
     };
 
@@ -367,25 +358,16 @@ export default function SubscriptionPage() {
               <div className="text-center lg:text-left space-y-2 w-full lg:w-auto">
                 {offerExpired ? (
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-500/30 border border-slate-400/40 text-slate-300 text-xs font-black uppercase tracking-wider">
-                    ⏰ Launch Offer Expired — Standard Price Now Active
+                    ⏰ Independence Offer Expired — Standard Price Now Active
                   </div>
                 ) : (
-                  <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider animate-pulse ${
-                    timeLeft.hours === 0 && timeLeft.minutes < 10
-                      ? "bg-red-500/30 border border-red-400/50 text-red-300"
-                      : timeLeft.hours < 2
-                        ? "bg-orange-500/20 border border-orange-500/40 text-orange-300"
-                        : "bg-rose-500/20 border border-rose-500/40 text-rose-300"
-                  }`}>
-                    <Flame className={`w-4 h-4 fill-current ${
-                      timeLeft.hours === 0 && timeLeft.minutes < 10 ? "text-red-400" : "text-rose-400"
-                    }`} />
-                    🔥 Launch Offer — Save 60% OFF
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider animate-pulse bg-gradient-to-r from-amber-500/30 via-white/20 to-emerald-500/30 border border-amber-400/50 text-amber-200">
+                    <span className="text-base">🇮🇳</span> 79th Swatantrata Diwas Sale — Save 70% OFF
                   </div>
                 )}
 
                 <h2 className="text-xl sm:text-3xl font-black text-white">
-                  Get Full Year Premium Access
+                  🇮🇳 15th August Special Pro Annual Pass
                 </h2>
 
                 <p className="text-xs sm:text-sm text-slate-300 font-medium max-w-md mx-auto lg:mx-0">

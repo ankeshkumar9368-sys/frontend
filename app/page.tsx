@@ -43,6 +43,7 @@ import SavedMCQs from "../components/SavedMCQs";
 import SplashScreen from "../components/SplashScreen";
 
 import WeaknessHeatmap from "../components/WeaknessHeatmap";
+import IndependenceDayBanner from "../components/IndependenceDayBanner";
 import QuickRevisionMode from "../components/QuickRevisionMode";
 import GamificationHub from "../components/GamificationHub";
 import WhyGotWrong from "../components/WhyGotWrong";
@@ -1405,6 +1406,8 @@ export default function Home() {
                                                 })
                                             ]
                                         }),
+                                        /* 🇮🇳 15th August Independence Day Special Offer Banner */
+                                        /*#__PURE__*/ _jsx(IndependenceDayBanner, {}),
                                         /* Live Active Student Badge */
                                         /*#__PURE__*/ _jsx("div", {
                                             className: "mb-3 flex justify-start",
