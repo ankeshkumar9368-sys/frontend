@@ -907,10 +907,15 @@ export default function TopperNotes({
                         {notes.definitions.map((def: any, idx: number) => (
                           <div key={idx} className="border-l-4 border-amber-400 pl-4 py-1">
                             <span className="handwritten text-xl sm:text-2xl font-bold text-slate-800 block leading-tight">
-                              {def.term}
+                              {def.term} {def.termHindi && <span className="text-amber-700 text-lg font-sans font-black ml-2">({def.termHindi})</span>}
                             </span>
                             <div className="handwritten-content text-lg sm:text-xl text-slate-800 mt-1">
                               {renderTextContent(def.definition)}
+                              {def.definitionHindi && (
+                                <div className="text-emerald-700 font-sans text-sm font-bold mt-1 bg-emerald-50/60 p-2 rounded-xl">
+                                  🇮🇳 {def.definitionHindi}
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -941,11 +946,13 @@ export default function TopperNotes({
                               <div className="text-slate-800 font-bold">
                                 <span className="text-slate-500 text-sm font-sans uppercase font-bold">Symbols: </span> 
                                 {renderTextContent(form.symbolsMeaning)}
+                                {form.symbolsMeaningHindi && <span className="block text-emerald-700 text-xs font-sans font-bold">🇮🇳 {form.symbolsMeaningHindi}</span>}
                               </div>
                               {form.usageTip && (
                                 <div className="text-amber-800 italic">
                                   <span className="text-amber-600 text-sm font-sans uppercase font-bold">Topper Tip: </span> 
                                   {renderTextContent(form.usageTip)}
+                                  {form.usageTipHindi && <span className="block text-emerald-800 text-xs font-sans font-bold not-italic">🇮🇳 {form.usageTipHindi}</span>}
                                 </div>
                               )}
                             </div>
@@ -1219,11 +1226,13 @@ export default function TopperNotes({
                             return (
                               <div key={idx} className="bg-slate-100/40 p-4 rounded-2xl border border-slate-400/20 font-sans text-xs">
                                 <p className="font-black text-slate-800">Q: {q.question}</p>
+                                {q.questionHindi && <p className="font-bold text-emerald-700 mt-1">🇮🇳 Q: {q.questionHindi}</p>}
                                 {isRevealed ? (
-                                  <p className="mt-2.5 font-bold text-indigo-700 bg-indigo-50/30 p-2.5 rounded-xl border border-indigo-100/50">
+                                  <div className="mt-2.5 font-bold text-indigo-700 bg-indigo-50/30 p-2.5 rounded-xl border border-indigo-100/50">
                                     <span className="text-[10px] font-black uppercase text-indigo-600 block mb-1">Topper Answer:</span>
-                                    {q.answer}
-                                  </p>
+                                    <p>{q.answer}</p>
+                                    {q.answerHindi && <p className="text-emerald-800 text-xs pt-1.5 mt-1 border-t border-indigo-100/40">🇮🇳 {q.answerHindi}</p>}
+                                  </div>
                                 ) : (
                                   <button 
                                     onClick={() => setRevealedAnswers(prev => ({ ...prev, [`sa_${idx}`]: true }))}
@@ -1247,10 +1256,12 @@ export default function TopperNotes({
                             return (
                               <div key={idx} className="bg-slate-100/40 p-4 rounded-2xl border border-slate-400/20 font-sans text-xs">
                                 <p className="font-black text-slate-800">Q: {q.question}</p>
+                                {q.questionHindi && <p className="font-bold text-emerald-700 mt-1">🇮🇳 Q: {q.questionHindi}</p>}
                                 {isRevealed ? (
                                   <div className="mt-2.5 font-bold text-indigo-700 bg-indigo-50/30 p-2.5 rounded-xl border border-indigo-100/50 whitespace-pre-line leading-relaxed">
                                     <span className="text-[10px] font-black uppercase text-indigo-600 block mb-1">Topper Answer Scheme:</span>
-                                    {q.answer}
+                                    <p>{q.answer}</p>
+                                    {q.answerHindi && <p className="text-emerald-800 text-xs pt-1.5 mt-1 border-t border-indigo-100/40">🇮🇳 {q.answerHindi}</p>}
                                   </div>
                                 ) : (
                                   <button 

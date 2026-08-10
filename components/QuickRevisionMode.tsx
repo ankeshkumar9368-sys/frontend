@@ -1,20 +1,49 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, ChevronRight, ChevronLeft, RotateCcw, CheckCircle, X, Brain, BookOpen } from "lucide-react";
+import { Zap, ChevronRight, ChevronLeft, RotateCcw, CheckCircle, X, Brain, BookOpen, Languages, Sparkles } from "lucide-react";
 import { model } from "../lib/gemini";
 
 interface FlashCard {
   front: string;
+  frontHindi?: string;
   back: string;
+  backHindi?: string;
   hint?: string;
+  hintHindi?: string;
   difficulty: "easy" | "medium" | "hard";
 }
 
-function CardFace({ text, isBack }: { text: string; isBack: boolean }) {
+function CardFace({ 
+  text, 
+  textHindi, 
+  isBack, 
+  langMode 
+}: { 
+  text: string; 
+  textHindi?: string; 
+  isBack: boolean;
+  langMode: "dual" | "hi" | "en";
+}) {
+  const showEn = langMode === "en" || langMode === "dual" || !textHindi;
+  const showHi = (langMode === "hi" || langMode === "dual") && !!textHindi;
+
   return (
     <div className={`absolute inset-0 p-6 flex flex-col items-center justify-center text-center backface-hidden ${isBack ? "rotate-y-180" : ""}`}>
-      <p className={`font-black leading-relaxed ${isBack ? "text-lg text-foreground" : "text-xl text-foreground"}`}>{text}</p>
+      <div className="space-y-3 max-w-lg">
+        {showEn && (
+          <p className={`font-black leading-relaxed ${isBack ? "text-base sm:text-lg text-foreground" : "text-lg sm:text-xl text-foreground"}`}>
+            {text}
+          </p>
+        )}
+        {showHi && (
+          <div className={`${showEn ? "pt-2 border-t border-white/10" : ""}`}>
+            <p className={`font-bold leading-relaxed text-emerald-400 dark:text-emerald-300 ${isBack ? "text-sm sm:text-base" : "text-base sm:text-lg"}`}>
+              🇮🇳 {textHindi}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -32,13 +61,24 @@ export default function QuickRevisionMode({
   const [known, setKnown] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [done, setDone] = useState(false);
+  const [langMode, setLangMode] = useState<"dual" | "hi" | "en">("dual");
 
   const generate = useCallback(async () => {
     setLoading(true);
     try {
-      const prompt = `Generate 8 flash cards for quick revision of topic: "${topic}".
+      const prompt = `Generate 8 high-impact BILINGUAL (English + Hindi) flash cards for quick revision of topic: "${topic}".
 Return strict JSON array:
-[{"front":"Concept or Question","back":"Short crisp answer (1-2 lines)","hint":"Memory hint","difficulty":"easy|medium|hard"}]`;
+[
+  {
+    "front": "Concept or Question in English",
+    "frontHindi": "हिंदी में प्रश्न या अवधारणा (Devanagari)",
+    "back": "Short crisp answer (1-2 lines) in English",
+    "backHindi": "1-2 पंक्तियों में स्पष्ट हिंदी उत्तर (Devanagari)",
+    "hint": "Memory hint in English",
+    "hintHindi": "स्मृति संकेत हिंदी में",
+    "difficulty": "easy|medium|hard"
+  }
+]`;
       const result = await model.generateContent(prompt);
       const text = result.response.text();
       const match = text.match(/\[[\s\S]*\]/);
@@ -47,11 +87,35 @@ Return strict JSON array:
         setCards(data);
       }
     } catch (e) {
-      // fallback cards
+      // BILINGUAL Fallback cards
       setCards([
-        { front: `What is ${topic}?`, back: "Core definition based on NCERT syllabus.", hint: "Think basics", difficulty: "easy" },
-        { front: `Key formula in ${topic}?`, back: "Main equation/principle", hint: "Recall equation", difficulty: "medium" },
-        { front: `${topic} VVIP exam point?`, back: "Most important exam-oriented fact", hint: "Think previous papers", difficulty: "hard" },
+        { 
+          front: `What is ${topic}?`, 
+          frontHindi: `${topic} क्या है?`,
+          back: "Core definition based on NCERT syllabus.", 
+          backHindi: "NCERT पाठ्यक्रम पर आधारित मुख्य परिभाषा।",
+          hint: "Think core principles", 
+          hintHindi: "मूल सिद्धांतों को याद करें",
+          difficulty: "easy" 
+        },
+        { 
+          front: `Key formula / law in ${topic}?`, 
+          frontHindi: `${topic} का मुख्य सूत्र या नियम क्या है?`,
+          back: "Main equation and rule applied in board exam questions.", 
+          backHindi: "बोर्ड परीक्षा के प्रश्नों में प्रयुक्त मुख्य समीकरण और नियम।",
+          hint: "Recall equation & units", 
+          hintHindi: "समीकरण और SI मात्रक याद करें",
+          difficulty: "medium" 
+        },
+        { 
+          front: `${topic} VVIP Exam Point?`, 
+          frontHindi: `${topic} का सबसे महत्वपूर्ण परीक्षा बिंदु?`,
+          back: "Most frequently tested concept in previous year board papers.", 
+          backHindi: "विगत वर्षों के बोर्ड प्रश्नपत्रों में बार-बार पूछा जाने वाला बिंदु।",
+          hint: "Think 5-mark repeated question", 
+          hintHindi: "5 अंकों के बार-बार पूछे जाने वाले प्रश्न पर ध्यान दें",
+          difficulty: "hard" 
+        },
       ]);
     } finally {
       setLoading(false);
@@ -89,132 +153,150 @@ Return strict JSON array:
   };
 
   return (
-    <div className="fixed inset-0 z-[250] bg-slate-950/90 backdrop-blur-md flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <Zap className="w-6 h-6 text-yellow-400" />
-          <div>
-            <h3 className="font-black text-white text-xs">Quick Revision</h3>
-            <p className="text-[9px] text-slate-400 truncate w-32">{topic}</p>
+    <div className="fixed inset-0 z-[250] bg-slate-950/95 backdrop-blur-md flex flex-col font-sans select-none">
+      {/* Header with Language Selector */}
+      <div className="flex items-center justify-between p-4 border-b border-white/10 gap-2">
+        <div className="flex items-center gap-2 overflow-hidden">
+          <Zap className="w-6 h-6 text-yellow-400 shrink-0" />
+          <div className="truncate">
+            <h3 className="font-black text-white text-xs sm:text-sm">Bilingual Quick Revision</h3>
+            <p className="text-[10px] text-slate-400 truncate max-w-[150px] sm:max-w-[250px]">{topic}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[9px] font-black text-slate-400">
-            {current + 1}/{cards.length} · ✅ {known.size}
-          </span>
-          <button onClick={onExit} className="p-1.5 bg-white/10 rounded-full">
-            <X className="w-3.5 h-3.5 text-white" />
+
+        {/* Language Switcher */}
+        <div className="flex items-center bg-slate-900 border border-white/15 rounded-xl p-1 shrink-0">
+          <button
+            onClick={() => setLangMode("dual")}
+            className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-colors ${
+              langMode === "dual" ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-sm" : "text-slate-400 hover:text-white"
+            }`}
+          >
+            🌐 English + Hindi
+          </button>
+          <button
+            onClick={() => setLangMode("hi")}
+            className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-colors ${
+              langMode === "hi" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-400 hover:text-white"
+            }`}
+          >
+            🇮🇳 Hindi
+          </button>
+          <button
+            onClick={() => setLangMode("en")}
+            className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-colors ${
+              langMode === "en" ? "bg-blue-600 text-white shadow-sm" : "text-slate-400 hover:text-white"
+            }`}
+          >
+            🇬🇧 English
           </button>
         </div>
+
+        <button onClick={onExit} className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors shrink-0">
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-1 bg-slate-800">
-        <motion.div
-          className="h-full bg-primary"
-          animate={{ width: `${((current + 1) / Math.max(cards.length, 1)) * 100}%` }}
-          transition={{ duration: 0.3 }}
-        />
-      </div>
-
-      <div className="flex-1 flex flex-col items-center justify-center p-6 gap-6">
+      {/* Main Flashcard Container */}
+      <div className="flex-1 flex flex-col items-center justify-center p-4">
         {loading ? (
-          <div className="flex flex-col items-center gap-4">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            >
-              <Brain className="w-6 h-6 text-primary" />
-            </motion.div>
-            <p className="text-white font-black">AI generating flash cards...</p>
+          <div className="flex flex-col items-center gap-3 text-slate-400">
+            <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-xs font-bold animate-pulse">Generating Bilingual Revision Flashcards...</p>
           </div>
         ) : done ? (
-          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-4">
-            <div className="w-6 h-6 bg-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto">
-              <CheckCircle className="w-6 h-6 text-emerald-400" />
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-slate-900 border border-white/15 rounded-3xl p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
+            <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl font-black border border-emerald-500/30">
+              🎉
             </div>
-            <h2 className="text-2xl font-black text-white">Revision Done!</h2>
-            <p className="text-slate-400 text-sm font-bold">
-              ✅ {known.size} Known · 🔄 {cards.length - known.size} Review
+            <h3 className="text-xl font-black text-white">Revision Complete!</h3>
+            <p className="text-xs text-slate-300 font-medium">
+              You mastered <span className="text-emerald-400 font-black">{known.size}</span> of {cards.length} revision points for <span className="text-white font-bold">{topic}</span>.
             </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => { setCurrent(0); setFlipped(false); setDone(false); setKnown(new Set()); generate(); }}
-                className="flex-1 bg-white/10 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2"
-              >
-                <RotateCcw className="w-6 h-6" /> Restart
+            <div className="flex items-center gap-3 pt-2">
+              <button onClick={() => { setDone(false); setCurrent(0); setKnown(new Set()); generate(); }} className="flex-1 bg-white/10 hover:bg-white/20 text-white font-black text-xs py-3 rounded-2xl transition-colors flex items-center justify-center gap-2">
+                <RotateCcw className="w-4 h-4" /> Restart
               </button>
-              <button onClick={onExit} className="flex-1 bg-primary text-white py-4 rounded-2xl font-black">
+              <button onClick={onExit} className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-xs py-3 rounded-2xl shadow-lg transition-transform hover:scale-105">
                 Done
               </button>
             </div>
           </motion.div>
-        ) : cards.length > 0 ? (
-          <>
-            {/* Difficulty badge */}
-            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${diffColor[cards[current]?.difficulty] || ""}`}>
-              {cards[current]?.difficulty}
-            </span>
+        ) : (
+          <div className="w-full max-w-md space-y-4">
+            {/* Progress bar */}
+            <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+              <span>Card {current + 1} of {cards.length}</span>
+              <span className={`px-2.5 py-0.5 rounded-full border uppercase text-[9px] font-black ${diffColor[cards[current]?.difficulty || "medium"]}`}>
+                {cards[current]?.difficulty || "medium"}
+              </span>
+            </div>
 
-            {/* Flash Card */}
+            {/* Flip Card */}
             <div
-              className="w-full max-w-xs h-48 cursor-pointer"
-              style={{ perspective: "1000px" }}
               onClick={() => setFlipped(f => !f)}
+              className="relative h-72 sm:h-80 w-full cursor-pointer perspective-1000"
             >
               <motion.div
-                className="relative w-full h-full"
                 animate={{ rotateY: flipped ? 180 : 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                style={{ transformStyle: "preserve-3d" }}
+                transition={{ duration: 0.4 }}
+                className="w-full h-full relative preserve-3d bg-gradient-to-b from-slate-900 to-slate-950 border border-white/15 rounded-3xl shadow-2xl overflow-hidden"
               >
-                {/* Front */}
-                <div className="absolute inset-0 bg-card border border-border rounded-2xl p-5 flex flex-col items-center justify-center text-center" style={{ backfaceVisibility: "hidden" }}>
-                  <BookOpen className="w-6 h-6 text-primary mb-2" />
-                  <p className="font-black text-base text-foreground leading-snug">{cards[current]?.front}</p>
-                  <p className="text-[9px] text-slate-400 mt-2 font-semibold italic">Tap to reveal</p>
-                </div>
-                {/* Back */}
-                <div className="absolute inset-0 bg-primary rounded-2xl p-5 flex flex-col items-center justify-center text-center" style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
-                  <p className="font-black text-base text-white leading-snug">{cards[current]?.back}</p>
-                  {cards[current]?.hint && (
-                    <p className="text-white/60 text-[10px] mt-2 font-semibold italic">💡 {cards[current].hint}</p>
-                  )}
-                </div>
+                <CardFace 
+                  text={cards[current]?.front || ""} 
+                  textHindi={cards[current]?.frontHindi} 
+                  isBack={false} 
+                  langMode={langMode} 
+                />
+                <CardFace 
+                  text={cards[current]?.back || ""} 
+                  textHindi={cards[current]?.backHindi} 
+                  isBack={true} 
+                  langMode={langMode} 
+                />
               </motion.div>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-2 w-full max-w-xs">
+            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              👆 Tap Card to Flip & View {flipped ? "Question" : "Answer"}
+            </p>
+
+            {/* Hint Box */}
+            {(cards[current]?.hint || cards[current]?.hintHindi) && (
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 text-center">
+                <p className="text-[11px] font-bold text-amber-300">
+                  💡 Hint: {cards[current]?.hint}
+                  {cards[current]?.hintHindi && <span className="block text-amber-200/80 font-medium">🇮🇳 {cards[current]?.hintHindi}</span>}
+                </p>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between gap-3 pt-2">
               <button
                 onClick={prev}
                 disabled={current === 0}
-                className="p-3 bg-white/10 text-white rounded-xl disabled:opacity-30"
+                className="p-3 bg-white/10 disabled:opacity-30 text-white rounded-2xl hover:bg-white/20 transition-colors"
               >
-                <ChevronLeft className="w-6 h-6" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <button
-                onClick={next}
-                className="flex-1 bg-white/10 text-white py-3 rounded-xl font-black text-[11px]"
-              >
-                Skip
-              </button>
+
               <button
                 onClick={markKnown}
-                className="flex-2 bg-emerald-500 text-white py-3 rounded-xl font-black text-[11px] flex items-center justify-center gap-1"
+                className="flex-1 bg-emerald-600/20 border border-emerald-500/40 hover:bg-emerald-600/30 text-emerald-300 font-black text-xs py-3 rounded-2xl transition-colors flex items-center justify-center gap-1.5"
               >
-                <CheckCircle className="w-3.5 h-3.5" /> Got It!
+                <CheckCircle className="w-4 h-4 text-emerald-400" /> Got It!
               </button>
+
               <button
                 onClick={next}
-                className="p-3 bg-white/10 text-white rounded-xl"
+                className="p-3 bg-white/10 text-white rounded-2xl hover:bg-white/20 transition-colors"
               >
-                <ChevronRight className="w-6 h-6" />
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
-          </>
-        ) : null}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -12,8 +12,10 @@ type Step = "setup" | "loading" | "learn" | "write" | "evaluating" | "feedback";
 
 interface SubQ {
   question: string;
+  questionHindi?: string;
   marks: number;
   perfectAnswer: string;
+  perfectAnswerHindi?: string;
   keywords: string[];
 }
 
@@ -92,20 +94,23 @@ export default function SubjectiveEngine({ userData, onExit }: { userData: any, 
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
       {/* Header */}
       <div className="flex items-center justify-between p-4 glass-panel border-b border-white/10 sticky top-0 z-10">
         <button onClick={onExit} className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition-colors">
           <ArrowLeft className="w-6 h-6 text-slate-300" />
         </button>
-        <div className="flex items-center gap-2">
-          <PenTool className="w-6 h-6 text-purple-400" />
-          <span className="font-bold">Subjective Mastery</span>
+        <div className="text-center">
+          <h1 className="font-bold text-slate-100 flex items-center justify-center gap-2 text-sm sm:text-base">
+            <PenTool className="w-5 h-5 text-purple-400" /> Subjective Exam Mastery
+          </h1>
+          <p className="text-[10px] text-slate-400">{board} · {cls}</p>
         </div>
-        <div className="w-9" />
+        <div className="w-10" />
       </div>
 
-      <div className="flex-1 p-4 max-w-2xl mx-auto w-full relative">
+      {/* Main Content */}
+      <div className="flex-1 max-w-3xl w-full mx-auto p-4 sm:p-6">
         <AnimatePresence mode="wait">
           {step === "setup" && (
             <motion.div
@@ -113,12 +118,12 @@ export default function SubjectiveEngine({ userData, onExit }: { userData: any, 
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
               className="space-y-6"
             >
-              <div className="text-center py-8">
-                <div className="w-6 h-6 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center mx-auto mb-4">
-                  <PenTool className="w-6 h-6" />
+              <div className="text-center space-y-2 py-4">
+                <div className="w-16 h-16 rounded-3xl bg-purple-500/20 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/30">
+                  <Trophy className="w-8 h-8" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Write & Score 100%</h2>
-                <p className="text-slate-400">Select a subject. AI will give you the most highly probable exam question to memorize and practice writing.</p>
+                <p className="text-slate-400 text-xs sm:text-sm">Select a subject. AI will give you the most highly probable exam question in both English & Hindi to practice writing.</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -128,8 +133,8 @@ export default function SubjectiveEngine({ userData, onExit }: { userData: any, 
                     onClick={() => startGeneration(s)}
                     className="p-4 rounded-2xl glass-card hover:bg-slate-800/80 transition-all text-left flex items-center justify-between group"
                   >
-                    <span className="font-medium text-slate-200">{s}</span>
-                    <ChevronRight className="w-6 h-6 text-slate-500 group-hover:text-purple-400 transition-colors" />
+                    <span className="font-medium text-slate-200 text-sm">{s}</span>
+                    <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-purple-400 transition-colors" />
                   </button>
                 ))}
               </div>
@@ -142,9 +147,9 @@ export default function SubjectiveEngine({ userData, onExit }: { userData: any, 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center py-32 space-y-4"
             >
-              <Loader2 className="w-6 h-6 text-purple-400 animate-spin" />
-              <p className="text-slate-400 font-medium">
-                {step === "loading" ? "Finding 100% Exam Probable Question..." : "AI Examiner is checking your answer..."}
+              <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+              <p className="text-slate-400 font-medium text-sm">
+                {step === "loading" ? "Finding 100% Exam Probable Question (Bilingual)..." : "AI Examiner is checking your answer..."}
               </p>
             </motion.div>
           )}
@@ -157,24 +162,37 @@ export default function SubjectiveEngine({ userData, onExit }: { userData: any, 
             >
               <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 flex items-center gap-3">
                 <BookOpen className="w-6 h-6 flex-shrink-0" />
-                <p className="text-sm"><strong>Step 1: Memorize.</strong> Read the perfect answer below. Once you remember the key points, you will write it from memory.</p>
+                <p className="text-xs sm:text-sm"><strong>Step 1: Memorize.</strong> Read the perfect answer below in English or Hindi. Once you remember the key points, write it from memory.</p>
               </div>
 
               <div className="glass-card rounded-2xl p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-bold text-slate-100"><MathRenderer content={questionData.question} /></h3>
-                  <span className="px-3 py-1 rounded-lg bg-slate-800 text-purple-400 font-bold text-sm border border-purple-500/30 whitespace-nowrap">
+                <div className="flex justify-between items-start mb-4 gap-3">
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-100"><MathRenderer content={questionData.question} /></h3>
+                    {questionData.questionHindi && (
+                      <p className="text-sm font-bold text-emerald-400 mt-1.5">🇮🇳 Q: {questionData.questionHindi}</p>
+                    )}
+                  </div>
+                  <span className="px-3 py-1 rounded-lg bg-slate-800 text-purple-400 font-bold text-xs border border-purple-500/30 whitespace-nowrap shrink-0">
                     {questionData.marks} Marks
                   </span>
                 </div>
                 
-                <div className="mt-8">
-                  <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <Sparkles className="w-6 h-6 text-emerald-400" />
+                <div className="mt-6">
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
                     Perfect Topper Answer
                   </h4>
-                  <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-700 prose prose-invert max-w-none">
-                    <MathRenderer content={questionData.perfectAnswer} />
+                  <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-700 prose prose-invert max-w-none space-y-3 text-xs sm:text-sm">
+                    <div>
+                      <MathRenderer content={questionData.perfectAnswer} />
+                    </div>
+                    {questionData.perfectAnswerHindi && (
+                      <div className="pt-3 border-t border-slate-700/60 text-emerald-300 font-medium leading-relaxed">
+                        <p className="text-[10px] font-black text-emerald-400 uppercase mb-1">🇮🇳 हिंदी में समाधान:</p>
+                        <MathRenderer content={questionData.perfectAnswerHindi} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

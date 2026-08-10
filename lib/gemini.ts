@@ -427,9 +427,9 @@ OUTPUT THIS EXACT JSON SCHEMA — FILL EVERY FIELD WITH EXAM-QUALITY CONTENT:
     "Second most important takeaway — frequently tested in board exams."
   ],
   "finalCheatSheet": [
-    "🔥 MUST WRITE IN EXAM: [The single most important fact/definition that examiners always look for]",
-    "📌 TOPPER TRICK: [A smart shortcut or insight that separates 90+ scorers from average students]",
-    "⚡ PYQ ALERT: [The exact type of question that has appeared repeatedly in last 5 years of ${boardName} exams]"
+    { "en": "🔥 MUST WRITE IN EXAM: [The single most important fact/definition in English]", "hi": "🔥 परीक्षा में अवश्य लिखें: [हिंदी में]" },
+    { "en": "📌 TOPPER TRICK: [A smart shortcut or insight in English]", "hi": "📌 टॉपर ट्रिक: [हिंदी में]" },
+    { "en": "⚡ PYQ ALERT: [The exact type of question repeated in last 5 years in English]", "hi": "⚡ PYQ अलर्ट: [हिंदी में]" }
   ],
   "examBooster": {
     "highProbabilityTopics": ["Sub-topic most likely to appear in next exam (with % estimate)", "Second highest probability sub-topic"],
@@ -1133,15 +1133,19 @@ export async function generateTopperNotes(
       ],
       "definitions": [
         {
-          "term": "Term Name",
-          "definition": "Precise, exam-friendly definition that scores maximum marks"
+          "term": "Term Name in English",
+          "termHindi": "हिंदी में नाम",
+          "definition": "Precise, exam-friendly definition in English",
+          "definitionHindi": "हिंदी में स्पष्ट परिभाषा (Devanagari)"
         }
       ],
       "formulas": [
         {
           "formula": "e.g., F = G * (m1 * m2) / r^2",
-          "symbolsMeaning": "e.g., F = Force of attraction, G = Gravitational constant, m1, m2 = masses, r = distance",
-          "usageTip": "Quick tip on how to use it or common mistake, e.g., 'Always convert distance r to meters first!'"
+          "symbolsMeaning": "e.g., F = Force of attraction, G = Gravitational constant in English",
+          "symbolsMeaningHindi": "हिंदी में प्रतीक अर्थ (Devanagari)",
+          "usageTip": "Quick tip on how to use it in English",
+          "usageTipHindi": "हिंदी में प्रयोग टिप"
         }
       ],
       "comparisons": [
@@ -1155,49 +1159,54 @@ export async function generateTopperNotes(
         }
       ],
       "flowcharts": [
-        "Text-based hierarchical flowchart or mindmap representing relationships or processes, e.g., Matter -> Pure Substance (Elements, Compounds) / Mixture (Homogeneous, Heterogeneous)"
+        "Text-based hierarchical flowchart or mindmap representing relationships or processes"
       ],
       "examBoosterFacts": {
-        "frequentlyAsked": ["Frequently asked exam facts"],
+        "frequentlyAsked": ["Frequently asked exam facts in English and Hindi"],
         "oneMark": ["Typical 1-mark questions and key points"],
         "boardFavourites": ["Board exam/Competitive exam examiner favourites"]
       },
       "commonMistakes": [
         {
-          "error": "Common student error description",
-          "correction": "How to do it correctly"
+          "error": "Common student error description in English & Hindi",
+          "correction": "How to do it correctly in English & Hindi"
         }
       ],
       "memoryTricks": [
-        "First mnemonic: funny and easy to remember (e.g. My Very Educated Mother Just Served Us Noodles)",
-        "Second mnemonic: for a different formula or concept"
+        "First mnemonic: funny and easy to remember in English",
+        "Second mnemonic: हिंदी में आसान ट्रिक्स"
       ],
       "ncertHighlights": [
-        "Important textbook lines/quotes that are high probability for exams"
+        "Important textbook lines/quotes in English & Hindi"
       ],
       "pyqs": {
         "mcqs": [
           {
-            "question": "Question text?",
+            "question": "Question text in English?",
+            "questionHindi": "हिंदी में प्रश्न?",
             "options": ["Option A", "Option B", "Option C", "Option D"],
-            "answer": "Correct Option (e.g., Option A: explanation)"
+            "answer": "Correct Option (e.g., Option A: explanation in English & Hindi)"
           }
         ],
         "shortAnswers": [
           {
-            "question": "Question text?",
-            "answer": "Ideal concise topper-style answer"
+            "question": "Question text in English?",
+            "questionHindi": "हिंदी में प्रश्न?",
+            "answer": "Ideal concise topper-style answer in English",
+            "answerHindi": "हिंदी में आदर्श उत्तर (Devanagari)"
           }
         ],
         "longAnswers": [
           {
-            "question": "Question text?",
-            "answer": "Ideal structured answer with headings, points, or steps"
+            "question": "Question text in English?",
+            "questionHindi": "हिंदी में प्रश्न?",
+            "answer": "Ideal structured answer in English",
+            "answerHindi": "हिंदी में विस्तृत आदर्श उत्तर (Devanagari)"
           }
         ]
       },
       "onePageRevision": [
-        "Ultra-short final revision notes (super condensed for last-minute review)"
+        "Ultra-short final revision points in English & Hindi"
       ],
       "highlighterPoints": [
         "List of exactly 10-15 keywords or terms used in the notes that should be highlighted in yellow (e.g., 'inertia', 'acceleration')"
@@ -1695,14 +1704,12 @@ export function autoCorrectMCQs(questions: any[]): any[] {
   });
 }
 
-
 export async function generateSubjectiveQuestion(topic: string, userData: any, context?: string): Promise<any> {
-  const startTime = Date.now();
   const boardName = userData?.board || "CBSE";
   const clsName = userData?.cls || "10th";
   const fullContext = context ? `${context} - ${topic}` : topic;
 
-  logToTerminal(`dYZ_ GENERATING SUBJECTIVE Q FOR: "${fullContext}"`);
+  logToTerminal(`GENERATING SUBJECTIVE Q FOR: "${fullContext}"`);
 
   const prompt = `
     You are an expert ${boardName} board examiner for class ${clsName}.
@@ -1710,12 +1717,15 @@ export async function generateSubjectiveQuestion(topic: string, userData: any, c
     
     The question should be a Long Answer (5 Marks) or Short Answer (3 Marks).
     Also generate the PERFECT Topper-Level answer that would score 100% marks in the real exam.
+    PROVIDE EVERYTHING IN BOTH ENGLISH AND HINDI (Devanagari).
     
     JSON Schema Requirement:
     {
-      "question": "The subjective question text",
+      "question": "The subjective question text in English",
+      "questionHindi": "हिंदी में महत्वपूर्ण प्रश्न (Devanagari)",
       "marks": 5,
-      "perfectAnswer": "The ideal step-by-step topper answer with bullet points if necessary",
+      "perfectAnswer": "The ideal step-by-step topper answer in English",
+      "perfectAnswerHindi": "हिंदी में आदर्श उत्तर (Devanagari)",
       "keywords": ["keyword1", "keyword2", "keyword3"]
     }
     
@@ -1725,8 +1735,7 @@ export async function generateSubjectiveQuestion(topic: string, userData: any, c
   try {
     const result = await jsonModel.generateContent(prompt);
     const response = await result.response;
-    const jsonStr = response.text().replace(/^```json\n/, '').replace(/\n```$/, '').trim();
-    // Log tracking
+    const jsonStr = response.text().replace(/^\`\`\`json\n/, '').replace(/\n\`\`\`$/, '').trim();
     logGenerationMetric(boardName, "Subjective", "subjective_question", 1).catch(e => console.error(e));
 
     return JSON.parse(jsonStr);
@@ -1735,7 +1744,6 @@ export async function generateSubjectiveQuestion(topic: string, userData: any, c
     return null;
   }
 }
-
 export async function evaluateSubjectiveAnswer(question: string, perfectAnswer: string, userAnswer: string, maxMarks: number, userData: any): Promise<any> {
   const startTime = Date.now();
   const boardName = userData?.board || "CBSE";
